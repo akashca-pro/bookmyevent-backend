@@ -34,7 +34,7 @@ app.get('/health', (req : Request, res : Response)=>{
     return res.status(200).json({ status : 'OK' });
 })
 
-// app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authRouter);
 // app.use('/api/v1/profile', profileRouter);
 // app.use('/api/v1/services', serviceRouter);
 // app.use('/api/v1/bookings', bookingRouter);
@@ -50,7 +50,7 @@ const startServer = async () => {
     try {
         await connectDB();
         app.listen(config.PORT, () => {
-            logger.info(`HTTP ${config.SERVICE_NAME} running on port ${config.PORT}`);
+            logger.info(`HTTPS ${config.SERVICE_NAME} running on port ${config.PORT}`);
         });
 
     } catch (error) {
