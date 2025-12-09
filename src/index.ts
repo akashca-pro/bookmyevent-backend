@@ -11,6 +11,7 @@ import { profileRouter } from './presentation/routes/profile';
 import { serviceRouter } from './presentation/routes/services';
 import { bookingRouter } from './presentation/routes/bookings';
 import { adminRouter } from './presentation/routes/admin';
+import { connectDB } from './config/db';
 
 const app = express();
 app.use(httpLogger);
@@ -33,11 +34,11 @@ app.get('/health', (req : Request, res : Response)=>{
     return res.status(200).json({ status : 'OK' });
 })
 
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/profile', profileRouter);
-app.use('/api/v1/services', serviceRouter);
-app.use('/api/v1/bookings', bookingRouter);
-app.use('/api/v1/admin', adminRouter);
+// app.use('/api/v1/auth', authRouter);
+// app.use('/api/v1/profile', profileRouter);
+// app.use('/api/v1/services', serviceRouter);
+// app.use('/api/v1/bookings', bookingRouter);
+// app.use('/api/v1/admin', adminRouter);
 
 // 404
 app.use(notFound);
@@ -45,11 +46,11 @@ app.use(notFound);
 // Global error handler.
 app.use(globalErrorHandler);
 
-const startServer = () => {
+const startServer = async () => {
     try {
-        
+        await connectDB();
         app.listen(config.PORT, () => {
-            logger.info(`HTTPS ${config.SERVICE_NAME} running on port ${config.PORT}`);
+            logger.info(`HTTP ${config.SERVICE_NAME} running on port ${config.PORT}`);
         });
 
     } catch (error) {
