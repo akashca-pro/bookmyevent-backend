@@ -6,6 +6,8 @@ interface Config  {
     CLIENT_URL : string;
     PORT : number;
     SERVICE_NAME : string;
+    JWT_ACCESS_TOKEN_SECRET : string;
+    JWT_REFRESH_TOKEN_SECRET : string;
 }
 
 export const config : Config = {
@@ -13,4 +15,6 @@ export const config : Config = {
     REDIS_URL : process.env.REDIS_URL!,
     CLIENT_URL : process.env.CLIENT_URL!,
     PORT : Number(process.env.PORT),
+    JWT_ACCESS_TOKEN_SECRET : process.env.JWT_ACCESS_TOKEN_SECRET!,
+    JWT_REFRESH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET!,
 }
