@@ -5,7 +5,6 @@ import { signupSchema } from '@/validation/auth.schema';
 
 export const authRouter = express.Router();
 
-
 authRouter.post(
     '/signup',
     validateRequest(signupSchema),

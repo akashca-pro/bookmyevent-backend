@@ -7,7 +7,7 @@ interface Config  {
     PORT : number;
     SERVICE_NAME : string;
     JWT_ACCESS_TOKEN_SECRET : string;
-    JWT_REFRESH_TOKEN_SECRET : string;
+    JWT_ACCESS_TOKEN_EXPIRY : string;
     DATABASE_URL : string;
 }
 
@@ -17,6 +17,6 @@ export const config : Config = {
     CLIENT_URL : process.env.CLIENT_URL!,
     PORT : Number(process.env.PORT),
     JWT_ACCESS_TOKEN_SECRET : process.env.JWT_ACCESS_TOKEN_SECRET!,
-    JWT_REFRESH_TOKEN_SECRET : process.env.JWT_REFRESH_TOKEN_SECRET!,
+    JWT_ACCESS_TOKEN_EXPIRY : process.env.JWT_ACCESS_TOKEN_EXPIRY!,
     DATABASE_URL : process.env.DATABASE_URL!,
 }
