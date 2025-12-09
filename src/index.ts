@@ -6,6 +6,11 @@ import { httpLogger } from '@/utils/pinoLogger';
 import { config } from '@/config';
 import cookieParser from 'cookie-parser';
 import { globalErrorHandler, notFound } from './utils/errorHandlers';
+import { authRouter } from './presentation/routes/auth';
+import { profileRouter } from './presentation/routes/profile';
+import { serviceRouter } from './presentation/routes/services';
+import { bookingRouter } from './presentation/routes/bookings';
+import { adminRouter } from './presentation/routes/admin';
 
 const app = express();
 app.use(httpLogger);
@@ -30,6 +35,13 @@ app.get('/health', (req : Request, res : Response)=>{
 
 // 404
 app.use(notFound);
+
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/services', serviceRouter);
+app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/admin', adminRouter);
+
 
 // Global error handler.
 app.use(globalErrorHandler);
