@@ -8,7 +8,8 @@ import { SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { IPasswordHasher } from "@/providers/interfaces/passwordHasher.interface";
 import { ITokenPayLoad } from "@/types/token.type";
 import { ITokenProvider } from "@/providers/interfaces/TokenProvider.interface";
-import { SignupRequestDTO, SignupResponseDTO } from "@/dtos/signup.dto";
+import { SignupRequestDTO, SignupResponseDTO } from "@/dtos/auth/signup.dto";
+import { LoginRequestDTO, LoginResponseDTO } from "@/dtos/auth/login.dto";
 
 
 @injectable()
@@ -77,4 +78,57 @@ export class AuthService implements IAuthService {
         }
     }
 
+    async login(
+        req: LoginRequestDTO
+    ): Promise<ResponseDTO<LoginResponseDTO | null>> {
+        const method = 'AuthService.login'
+        logger.info(`[AUTH-SERVICE] ${method} started`);
+        const user = await this.#_userRepo.getUserByEmail(req.email);
+        if(!user){
+            logger.error(`[AUTH-SERVICE] ${method} user not found`);
+            return {
+                data : null,
+                errorMessage : SERVICE_ERRORS.USER_NOT_FOUND,
+                success : false
+            }
+        }
+        const isPasswordValid = await this.#_passwordHasher.comparePasswords(req.password, user.password);
+        if(!isPasswordValid){
+            logger.error(`[AUTH-SERVICE] ${method} invalid credentials`);
+            return {
+                data : null,
+                errorMessage : SERVICE_ERRORS.INVALID_CREDENTIALS,
+                success : false
+            }
+        }
+        logger.info(`[AUTH-SERVICE] ${method} login successful`);
+        const tokenPayload : ITokenPayLoad = {
+            userId : user?._id!,
+            email : user?.email!,
+            name : user?.name!,
+            role : user?.role!
+        }
+        const accessToken = this.#_tokenProvider.generateAccessToken(tokenPayload);
+        if(!accessToken) {
+            logger.error('Token generation error: Access token could not be issued.', { userId: user?._id });
+            return {
+                data : null,
+                errorMessage : SERVICE_ERRORS.ACCESS_TOKEN_ISSUE_ERROR,
+                success : false 
+            }
+        }
+        logger.info(`[AUTH-SERVICE] ${method} access token generated`);
+        return {
+            data : {
+                accessToken,
+                user : {
+                    id : user?._id!,
+                    name : user?.name!,
+                    email : user?.email!,
+                    role : user?.role!
+                }
+            },
+            success : true
+        }
+    }
 }
