@@ -10,6 +10,7 @@ import { setCookie } from "@/utils/set-cookie";
 import ms from "ms";
 import { NextFunction, Request, Response } from "express";
 import { AuthMapper } from "@/dtos/auth/AuthMapper.dto";
+import { USER_ROLE } from "@/const/userRoles.const";
 
 const authService = container.get<IAuthService>(TYPES.IAuthService);
 
@@ -34,17 +35,36 @@ export const authController = {
         }
     },
 
-    login : async (req : Request, res : Response, next : NextFunction) => {
+    userLogin : async (req : Request, res : Response, next : NextFunction) => {
         try {
-            req.log.info('Login request received');
+            req.log.info('User Login request received');
             const input =  req.validated?.body;
-            const serviceData = AuthMapper.toLoginService(input);
+            const serviceData = AuthMapper.toLoginService(input, USER_ROLE.USER);
             const response = await authService.login(serviceData);
             if(!response.success){
-                req.log.info({ error : response.errorMessage },'Login failed')
+                req.log.info({ error : response.errorMessage },'User Login failed')
                 return ResponseHandler.error(res, response.errorMessage, HTTP_STATUS.BAD_REQUEST);
             }
-            req.log.info({ email: req.validated?.body.email },'Login successfull');
+            req.log.info({ email: req.validated?.body.email },'User Login successfull');
+            setCookie(res, APP_LABELS.ACCESS_TOKEN, response.data?.accessToken!, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
+            return ResponseHandler.success(res, AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESSFUL, HTTP_STATUS.OK, response.data?.user);
+        } catch (error) {
+            req.log.error(error);
+            next(error);
+        }
+    },
+
+    adminLogin : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            req.log.info('Admin Login request received');
+            const input =  req.validated?.body;
+            const serviceData = AuthMapper.toLoginService(input, USER_ROLE.ADMIN);
+            const response = await authService.login(serviceData);
+            if(!response.success){
+                req.log.info({ error : response.errorMessage },'Admin Login failed')
+                return ResponseHandler.error(res, response.errorMessage, HTTP_STATUS.BAD_REQUEST);
+            }
+            req.log.info({ email: req.validated?.body.email },'Admin Login successfull');
             setCookie(res, APP_LABELS.ACCESS_TOKEN, response.data?.accessToken!, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
             return ResponseHandler.success(res, AUTH_SUCCESS_MESSAGES.LOGIN_SUCCESSFUL, HTTP_STATUS.OK, response.data?.user);
         } catch (error) {

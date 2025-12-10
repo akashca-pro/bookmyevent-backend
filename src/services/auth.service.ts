@@ -92,6 +92,14 @@ export class AuthService implements IAuthService {
                 success : false
             }
         }
+        if(user.role !== req.role){
+            logger.error(`[AUTH-SERVICE] ${method} Invalide role`);
+            return {
+                data : null,
+                errorMessage : SERVICE_ERRORS.UNAUTHORIZED,
+                success : false
+            }
+        }
         const isPasswordValid = await this.#_passwordHasher.comparePasswords(req.password, user.password);
         if(!isPasswordValid){
             logger.error(`[AUTH-SERVICE] ${method} invalid credentials`);

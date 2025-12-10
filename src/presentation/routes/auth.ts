@@ -12,7 +12,13 @@ authRouter.post(
 )
 
 authRouter.post(
-    '/login',
+    'user/login',
     validateRequest(LoginSchema),
-    controller.login
+    controller.userLogin
+)
+
+authRouter.post(
+    'admin/login',
+    validateRequest(LoginSchema),
+    controller.adminLogin
 )

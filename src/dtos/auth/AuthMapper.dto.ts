@@ -14,7 +14,7 @@ export class AuthMapper {
                 throw new Error(APP_ERRORS.INVALID_USER_ROLE)
         }
     }
-    static toLoginService(req : Record<string, any>) : LoginRequestDTO {
-        return { email : req.email, password : req.password }
+    static toLoginService(req : Record<string, any>, role : UserRole ) : LoginRequestDTO {
+        return { email : req.email, password : req.password , role }
     }
 }
