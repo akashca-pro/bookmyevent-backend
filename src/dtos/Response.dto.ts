@@ -3,7 +3,7 @@
  *
  * @interface
  */
-export interface ResponseDTO {
+export interface ResponseDTO<T> {
   /**
    * A boolean indicating the success or failure of the operation.
    */
@@ -12,7 +12,7 @@ export interface ResponseDTO {
   /**
    * The data associated with the response.
    */
-  data: any
+  data: T
 
   /**
    * The error message if there any.
