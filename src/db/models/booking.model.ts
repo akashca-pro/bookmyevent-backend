@@ -1,0 +1,21 @@
+import mongoose, {Schema} from "mongoose";
+import { IBooking } from "../interfaces/booking.interface";
+import { BOOKING_STATUS } from "@/const/bookingStatus.const";
+
+export const BookingSchema = new Schema<IBooking>(
+    {
+        userId : { type : Schema.Types.ObjectId, ref : 'User', required : true },
+        serviceId : { type : Schema.Types.ObjectId, ref : 'Service', required : true },
+        startDate : { type : Date, required : true },
+        endDate : { type : Date, required : true },
+        totalPrice : { type : Number, required : true },
+        status : { type : String, enum : Object.values(BOOKING_STATUS), required : true }
+    },
+    { timestamps : true }
+) 
+BookingSchema.index({ serviceId: 1, startDate: 1, endDate: 1 });
+BookingSchema.index({ userId: 1, startDate: 1 });
+
+export const BookingModel = mongoose.model<IBooking>('Booking', BookingSchema);
+
+

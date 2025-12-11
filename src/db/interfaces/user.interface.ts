@@ -10,6 +10,6 @@ export interface IUser extends Document{
     isArchived : boolean;
     isBlocked : boolean;
     role : UserRole;
-    createdAt : string;
-    updatedAt : string;
+    createdAt : Date;
+    updatedAt : Date;
 }
