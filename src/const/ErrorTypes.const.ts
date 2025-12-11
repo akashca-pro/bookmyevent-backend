@@ -29,9 +29,12 @@ export const SERVICE_SERVICE_ERRORS = {
     SERVICE_UPDATION_FAILED : 'service updation failed',
     SERVICE_ARCHIVING_FAILED : 'service archiving failed',
     INVALID_DATE_RANGE : 'Invalid date range',
+    SERVICE_OUTSIDE_AVAILABILITY : 'Service outside availability range',
 } as const
 
 export const BOOKING_SERVICE_ERRORS = { 
     BOOKING_NOT_FOUND : 'booking not found',
-    BOOKING_ALREADY_EXISTS : 'booking already exists',  
+    BOOKING_ALREADY_EXISTS : 'Someone booked already for this range',
+    BOOKING_FAILED : 'booking failed', 
+    CANCELLATION_FAILED : 'cancellation failed',
 } as const

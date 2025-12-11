@@ -35,6 +35,7 @@ const ServiceSchema = new Schema<IService>(
         category : { type : String, required : true },
         pricePerDay : { type : Number, required : true },
         location : { type : LocationSchema, required : true },
+        isArchived : { type : Boolean, default : false },
         availability : { type : AvailibilitySchema, required : true },
         contact : { type : ContactSchema, required : true },
     },

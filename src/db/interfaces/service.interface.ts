@@ -27,6 +27,7 @@ export interface IService extends Document {
     location : ILocation;
     availability : IAvailability;
     contact : IContact;
+    isArchived : boolean;
     createdAt : Date;
     updatedAt : Date;
 }

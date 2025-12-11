@@ -9,6 +9,7 @@ export interface UpdateServiceRequestDTO {
         pricePerDay : number;
         location : ILocation;
         availability : IAvailability;
+        isArchived : boolean;
         contact : IContact;
     }
 }

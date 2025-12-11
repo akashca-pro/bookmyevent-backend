@@ -118,16 +118,14 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
         const operation = 'getConflictingBookings';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({
-                serviceId,
-                status: "CONFIRMED",
-                $or: [
-                    {
-                        startDate: { $lte: endDate },
-                        endDate: { $gte: startDate }
-                    }
-                ]
-            });
+            const result = await this._model.find(
+                {
+                    serviceId,
+                    status: "CONFIRMED",
+                    startDate: { $lte: endDate },
+                    endDate: { $gte: startDate }
+                }
+            );
             logger.info(`[REPO] ${operation} successful`, { conflicts: result.length, duration: Date.now() - startTime });
             return result;
         } catch (error) {
