@@ -16,6 +16,8 @@ import { IAuthService } from '@/services/interfaces/auth.service.interface';
 import { AuthService } from '@/services/auth.service';
 import { IProfileService } from '@/services/interfaces/profile.service.interface';
 import { ProfileService } from '@/services/profile.service';
+import { IServiceRepo } from '@/repos/interfaces/service.repo.interface';
+import { ServiceRepo } from '@/repos/service.repo';
 
 const container = new Container();
 
@@ -32,6 +34,7 @@ container.bind<ICacheProvider>(TYPES.ICacheProvider).to(RedisCacheProvider).inSi
  * Repos
  */
 container.bind<IUserRepo>(TYPES.IUserRepo).to(UserRepo).inSingletonScope();
+container.bind<IServiceRepo>(TYPES.IServiceRepo).to(ServiceRepo).inSingletonScope();
 
 /**
  * Services

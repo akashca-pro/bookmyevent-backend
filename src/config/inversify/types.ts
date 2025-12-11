@@ -1,6 +1,8 @@
 const TYPES = {
     // Repos
     IUserRepo : Symbol.for("IUserRepo"),
+    IServiceRepo : Symbol.for("IServiceRepo"),
+    IBookingRepo : Symbol.for("IBookingRepo"),
 
     // Services
     IAuthService : Symbol.for("IAuthService"),
