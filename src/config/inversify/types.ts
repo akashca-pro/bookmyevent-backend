@@ -7,6 +7,8 @@ const TYPES = {
     // Services
     IAuthService : Symbol.for("IAuthService"),
     IProfileService : Symbol.for("IProfileService"),
+    IServiceService : Symbol.for("IServiceService"),
+    IBookingService : Symbol.for("IBookingService"),
 
     // providers
     Redis : Symbol.for("Redis"),

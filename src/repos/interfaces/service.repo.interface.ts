@@ -13,6 +13,7 @@ export interface IServiceRepo {
     // Basic CRUD
     createService(data : Partial<IService>) : Promise<IService | null>;
     getServiceById(id : string) : Promise<IService | null>;
+    getServiceByTitle(title : string) : Promise<IService | null>;
     updateService(id : string, data : Partial<IService>) : Promise<boolean>;
     archieveService(id : string) : Promise<boolean>;
 

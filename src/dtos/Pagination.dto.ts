@@ -7,7 +7,7 @@ export interface PaginationDTO<T> {
   /**
    * The body of the response, representing the paginated data.
    */
-  body: T[]
+  data: T[]
 
   /**
    * The total number of all items.

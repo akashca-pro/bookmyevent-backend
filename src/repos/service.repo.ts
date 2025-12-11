@@ -27,6 +27,23 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
         }
     }
 
+    async getServiceByTitle(
+        title : string
+    ) : Promise<IService | null> {
+        const startTime = Date.now();
+        const operation = 'getServiceByTitle';
+        try {
+            logger.debug(`[REPO] Executing ${operation}`);
+            const result = await this._model.findOne({ title });
+            const found = !!result;
+            logger.info(`[REPO] ${operation} successful`, { title, found, duration: Date.now() - startTime });
+            return result;
+        } catch (error) {
+            logger.error(`[REPO] ${operation} failed`, { error, title, duration: Date.now() - startTime });
+            throw error;
+        }
+    }
+
     async getServiceById(
         id: string
     ): Promise<IService | null> {

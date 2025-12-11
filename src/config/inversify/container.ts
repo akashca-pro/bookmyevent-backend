@@ -18,6 +18,10 @@ import { IProfileService } from '@/services/interfaces/profile.service.interface
 import { ProfileService } from '@/services/profile.service';
 import { IServiceRepo } from '@/repos/interfaces/service.repo.interface';
 import { ServiceRepo } from '@/repos/service.repo';
+import { IBookingRepo } from '@/repos/interfaces/booking.repo.interface';
+import { BookingRepo } from '@/repos/booking.repo';
+import { IServiceService } from '@/services/interfaces/service.service.interface';
+import { ServiceService } from '@/services/service.service';
 
 const container = new Container();
 
@@ -35,12 +39,16 @@ container.bind<ICacheProvider>(TYPES.ICacheProvider).to(RedisCacheProvider).inSi
  */
 container.bind<IUserRepo>(TYPES.IUserRepo).to(UserRepo).inSingletonScope();
 container.bind<IServiceRepo>(TYPES.IServiceRepo).to(ServiceRepo).inSingletonScope();
+container.bind<IBookingRepo>(TYPES.IBookingRepo).to(BookingRepo).inSingletonScope();
 
 /**
  * Services
  */
 container.bind<IAuthService>(TYPES.IAuthService).to(AuthService).inSingletonScope();
 container.bind<IProfileService>(TYPES.IProfileService).to(ProfileService).inSingletonScope();
+container.bind<IServiceService>(TYPES.IServiceService).to(ServiceService).inSingletonScope();
+
+
 
 export default container;
 

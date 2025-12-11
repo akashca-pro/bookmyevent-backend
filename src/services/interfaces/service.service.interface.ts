@@ -27,9 +27,9 @@ export interface IServiceService {
 
     getServices(
         req : GetServicesRequestDTO
-    ) : Promise<PaginationDTO<IService[] | null>>;
+    ) : Promise<PaginationDTO<IService>>;
 
     getAvailableServices(
         req : GetAvailableServicesRequestDTO
-    ) : Promise<PaginationDTO<IService[]>>
+    ) : Promise<PaginationDTO<IService>>
 }

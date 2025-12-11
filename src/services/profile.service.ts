@@ -7,7 +7,7 @@ import { ProfileResponseDTO } from "@/dtos/profile/profile.dto";
 import { ResponseDTO } from "@/dtos/Response.dto";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import logger from "@/utils/pinoLogger";
-import { SERVICE_ERRORS } from "@/const/ErrorTypes.const";
+import { AUTH_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { config } from "@/config";
 
 @injectable()
@@ -43,7 +43,7 @@ export class ProfileService implements IProfileService {
             logger.error(`[PROFILE-SERVICE] ${method} user not found`);
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.USER_NOT_FOUND,
+                errorMessage : AUTH_SERVICE_ERRORS.USER_NOT_FOUND,
                 success : false
             }
         }

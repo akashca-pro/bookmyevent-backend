@@ -4,7 +4,7 @@ import TYPES from "@/config/inversify/types";
 import { IUserRepo } from "@/repos/interfaces/user.repo.interface";
 import { ResponseDTO } from "@/dtos/Response.dto";
 import logger from "@/utils/pinoLogger";
-import { SERVICE_ERRORS } from "@/const/ErrorTypes.const";
+import { AUTH_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { IPasswordHasher } from "@/providers/interfaces/passwordHasher.interface";
 import { ITokenPayLoad } from "@/types/token.type";
 import { ITokenProvider } from "@/providers/interfaces/tokenProvider.interface";
@@ -39,7 +39,7 @@ export class AuthService implements IAuthService {
             logger.error(`[AUTH-SERVICE] ${method} user already exists`);
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.USER_ALREADY_EXISTS,
+                errorMessage : AUTH_SERVICE_ERRORS.USER_ALREADY_EXISTS,
                 success : false
             }
         }
@@ -59,7 +59,7 @@ export class AuthService implements IAuthService {
             logger.error('Token generation error: Access token could not be issued.', { userId: newUser?._id });
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.ACCESS_TOKEN_ISSUE_ERROR,
+                errorMessage : AUTH_SERVICE_ERRORS.ACCESS_TOKEN_ISSUE_ERROR,
                 success : false 
             }
         }
@@ -88,7 +88,7 @@ export class AuthService implements IAuthService {
             logger.error(`[AUTH-SERVICE] ${method} user not found`);
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.USER_NOT_FOUND,
+                errorMessage : AUTH_SERVICE_ERRORS.USER_NOT_FOUND,
                 success : false
             }
         }
@@ -96,7 +96,7 @@ export class AuthService implements IAuthService {
             logger.error(`[AUTH-SERVICE] ${method} Invalide role`);
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.UNAUTHORIZED,
+                errorMessage : AUTH_SERVICE_ERRORS.UNAUTHORIZED,
                 success : false
             }
         }
@@ -105,7 +105,7 @@ export class AuthService implements IAuthService {
             logger.error(`[AUTH-SERVICE] ${method} invalid credentials`);
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.INVALID_CREDENTIALS,
+                errorMessage : AUTH_SERVICE_ERRORS.INVALID_CREDENTIALS,
                 success : false
             }
         }
@@ -121,7 +121,7 @@ export class AuthService implements IAuthService {
             logger.error('Token generation error: Access token could not be issued.', { userId: user?._id });
             return {
                 data : null,
-                errorMessage : SERVICE_ERRORS.ACCESS_TOKEN_ISSUE_ERROR,
+                errorMessage : AUTH_SERVICE_ERRORS.ACCESS_TOKEN_ISSUE_ERROR,
                 success : false 
             }
         }
