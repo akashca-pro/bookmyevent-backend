@@ -1,0 +1,36 @@
+import { IBooking } from "@/db/interfaces/booking.interface";
+import { ListOptions } from "@/dtos/Listoptions.dto";
+
+export interface IBookingRepo {
+    createBooking(data: Partial<IBooking>): Promise<IBooking | null>;
+    getBookingById(id: string): Promise<IBooking | null>;
+
+    // User bookings
+    getBookingsByUser(
+        userId: string,
+        options: ListOptions
+    ): Promise<IBooking[]>;
+
+    countBookingsByUser(userId: string): Promise<number>;
+    countBookingsByService(serviceId: string): Promise<number>;
+
+    // All bookings for a service (admin dashboard)
+    getBookingsByService(
+        serviceId: string,
+        options: { skip: number; limit: number; sort?: Record<string, 1 | -1> }
+    ): Promise<IBooking[]>;
+
+    // Booking conflict detection.
+    getConflictingBookings(
+        serviceId: string,
+        startDate: Date,
+        endDate: Date
+    ): Promise<IBooking[]>;
+
+    getBookedServiceIdsInRange(
+        startDate: Date,
+        endDate: Date
+    ): Promise<string[]>;
+
+    cancelBooking(id: string): Promise<boolean>;
+}

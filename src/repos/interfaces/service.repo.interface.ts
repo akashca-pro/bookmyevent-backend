@@ -1,10 +1,5 @@
 import { IService } from "@/db/interfaces/service.interface";
-
-export interface ListOptions {
-    limit: number;
-    skip: number;
-    sort?: Record<string, 1 | -1>;
-}
+import { ListOptions } from "@/dtos/Listoptions.dto";
 
 export interface ServiceFilter {
     category?: string;

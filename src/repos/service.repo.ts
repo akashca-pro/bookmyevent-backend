@@ -1,8 +1,9 @@
 import { IService } from "@/db/interfaces/service.interface";
 import { BaseRepo } from "./base.repo";
-import { IServiceRepo, ListOptions, ServiceFilter } from "./interfaces/service.repo.interface";
+import { IServiceRepo, ServiceFilter } from "./interfaces/service.repo.interface";
 import { ServiceModel } from "@/db/models/service.model";
 import logger from "@/utils/pinoLogger";
+import { ListOptions } from "@/dtos/Listoptions.dto";
 
 
 export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
