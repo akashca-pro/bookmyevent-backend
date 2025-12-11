@@ -17,7 +17,7 @@ export interface IBookingRepo {
     // All bookings for a service (admin dashboard)
     getBookingsByService(
         serviceId: string,
-        options: { skip: number; limit: number; sort?: Record<string, 1 | -1> }
+        options?: ListOptions,
     ): Promise<IBooking[]>;
 
     // Booking conflict detection.

@@ -14,19 +14,26 @@ import { IService } from "@/db/interfaces/service.interface";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { GetServicesRequestDTO } from "@/dtos/service/getServices.dto";
 import { GetAvailableServicesRequestDTO } from "@/dtos/service/getAvailableServices.dto";
+import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
+import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
+import { config } from "@/config";
 
 @injectable()
 export class ServiceService implements IServiceService {
 
     #_serviceRepo : IServiceRepo;
     #_bookingRepo : IBookingRepo;
+    #_cacheProvider : ICacheProvider;
+
 
     constructor(
         @inject(TYPES.IServiceRepo) serviceRepo : IServiceRepo,
-        @inject(TYPES.IBookingRepo) bookingRepo : IBookingRepo
+        @inject(TYPES.IBookingRepo) bookingRepo : IBookingRepo,
+        @inject(TYPES.ICacheProvider) cacheProvider : ICacheProvider
     ){
         this.#_serviceRepo = serviceRepo;
         this.#_bookingRepo = bookingRepo;
+        this.#_cacheProvider = cacheProvider;
     }
 
     async createService(
@@ -101,6 +108,15 @@ export class ServiceService implements IServiceService {
                 success : false
             }
         }
+        const getAllBookings = await this.#_bookingRepo.getBookingsByService(req.id);
+        if(getAllBookings.length > 0){
+            logger.error(`[SERVICE-SERVICE] ${method} service has bookings`);
+            return {
+                data : null,
+                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_HAS_BOOKINGS,
+                success : false
+            }
+        }
         const archived = await this.#_serviceRepo.archieveService(req.id);
         if(!archived){
             return {
@@ -109,6 +125,7 @@ export class ServiceService implements IServiceService {
                 success : false
             }
         }
+        await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.SERVICE}${req.id}`);
         logger.info(`[SERVICE-SERVICE] ${method} service archived`);
         return {
             data : null,
@@ -121,6 +138,15 @@ export class ServiceService implements IServiceService {
     ): Promise<ResponseDTO<IService | null>> {
         const method = 'ServiceService.getService'
         logger.info(`[SERVICE-SERVICE] ${method} started`);
+        const cacheKey = `${REDIS_KEY_PREFIX.SERVICE}${id}`;
+        const cachedData = await this.#_cacheProvider.get(cacheKey) as IService;
+        if(cachedData){
+            logger.info(`[SERVICE-SERVICE] ${method} data fetched from cache`);
+            return {
+                data : cachedData,
+                success : true
+            }
+        }
         const service = await this.#_serviceRepo.getServiceById(id);
         if(!service){
             logger.error(`[SERVICE-SERVICE] ${method} service not found`);
@@ -130,6 +156,7 @@ export class ServiceService implements IServiceService {
                 success : false
             }
         }
+        await this.#_cacheProvider.set(cacheKey, service, config.SERVICE_CACHE_EXPIRY);
         logger.info(`[SERVICE-SERVICE] ${method} service fetched`);
         return {
             data : service,

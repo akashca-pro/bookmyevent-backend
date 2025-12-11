@@ -30,6 +30,7 @@ export const SERVICE_SERVICE_ERRORS = {
     SERVICE_ARCHIVING_FAILED : 'service archiving failed',
     INVALID_DATE_RANGE : 'Invalid date range',
     SERVICE_OUTSIDE_AVAILABILITY : 'Service outside availability range',
+    SERVICE_HAS_BOOKINGS : 'Service has bookings',
 } as const
 
 export const BOOKING_SERVICE_ERRORS = { 

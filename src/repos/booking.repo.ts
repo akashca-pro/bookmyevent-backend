@@ -94,7 +94,7 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
 
     async getBookingsByService(
         serviceId: string, 
-        options: ListOptions
+        options: ListOptions = { skip: 0, limit: 10, sort: { createdAt: -1 } }
     ): Promise<IBooking[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByService';

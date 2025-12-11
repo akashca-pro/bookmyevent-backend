@@ -14,6 +14,9 @@ import { GetUserBookingRequestDTO } from "@/dtos/booking/getUserBookings.dto";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { GetServiceBookingsRequestDTO } from "@/dtos/booking/getServiceBookings.dto";
 import { CancelBookingRequestDTO } from "@/dtos/booking/cancelBooking.dto";
+import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
+import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
+import { config } from "@/config";
 
 
 @injectable()
@@ -21,13 +24,16 @@ export class BookingService implements IBookingService {
 
     #_bookingRepo : IBookingRepo;
     #_serviceRepo : IServiceRepo;
+    #_cacheProvider : ICacheProvider;
 
     constructor(
         @inject(TYPES.IBookingRepo) bookingRepo : IBookingRepo,
-        @inject(TYPES.IServiceRepo) serviceRepo : IServiceRepo
+        @inject(TYPES.IServiceRepo) serviceRepo : IServiceRepo,
+        @inject(TYPES.ICacheProvider) cacheProvider : ICacheProvider
     ){
         this.#_bookingRepo = bookingRepo;
         this.#_serviceRepo = serviceRepo;
+        this.#_cacheProvider = cacheProvider;
     }
 
     async createBooking(
@@ -94,6 +100,15 @@ export class BookingService implements IBookingService {
     ): Promise<ResponseDTO<IBooking | null>> {
         const method = 'BookingService.getBookingById'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
+        const cacheKey = `${REDIS_KEY_PREFIX.BOOKING}${id}`;
+        const cachedData = await this.#_cacheProvider.get(cacheKey) as IBooking;
+        if(cachedData){
+            logger.info(`[BOOKING-SERVICE] ${method} data fetched from cache`);
+            return {
+                data : cachedData,
+                success : true
+            }
+        }
         const booking = await this.#_bookingRepo.getBookingById(id);
         if(!booking){
             logger.error(`[BOOKING-SERVICE] ${method} booking not found`);
@@ -103,6 +118,7 @@ export class BookingService implements IBookingService {
                 success : false
             }
         }
+        await this.#_cacheProvider.set(cacheKey, booking, config.BOOKING_CACHE_EXPIRY);
         logger.info(`[BOOKING-SERVICE] ${method} booking fetched`);
         return {
             data : booking,
@@ -183,6 +199,7 @@ export class BookingService implements IBookingService {
             }
         }
         logger.info(`[BOOKING-SERVICE] ${method} booking cancelled`);
+        await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.BOOKING}${bookingId}`);
         return {
             data : null,
             success : true
