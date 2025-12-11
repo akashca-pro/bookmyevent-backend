@@ -10,78 +10,47 @@ import { REDIS_KEY_PREFIX } from '@/config/redis/keyPrefix';
 import { APP_LABELS } from '@/const/labels.const';
 import { APP_ERRORS } from '@/const/ErrorTypes.const';
 
-const verifyJwt = (token : string,secret : string) : CustomJwtPayload => {
-    return jwt.verify(token,secret) as CustomJwtPayload
-}
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.cookies[APP_LABELS.ACCESS_TOKEN];
 
-export const verifyAccessToken = (acceptedRole : string) => async (
-    req : Request,
-    res : Response, 
-    next : NextFunction) =>{
-
-    const token = req.cookies[APP_LABELS.ACCESS_TOKEN]
-
-    if(!token)
+    if (!token) {
         return ResponseHandler.error(
             res,
             APP_ERRORS.TOKEN_NOT_FOUND,
             HTTP_STATUS.UNAUTHORIZED
         );
+    }
 
     try {
-        const decoded = verifyJwt(
-            token, 
-            config.JWT_ACCESS_TOKEN_SECRET as string
-        );
+        const decoded = jwt.verify(token, config.JWT_ACCESS_TOKEN_SECRET) as CustomJwtPayload;
 
-        if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
-            return ResponseHandler.error(
-                res, 
-                APP_ERRORS.INVALID_TOKEN_PAYLOAD, 
-                HTTP_STATUS.UNAUTHORIZED
-            );
-        }
-
-        if(decoded.role !== acceptedRole.toUpperCase())
+        if (!decoded || !decoded.userId || !decoded.email || !decoded.role) {
             return ResponseHandler.error(
                 res,
-                APP_ERRORS.ENTRY_RESTRICTED,
-                HTTP_STATUS.UNAUTHORIZED
-        );
-
-        // Check blacklist
-        const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
-        if (blacklisted) {
-            return ResponseHandler.error(
-                res, 
-                APP_ERRORS.TOKEN_BLACKLISTED, 
+                APP_ERRORS.INVALID_TOKEN_PAYLOAD,
                 HTTP_STATUS.UNAUTHORIZED
             );
         }
 
-        // Check blocked user
         if (req.path !== APP_LABELS.LOGOUT_PATH) {
             const blocked = await redis.get(`${REDIS_KEY_PREFIX.USER_BLOCKED}:${decoded.userId}`);
             if (blocked) {
                 return ResponseHandler.error(
-                    res, 
-                    APP_ERRORS.ACCOUNT_BLOCKED, 
+                    res,
+                    APP_ERRORS.ACCOUNT_BLOCKED,
                     HTTP_STATUS.FORBIDDEN
                 );
             }
         }
 
         req.userId = decoded.userId;
+        req.name = decoded.name;
         req.email = decoded.email;
-        req.username = decoded.username;
         req.role = decoded.role;
-        req.accessTokenId = decoded.tokenId;
-        req.accessTokenExp = decoded.exp;
 
         next();
-        
     } catch (error) {
-        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED,error);
+        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED, error);
         return ResponseHandler.error(
             res,
             APP_ERRORS.INVALID_TOKEN_PAYLOAD,
@@ -90,63 +59,25 @@ export const verifyAccessToken = (acceptedRole : string) => async (
     }
 };
 
-export const verifyRefreshToken = (acceptedRole : string) => async (
-    req : Request,
-    res : Response,
-    next : NextFunction) => {
+export const authorizeRole = (acceptedRole: string) => {
+    return (req: Request, res: Response, next: NextFunction) => {
 
-    const token = req.cookies[APP_LABELS.REFRESH_TOKEN];
-
-    if(!token)
-        return ResponseHandler.error(
-            res,
-            APP_ERRORS.TOKEN_NOT_FOUND,
-            HTTP_STATUS.UNAUTHORIZED
-    );
-
-    try {
-        const decoded = verifyJwt(token, config.JWT_REFRESH_TOKEN_SECRET as string);
-
-        if (!decoded || !decoded.userId || !decoded.email || !decoded.role || !decoded.tokenId) {
+        if (!req.role) {
             return ResponseHandler.error(
-                res, 
-                APP_ERRORS.INVALID_TOKEN_PAYLOAD, 
+                res,
+                APP_ERRORS.INVALID_TOKEN_PAYLOAD,
                 HTTP_STATUS.UNAUTHORIZED
             );
         }
 
-        if(decoded.role !== acceptedRole.toUpperCase())
+        if (req.role !== acceptedRole.toUpperCase()) {
             return ResponseHandler.error(
                 res,
                 APP_ERRORS.ENTRY_RESTRICTED,
                 HTTP_STATUS.UNAUTHORIZED
-        );
-
-        // Check blacklist
-        const blacklisted = await redis.get(`${REDIS_KEY_PREFIX.BLACKLIST_ACCESS_TOKEN}${decoded.tokenId}`);
-        if (blacklisted) {
-            return ResponseHandler.error(
-                res, 
-                APP_ERRORS.TOKEN_BLACKLISTED, 
-                HTTP_STATUS.UNAUTHORIZED
             );
         }
 
-        req.userId = decoded.userId;
-        req.email = decoded.email;
-        req.username = decoded.username;
-        req.role = decoded.role;
-        req.refreshTokenId = decoded.tokenId;
-        req.refreshTokenExp = decoded.exp;
         next();
-
-    } catch (error) {
-        logger.error(APP_ERRORS.TOKEN_VERIFICATION_FAILED,error);
-        return ResponseHandler.error(
-            res,
-            APP_ERRORS.INVALID_TOKEN_PAYLOAD,
-            HTTP_STATUS.UNAUTHORIZED
-        );
-    }
-}
-
+    };
+};

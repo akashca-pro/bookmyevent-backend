@@ -35,7 +35,7 @@ app.get('/health', (req : Request, res : Response)=>{
 })
 
 app.use('/api/v1/auth', authRouter);
-// app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/profile', profileRouter);
 // app.use('/api/v1/services', serviceRouter);
 // app.use('/api/v1/bookings', bookingRouter);
 // app.use('/api/v1/admin', adminRouter);

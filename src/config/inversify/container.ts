@@ -7,11 +7,15 @@ import redis from '@/config/redis'
 import { IUserRepo } from '@/repos/interfaces/user.repo.interface';
 import { UserRepo } from '@/repos/user.repo';
 import { IPasswordHasher } from '@/providers/interfaces/passwordHasher.interface';
-import { BcryptPasswordHasher } from '@/providers/PasswordHasher';
-import { ITokenProvider } from '@/providers/interfaces/TokenProvider.interface';
-import { JwtTokenProvider } from '@/providers/TokenProvider';
-import { ICacheProvider } from '@/providers/interfaces/CacheProvider.interface';
-import { RedisCacheProvider } from '@/providers/RedisCacheProvider';
+import { BcryptPasswordHasher } from '@/providers/passwordHasher';
+import { ITokenProvider } from '@/providers/interfaces/tokenProvider.interface';
+import { JwtTokenProvider } from '@/providers/tokenProvider';
+import { ICacheProvider } from '@/providers/interfaces/cacheProvider.interface';
+import { RedisCacheProvider } from '@/providers/redisCacheProvider';
+import { IAuthService } from '@/services/interfaces/auth.service.interface';
+import { AuthService } from '@/services/auth.service';
+import { IProfileService } from '@/services/interfaces/profile.service.interface';
+import { ProfileService } from '@/services/profile.service';
 
 const container = new Container();
 
@@ -29,6 +33,11 @@ container.bind<ICacheProvider>(TYPES.ICacheProvider).to(RedisCacheProvider).inSi
  */
 container.bind<IUserRepo>(TYPES.IUserRepo).to(UserRepo).inSingletonScope();
 
-
+/**
+ * Services
+ */
+container.bind<IAuthService>(TYPES.IAuthService).to(AuthService).inSingletonScope();
+container.bind<IProfileService>(TYPES.IProfileService).to(ProfileService).inSingletonScope();
 
 export default container;
+

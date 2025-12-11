@@ -1,9 +1,6 @@
 export interface CustomJwtPayload {
     userId : string;
-    username? : string;
+    name : string;
     email : string;
     role : string;
-    tokenId : string;
-    exp : number;
-    iat : number;
 }

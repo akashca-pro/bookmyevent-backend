@@ -7,7 +7,7 @@ import logger from "@/utils/pinoLogger";
 import { SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { IPasswordHasher } from "@/providers/interfaces/passwordHasher.interface";
 import { ITokenPayLoad } from "@/types/token.type";
-import { ITokenProvider } from "@/providers/interfaces/TokenProvider.interface";
+import { ITokenProvider } from "@/providers/interfaces/tokenProvider.interface";
 import { SignupRequestDTO, SignupResponseDTO } from "@/dtos/auth/signup.dto";
 import { LoginRequestDTO, LoginResponseDTO } from "@/dtos/auth/login.dto";
 
