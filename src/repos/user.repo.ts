@@ -89,6 +89,7 @@ export class UserRepo extends BaseRepo<IUser> implements IUserRepo{
             logger.debug(`[REPO] Executing ${operation}`, { id });
             const result = await this._model.findByIdAndUpdate(id, { isArchived: true },{ new : false });
             const updated = !!result;
+            logger.info(`[REPO] ${operation} successful`, { updated, id, duration: Date.now() - startTime })
             return updated
         }catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });

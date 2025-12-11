@@ -3,24 +3,24 @@
  *
  * @interface
  */
-export interface PaginationDTO {
+export interface PaginationDTO<T> {
   /**
    * The body of the response, representing the paginated data.
    */
-  body: any[]
+  body: T[]
 
   /**
-   * The total number of pages.
+   * The total number of all items.
    */
-  totalPages: number
+  total: number
 
   /**
    * The current page number.
    */
-  currentPage: number
+  page: number
 
   /**
-   * The total items overall
+   * The limit
    */
-  totalItems: number
+  limit: number
 }
