@@ -48,19 +48,17 @@ export class ProfileService implements IProfileService {
             }
         }
         logger.info(`[PROFILE-SERVICE] ${method} data fetched from db`);
-        await this.#_cacheProvider.set(cacheKey, {
+        const response : ProfileResponseDTO = {
             id : user._id!,
             name : user.name,
             email : user.email,
-            avatar : user.avatar
-        }, config.PROFILE_CACHE_EXPIRY)
+            avatar : user.avatar ?? null,
+            createdAt : user.createdAt,
+            updatedAt : user.updatedAt,
+        }
+        await this.#_cacheProvider.set(cacheKey, response, config.PROFILE_CACHE_EXPIRY)
         return {
-            data : {
-                id : user._id!,
-                name : user.name,
-                email : user.email,
-                avatar : user.avatar ?? null
-            },
+            data : response,
             success : true
         }
     }
