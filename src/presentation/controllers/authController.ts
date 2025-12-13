@@ -11,6 +11,7 @@ import ms from "ms";
 import { NextFunction, Request, Response } from "express";
 import { AuthMapper } from "@/dtos/auth/AuthMapper.dto";
 import { USER_ROLE } from "@/const/userRoles.const";
+import { errorStatusCodeMapper } from "@/utils/statusCodeMapper";
 
 const authService = container.get<IAuthService>(TYPES.IAuthService);
 
@@ -23,8 +24,12 @@ export const authController = {
             const serviceData = AuthMapper.toSignupService(input);
             const response = await authService.signup(serviceData);
             if(!response.success){
-                req.log.info({ error : response.errorMessage },'Signup failed')
-                return ResponseHandler.error(res, response.errorMessage, HTTP_STATUS.BAD_REQUEST);
+                req.log.error({ error : response.errorMessage },'Signup failed')
+                return ResponseHandler.error(
+                    res,
+                    response.errorMessage, 
+                    errorStatusCodeMapper(response.errorMessage!)
+                );
             }
             req.log.info({ email: req.validated?.body.email },'Signup successfull');
             setCookie(res, APP_LABELS.ACCESS_TOKEN, response.data?.accessToken!, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
@@ -42,8 +47,12 @@ export const authController = {
             const serviceData = AuthMapper.toLoginService(input, USER_ROLE.USER);
             const response = await authService.login(serviceData);
             if(!response.success){
-                req.log.info({ error : response.errorMessage },'User Login failed')
-                return ResponseHandler.error(res, response.errorMessage, HTTP_STATUS.BAD_REQUEST);
+                req.log.error({ error : response.errorMessage },'User Login failed')
+                return ResponseHandler.error(
+                    res, 
+                    response.errorMessage, 
+                    errorStatusCodeMapper(response.errorMessage!)
+                );
             }
             req.log.info({ email: req.validated?.body.email },'User Login successfull');
             setCookie(res, APP_LABELS.ACCESS_TOKEN, response.data?.accessToken!, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);
@@ -61,8 +70,12 @@ export const authController = {
             const serviceData = AuthMapper.toLoginService(input, USER_ROLE.ADMIN);
             const response = await authService.login(serviceData);
             if(!response.success){
-                req.log.info({ error : response.errorMessage },'Admin Login failed')
-                return ResponseHandler.error(res, response.errorMessage, HTTP_STATUS.BAD_REQUEST);
+                req.log.error({ error : response.errorMessage },'Admin Login failed')
+                return ResponseHandler.error(
+                    res, 
+                    response.errorMessage, 
+                    errorStatusCodeMapper(response.errorMessage!)
+                );
             }
             req.log.info({ email: req.validated?.body.email },'Admin Login successfull');
             setCookie(res, APP_LABELS.ACCESS_TOKEN, response.data?.accessToken!, config.JWT_ACCESS_TOKEN_EXPIRY as ms.StringValue);

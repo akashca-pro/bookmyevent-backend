@@ -3,7 +3,6 @@ import { Document, Types } from "mongoose";
 export interface ILocation {
     address : string,
     city : string;
-    state : string;
     pincode : string;
 }
 

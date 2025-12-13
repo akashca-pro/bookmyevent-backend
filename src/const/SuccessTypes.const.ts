@@ -6,3 +6,17 @@ export const AUTH_SUCCESS_MESSAGES = {
 export const PROFILE_SUCCESS_MESSAGES = {
     PROFILE_FETCHED : 'Profile fetched successfully'
 } as const
+
+export const SERVICE_SUCCESS_MESSAGES = {
+    SERVICE_CREATED : 'Service created successfully',
+    SERVICE_UPDATED : 'Service updated successfully',
+    SERVICE_ARCHIVED : 'Service archived successfully',
+    SERVICE_FETCHED : 'Service fetched successfully',
+    SERVICES_FETCHED : 'Services fetched successfully'
+} as const
+
+export const BOOKING_SUCCESS_MESSAGES = {
+    BOOKING_CREATED : 'Booking created successfully',
+    BOOKING_CANCELLED : 'Booking cancelled successfully',
+    BOOKING_UPDATED : 'Booking updated successfully'
+} as const
