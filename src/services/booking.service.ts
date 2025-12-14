@@ -17,6 +17,7 @@ import { CancelBookingRequestDTO } from "@/dtos/booking/cancelBooking.dto";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { config } from "@/config";
+import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
 
 
 @injectable()
@@ -207,12 +208,11 @@ export class BookingService implements IBookingService {
     }
 
     async checkAvailability(
-        serviceId: string, 
-        startDate: Date, 
-        endDate: Date
+        req : CheckAvailabilityRequestDTO
     ): Promise<ResponseDTO<null>> {
         const method = 'BookingService.checkAvailability'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
+        const { serviceId, startDate, endDate } = req;
         const service = await this.#_serviceRepo.getServiceById(serviceId);
         if(!service || service.isArchived){
             logger.error(`[BOOKING-SERVICE] ${method} service not found`);

@@ -22,6 +22,8 @@ import { IBookingRepo } from '@/repos/interfaces/booking.repo.interface';
 import { BookingRepo } from '@/repos/booking.repo';
 import { IServiceService } from '@/services/interfaces/service.service.interface';
 import { ServiceService } from '@/services/service.service';
+import { IBookingService } from '@/services/interfaces/booking.service.interface';
+import { BookingService } from '@/services/booking.service';
 
 const container = new Container();
 
@@ -47,6 +49,7 @@ container.bind<IBookingRepo>(TYPES.IBookingRepo).to(BookingRepo).inSingletonScop
 container.bind<IAuthService>(TYPES.IAuthService).to(AuthService).inSingletonScope();
 container.bind<IProfileService>(TYPES.IProfileService).to(ProfileService).inSingletonScope();
 container.bind<IServiceService>(TYPES.IServiceService).to(ServiceService).inSingletonScope();
+container.bind<IBookingService>(TYPES.IBookingService).to(BookingService).inSingletonScope();
 
 
 

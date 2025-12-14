@@ -18,5 +18,8 @@ export const SERVICE_SUCCESS_MESSAGES = {
 export const BOOKING_SUCCESS_MESSAGES = {
     BOOKING_CREATED : 'Booking created successfully',
     BOOKING_CANCELLED : 'Booking cancelled successfully',
-    BOOKING_UPDATED : 'Booking updated successfully'
+    BOOKING_UPDATED : 'Booking updated successfully',
+    BOOKING_FETCHED : 'Booking fetched successfully',
+    BOOKINGS_FETCHED : 'Bookings fetched successfully',
+    AVAILABILITY_CHECKED : 'Availability checked successfully',
 } as const

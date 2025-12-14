@@ -1,5 +1,6 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
 import { CancelBookingRequestDTO } from "@/dtos/booking/cancelBooking.dto";
+import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
 import { CreateBookingRequestDTO } from "@/dtos/booking/createBooking.dto";
 import { GetServiceBookingsRequestDTO } from "@/dtos/booking/getServiceBookings.dto";
 import { GetUserBookingRequestDTO } from "@/dtos/booking/getUserBookings.dto";
@@ -32,8 +33,6 @@ export interface IBookingService {
 
     // Check if booking can be made
     checkAvailability(
-        serviceId: string,
-        startDate: Date,
-        endDate: Date
+        req : CheckAvailabilityRequestDTO
     ): Promise<ResponseDTO<null>>;
 }
