@@ -59,17 +59,30 @@ export const UpdateServiceSchema = z.object({
     ),
 })
 
-export const GetServicesSchema = z.object({
+export const GetServicesQuerySchema = z.object({
   page: z.coerce
     .number( "Page must be a number")
     .int()
     .min(1, "Page must be at least 1")
     .default(1),
-  filter : ServieFilterSchema.optional(),
-  options : ListOptionsSchema
+  category: StrictString().optional(),
+  minPrice: z.coerce.number('Min price must be a number').int().optional(),
+  maxPrice: z.coerce.number('Max price must be a number').int().optional(),
+  city: StrictString().optional(),
+  adminId: z.string().optional(),
+  limit: z.coerce
+  .number('Limit must be a number')
+  .int(),
+  skip: z.coerce
+  .number('Skip must be a number')
+  .int(),
+  sort : z
+  .string()
+  .trim()
+  .optional(),
 })
 
-export const GetAvailableServicesSchema = z.object({
+export const GetAvailableServicesQuerySchema = z.object({
     startDate : z.coerce
     .date('Start date is required')
     .refine((d) => !isNaN(d.getTime()), "Start date must be a valid date"),
@@ -81,7 +94,19 @@ export const GetAvailableServicesSchema = z.object({
       .int()
       .min(1, "Page must be at least 1")
       .default(1),
-
-    filter : ServieFilterSchema.optional(),
-    options : ListOptionsSchema
+    category: StrictString().optional(),
+    minPrice: z.coerce.number('Min price must be a number').int().optional(),
+    maxPrice: z.coerce.number('Max price must be a number').int().optional(),
+    city: StrictString().optional(),
+    adminId: z.string().optional(),
+    limit: z.coerce
+    .number('Limit must be a number')
+    .int(),
+    skip: z.coerce
+    .number('Skip must be a number')
+    .int(),
+    sort : z
+    .string()
+    .trim()
+    .optional(),
 })
