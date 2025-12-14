@@ -4,9 +4,9 @@ import { CreateBookingRequestDTO } from "./createBooking.dto";
 import { GetUserBookingRequestDTO } from "./getUserBookings.dto";
 
 export class BookingMapper{
-    static toCreateBookingRequestDTO(input : any) : CreateBookingRequestDTO {
+    static toCreateBookingRequestDTO(input : any, userId : string) : CreateBookingRequestDTO {
         return {
-            userId : input.userId,
+            userId : userId,
             serviceId : input.serviceId,
             startDate : input.startDate,
             endDate : input.endDate
@@ -16,13 +16,17 @@ export class BookingMapper{
         return {
             userId : input.userId,
             page : input.page,
-            options : input.options
+            options : {
+                limit : input.limit,
+                skip : input.skip,
+                sort : input.sort
+            }
         }
     }
-    static toCancelBookingRequestDTO(input : any) : CancelBookingRequestDTO {
+    static toCancelBookingRequestDTO(input : any, userId : string) : CancelBookingRequestDTO {
         return {
             bookingId : input.bookingId,
-            userId : input.userId
+            userId : userId
         }
     }
     static toCheckAvailabilityRequestDTO(input : any) : CheckAvailabilityRequestDTO {

@@ -15,7 +15,7 @@ export const bookingController = {
         try {
             req.log.info('Create booking request received');
             const input = req.validated?.body;
-            const bookingData = BookingMapper.toCreateBookingRequestDTO(input);
+            const bookingData = BookingMapper.toCreateBookingRequestDTO(input, req.userId!);
             const response = await bookingService.createBooking(bookingData);
             if(!response.success){
                 req.log.error('Create booking request failed');
@@ -85,7 +85,7 @@ export const bookingController = {
         try {
             req.log.info('Cancel booking request received');
             const input = req.validated?.params;
-            const bookingData = BookingMapper.toCancelBookingRequestDTO(input);
+            const bookingData = BookingMapper.toCancelBookingRequestDTO(input, req.userId!);
             const response = await bookingService.cancelBooking(bookingData);
             if(!response.success){
                 req.log.error('Cancel booking request failed');
@@ -110,7 +110,7 @@ export const bookingController = {
     checkAvailability : async (req : Request, res : Response, next : NextFunction) => {
         try {
             req.log.info('Check availability request received');
-            const input = req.validated?.body;
+            const input = req.validated?.query;
             const bookingData = BookingMapper.toCheckAvailabilityRequestDTO(input);
             const response = await bookingService.checkAvailability(bookingData);
             if(!response.success){
