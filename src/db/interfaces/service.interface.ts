@@ -23,7 +23,7 @@ export interface IService extends Document {
     category : string;
     pricePerDay : number;
     description : string;
-    thumbnailUrl : string | null;
+    thumbnail : string | null;
     location : ILocation;
     availability : IAvailability;
     contact : IContact;

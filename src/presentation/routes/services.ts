@@ -178,8 +178,8 @@ serviceRouter.post(
  */
 serviceRouter.patch(
   '/:serviceId/update',
-  upload.single("avatar"),
-  validateFile({ fieldName : 'avatar' }),
+  upload.single("thumbnail"),
+  validateFile({ fieldName : 'thumbnail' }),
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
   controller.updateSerice
 );

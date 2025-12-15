@@ -10,8 +10,10 @@ export interface GetAvailableServicesRequestDTO {
 }
 
 export interface GetAvailableServicesResponseDTO {
-    title : string;
-    category : string;
-    pricePerDay : number;
-    thumbnailUrl : string | null;
+  id: string;
+  title: string;
+  category: string;
+  pricePerDay: number;
+  thumbnail: string | null;
+  city: string;
 }

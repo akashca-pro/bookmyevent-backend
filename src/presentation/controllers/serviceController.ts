@@ -43,7 +43,7 @@ export const serviceController = {
             const input = req.validated?.body;
             const { serviceId } = req.validated?.params;
             const thumbnailFile = req.file;
-            let thumbnailUrl = null;
+            let thumbnail = null;
             if(thumbnailFile){
                 req.log.info(`${serviceId} Uploading thumbnail to cloudinary`);
                 const result = await uploadServiceImageBuffer(
@@ -51,10 +51,10 @@ export const serviceController = {
                     serviceId, 
                     'thumbnail'
                 );
-                thumbnailUrl = result.public_id;
+                thumbnail = result.public_id;
                 req.log.info(`${serviceId} Thumbnail uploaded to cloudinary`);
             }
-            const serviceData = ServiceMapper.toUpdateServiceRequestDTO(serviceId, input, thumbnailUrl);
+            const serviceData = ServiceMapper.toUpdateServiceRequestDTO(serviceId, input, thumbnail);
             const response = await serviceService.updateService(serviceData);
             if(!response.success){
                 req.log.error({ error : response.errorMessage },'Update service request failed');

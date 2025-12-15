@@ -246,6 +246,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
 
             const query: any = {
                 isArchived: false,
+                isActive : true,
                 _id: { $nin: bookedServiceIds },
                 "availability.from": { $lte: endDate },
                 "availability.to": { $gte: startDate }

@@ -23,7 +23,7 @@ export class ServiceMapper {
             }
         }
     }
-    static toUpdateServiceRequestDTO(serviceId : string, input : any, thumbnailUrl : string | null) : UpdateServiceRequestDTO {
+    static toUpdateServiceRequestDTO(serviceId : string, input : any, thumbnail : string | null) : UpdateServiceRequestDTO {
         return {
             id : serviceId,
             data : {
@@ -31,7 +31,7 @@ export class ServiceMapper {
                 description : input.description ?? undefined,
                 category : input.category ?? undefined,
                 pricePerDay : input.pricePerDay ?? undefined,
-                thumbnailUrl : thumbnailUrl ?? undefined,
+                thumbnail : thumbnail ?? undefined,
                 location : input.location ?? undefined,
                 availability : input.availability ?? undefined,
                 contact : input.contact ?? undefined,
@@ -90,10 +90,12 @@ export class ServiceMapper {
     static toGetAvailableServicesResponseDTO(services : IService[]) : GetAvailableServicesResponseDTO[] {
         const response : GetAvailableServicesResponseDTO[] = services.map((service)=>{
             return {
+                id : service._id!,
                 title : service.title,
                 category : service.category,
                 pricePerDay : service.pricePerDay,
-                thumbnailUrl : service.thumbnailUrl,
+                thumbnail : service.thumbnail,
+                city : service.location.city
             }
         });
         return response;

@@ -33,7 +33,7 @@ const ServiceSchema = new Schema<IService>(
         description : { type : String, required : true },
         category : { type : String, required : true },
         pricePerDay : { type : Number, required : true },
-        thumbnailUrl : { type : String, default : null },
+        thumbnail : { type : String, default : null },
         isActive : { type : Boolean, default : false },
         location : { type : LocationSchema, required : true },
         isArchived : { type : Boolean, default : false },

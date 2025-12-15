@@ -7,7 +7,7 @@ export interface UpdateServiceRequestDTO {
         description? : string;
         category? : string;
         pricePerDay? : number;
-        thumbnailUrl? : string;
+        thumbnail? : string;
         location? : ILocation;
         availability? : IAvailability;
         isArchived? : boolean;
