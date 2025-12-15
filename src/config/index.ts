@@ -12,6 +12,8 @@ interface Config  {
     PROFILE_CACHE_EXPIRY : number;
     SERVICE_CACHE_EXPIRY : number;
     BOOKING_CACHE_EXPIRY : number;
+    SWAGGER_URL_DEV : string;
+    SWAGGER_URL_PROD : string;
 }
 
 export const config : Config = {
@@ -25,4 +27,6 @@ export const config : Config = {
     PROFILE_CACHE_EXPIRY : Number(process.env.PROFILE_CACHE_EXPIRY),
     SERVICE_CACHE_EXPIRY : Number(process.env.SERVICE_CACHE_EXPIRY),
     BOOKING_CACHE_EXPIRY : Number(process.env.BOOKING_CACHE_EXPIRY),
+    SWAGGER_URL_DEV : process.env.SWAGGER_URL!,
+    SWAGGER_URL_PROD : process.env.SWAGGER_URL!,
 }

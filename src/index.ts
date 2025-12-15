@@ -11,6 +11,8 @@ import { profileRouter } from '@/presentation/routes/profile';
 import { serviceRouter } from '@/presentation/routes/services';
 import { bookingRouter } from '@/presentation/routes/bookings';
 import { connectDB } from '@/config/db';
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 
 const app = express();
 app.use(httpLogger);
@@ -33,6 +35,12 @@ app.get('/health', (req : Request, res : Response)=>{
     return res.status(200).json({ status : 'OK' });
 })
 
+// To exports full api details in json.
+app.get("/bookmyevent-openapi.json", (req, res) => {
+  res.json(swaggerSpec);
+});
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // swagger api doc endpoint.
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/services', serviceRouter);

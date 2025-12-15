@@ -1,5 +1,5 @@
 import {  z } from 'zod';
-import { AvailabilitySchema, ContactSchema, ListOptionsSchema, LocationSchema, ServieFilterSchema, StrictString } from './helpers.schema';
+import { AvailabilitySchema, ContactSchema, LocationSchema, StrictString } from './helpers.schema';
 
 export const CreateServiceSchema = z.object({
     title : StrictString('Title')
