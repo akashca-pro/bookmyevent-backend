@@ -17,5 +17,7 @@ export interface GetBookingsByServiceResponseDTO {
         endDate : Date;
         totalPrice : number;
         status : string;
+        createdAt : Date;
+        updatedAt : Date;
     }
 }

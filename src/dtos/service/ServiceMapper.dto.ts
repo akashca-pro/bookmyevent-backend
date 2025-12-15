@@ -1,11 +1,12 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
 import { ArchiveServiceRequestDTO } from "./archiveService.dto";
 import { CreateServiceRequestDTO } from "./createService.dto";
-import { GetAvailableServicesRequestDTO } from "./getAvailableServices.dto";
+import { GetAvailableServicesRequestDTO, GetAvailableServicesResponseDTO } from "./getAvailableServices.dto";
 import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "./getBookingsByServices.dto";
 import { GetServicesRequestDTO } from "./getServices.dto";
 import { UpdateServiceRequestDTO } from "./updateService.dto";
 import { IUser } from "@/db/interfaces/user.interface";
+import { IService } from "@/db/interfaces/service.interface";
 
 export class ServiceMapper {
     static toCreateServiceRequestDTO(adminId : string, input : any) : CreateServiceRequestDTO {
@@ -86,6 +87,17 @@ export class ServiceMapper {
             }
         }
     }
+    static toGetAvailableServicesResponseDTO(services : IService[]) : GetAvailableServicesResponseDTO[] {
+        const response : GetAvailableServicesResponseDTO[] = services.map((service)=>{
+            return {
+                title : service.title,
+                category : service.category,
+                pricePerDay : service.pricePerDay,
+                thumbnailUrl : service.thumbnailUrl,
+            }
+        });
+        return response;
+    }
     static toGetBookingsByServiceRequestDTO(input : any) : GetBookingByServiceRequestDTO {
         return {
             serviceId : input.serviceId,
@@ -106,7 +118,9 @@ export class ServiceMapper {
                     startDate : booking.startDate,
                     endDate : booking.endDate,
                     totalPrice : booking.totalPrice,
-                    status : booking.status
+                    status : booking.status,
+                    createdAt : booking.createdAt,
+                    updatedAt : booking.updatedAt
                 }
             }
         });

@@ -34,7 +34,9 @@ export class BookingMapper{
                     startDate : booking.startDate,
                     endDate : booking.endDate,
                     totalPrice : booking.totalPrice,
-                    status : booking.status
+                    status : booking.status,
+                    createdAt : booking.createdAt,
+                    updatedAt : booking.updatedAt
                 }
             }
         });

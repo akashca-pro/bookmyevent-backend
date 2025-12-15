@@ -8,3 +8,10 @@ export interface GetAvailableServicesRequestDTO {
     page : number;
     options : ListOptions
 }
+
+export interface GetAvailableServicesResponseDTO {
+    title : string;
+    category : string;
+    pricePerDay : number;
+    thumbnailUrl : string | null;
+}

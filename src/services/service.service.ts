@@ -13,7 +13,7 @@ import { ArchiveServiceRequestDTO } from "@/dtos/service/archiveService.dto";
 import { IService } from "@/db/interfaces/service.interface";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { GetServicesRequestDTO } from "@/dtos/service/getServices.dto";
-import { GetAvailableServicesRequestDTO } from "@/dtos/service/getAvailableServices.dto";
+import { GetAvailableServicesRequestDTO, GetAvailableServicesResponseDTO } from "@/dtos/service/getAvailableServices.dto";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { config } from "@/config";
@@ -208,7 +208,7 @@ export class ServiceService implements IServiceService {
 
     async getAvailableServices(
         req: GetAvailableServicesRequestDTO
-    ): Promise<PaginationDTO<IService>> {
+    ): Promise<PaginationDTO<GetAvailableServicesResponseDTO>> {
         const method = 'ServiceService.getAvailableServices';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const bookedServiceIds = await this.#_bookingRepo.getBookedServiceIdsInRange(req.startDate, req.endDate);
