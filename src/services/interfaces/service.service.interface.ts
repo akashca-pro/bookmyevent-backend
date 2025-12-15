@@ -4,6 +4,7 @@ import { ResponseDTO } from "@/dtos/Response.dto";
 import { ArchiveServiceRequestDTO } from "@/dtos/service/archiveService.dto";
 import { CreateServiceRequestDTO } from "@/dtos/service/createService.dto";
 import { GetAvailableServicesRequestDTO } from "@/dtos/service/getAvailableServices.dto";
+import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "@/dtos/service/getBookingsByServices.dto";
 import { GetServicesRequestDTO } from "@/dtos/service/getServices.dto";
 import { UpdateServiceRequestDTO } from "@/dtos/service/updateService.dto";
 
@@ -32,4 +33,8 @@ export interface IServiceService {
     getAvailableServices(
         req : GetAvailableServicesRequestDTO
     ) : Promise<PaginationDTO<IService>>
+
+    getBookingsByService(
+        req : GetBookingByServiceRequestDTO
+    ) : Promise<PaginationDTO<GetBookingsByServiceResponseDTO>>
 }

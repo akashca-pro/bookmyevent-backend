@@ -1,4 +1,5 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
+import { IUser } from "@/db/interfaces/user.interface";
 import { ListOptions } from "@/dtos/Listoptions.dto";
 
 export interface IBookingRepo {
@@ -18,7 +19,7 @@ export interface IBookingRepo {
     getBookingsByService(
         serviceId: string,
         options?: ListOptions,
-    ): Promise<IBooking[]>;
+    ): Promise<(IBooking & { userId : IUser })[]>;
 
     // Booking conflict detection.
     getConflictingBookings(

@@ -4,6 +4,7 @@ import { IBookingRepo } from "./interfaces/booking.repo.interface";
 import logger from "@/utils/pinoLogger";
 import { BaseRepo } from "./base.repo";
 import { ListOptions } from "@/dtos/Listoptions.dto";
+import { IUser } from "@/db/interfaces/user.interface";
 
 export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     constructor(){
@@ -94,15 +95,19 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
 
     async getBookingsByService(
         serviceId: string, 
-        options: ListOptions = { skip: 0, limit: 10, sort: { createdAt: -1 } }
-    ): Promise<IBooking[]> {
+        options: ListOptions
+    ): Promise<(IBooking & { userId : IUser })[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByService';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ serviceId }).skip(options.skip).limit(options.limit).sort(options.sort);
+            const result = await this._model.find({ serviceId })
+            .skip(options.skip)
+            .limit(options.limit)
+            .sort(options.sort)
+            .populate('userId', 'name email avatar');
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime});
-            return result;
+            return result as (IBooking & { userId: IUser })[];
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
             throw error;

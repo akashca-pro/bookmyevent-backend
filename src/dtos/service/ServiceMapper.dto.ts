@@ -1,6 +1,7 @@
 import { ArchiveServiceRequestDTO } from "./archiveService.dto";
 import { CreateServiceRequestDTO } from "./createService.dto";
 import { GetAvailableServicesRequestDTO } from "./getAvailableServices.dto";
+import { GetBookingByServiceRequestDTO } from "./getBookingsByServices.dto";
 import { GetServicesRequestDTO } from "./getServices.dto";
 import { UpdateServiceRequestDTO } from "./updateService.dto";
 
@@ -42,7 +43,7 @@ export class ServiceMapper {
     }
     static toGetServicesRequestDTO(input : any) : GetServicesRequestDTO{
         return {
-            page : input.page,
+            page : input.page ?? 1,
             filter : {
                 category : input.filter?.category,
                 minPrice : input.filter?.minPrice,
@@ -51,9 +52,9 @@ export class ServiceMapper {
                 adminId : input.filter?.adminId
             },
             options : {
-                limit : input.options?.limit,
-                skip : input.options?.skip,
-                sort : input.options?.sort
+                limit : input.limit ?? 10,
+                skip : input.skip ?? 0,
+                sort : input.sort ?? { createdAt : -1 }
             }
         }
     }
@@ -68,11 +69,22 @@ export class ServiceMapper {
                 city : input.filter?.city,
                 adminId : input.filter?.adminId
             },
-            page : input.page,
+            page : input.page ?? 1,
             options : {
-                limit : input.options?.limit,
-                skip : input.options?.skip,
-                sort : input.options?.sort
+                limit : input.limit ?? 10,
+                skip : input.skip ?? 0,
+                sort : input.sort ?? { createdAt : -1 }
+            }
+        }
+    }
+    static toGetBookingsByServiceRequestDTO(input : any) : GetBookingByServiceRequestDTO {
+        return {
+            serviceId : input.serviceId,
+            page : input.page ?? 1,
+            options : {
+                limit : input.limit ?? 10,
+                skip : input.skip ?? 0,
+                sort : input.sort ?? { createdAt : -1 }
             }
         }
     }

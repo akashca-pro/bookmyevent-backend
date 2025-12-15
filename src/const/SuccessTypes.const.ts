@@ -12,7 +12,8 @@ export const SERVICE_SUCCESS_MESSAGES = {
     SERVICE_UPDATED : 'Service updated successfully',
     SERVICE_ARCHIVED : 'Service archived successfully',
     SERVICE_FETCHED : 'Service fetched successfully',
-    SERVICES_FETCHED : 'Services fetched successfully'
+    SERVICES_FETCHED : 'Services fetched successfully',
+    BOOKINGS_BY_SERVICE_FETCHED : 'Bookings by service fetched successfully',
 } as const
 
 export const BOOKING_SUCCESS_MESSAGES = {

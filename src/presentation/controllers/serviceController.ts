@@ -151,5 +151,24 @@ export const serviceController = {
             req.log.error(error);
             next(error);
         }
+    },
+
+    getBookingsByService : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            req.log.info('Get bookings by service request received');
+            const input = req.validated?.query;
+            const bookingData = ServiceMapper.toGetBookingsByServiceRequestDTO(input);
+            const response = await serviceService.getBookingsByService(bookingData);
+            req.log.info('Get bookings by service request successfull');
+            return ResponseHandler.success(
+                res,
+                SERVICE_SUCCESS_MESSAGES.BOOKINGS_BY_SERVICE_FETCHED,
+                HTTP_STATUS.OK,
+                response
+            );
+        } catch (error) {
+            req.log.error(error);
+            next(error);
+        }
     }
 }

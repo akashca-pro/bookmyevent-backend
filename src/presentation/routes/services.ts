@@ -8,6 +8,14 @@ import { authenticate, authorizeRole } from '../middlewares/jwt';
 export const serviceRouter = express.Router();
 
 serviceRouter.use(authenticate);
+
+// get all available services within specific date range.
+serviceRouter.get(
+    '/available',
+    validateRequest(GetAvailableServicesQuerySchema, APP_LABELS.QUERY),
+    controller.getAvailableServices
+)
+
 serviceRouter.use(authorizeRole(APP_LABELS.ADMIN));
 
 // create new service
@@ -45,10 +53,8 @@ serviceRouter.get(
     controller.getServices
 );
 
-// get all available services within specific date range.
 serviceRouter.get(
-    '/available',
-    validateRequest(GetAvailableServicesQuerySchema, APP_LABELS.QUERY),
-    controller.getAvailableServices
+    '/:serviceId/bookings',
+    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+    validateRequest()
 )
-

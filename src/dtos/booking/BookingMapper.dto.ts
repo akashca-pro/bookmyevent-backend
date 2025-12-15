@@ -15,11 +15,11 @@ export class BookingMapper{
     static toGetUserBookingRequestDTO(input : any) : GetUserBookingRequestDTO {
         return {
             userId : input.userId,
-            page : input.page,
+            page : input.page ?? 1,
             options : {
-                limit : input.limit,
-                skip : input.skip,
-                sort : input.sort
+                limit : input.limit ?? 10,
+                skip : input.skip ?? 0,
+                sort : input.sort ?? { createdAt : -1 }
             }
         }
     }

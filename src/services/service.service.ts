@@ -17,6 +17,7 @@ import { GetAvailableServicesRequestDTO } from "@/dtos/service/getAvailableServi
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { config } from "@/config";
+import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "@/dtos/service/getBookingsByServices.dto";
 
 @injectable()
 export class ServiceService implements IServiceService {
@@ -200,6 +201,47 @@ export class ServiceService implements IServiceService {
             total : count,
             page : req.page,
             limit : req.options.limit
+        }
+    }
+
+    async getBookingsByService(
+        req : GetBookingByServiceRequestDTO
+    ): Promise<PaginationDTO<GetBookingsByServiceResponseDTO>> {
+        const method = 'ServiceService.getBookingsByService';
+        logger.info(`[SERVICE-SERVICE] ${method} started`);
+        const { serviceId, page, options} = req;
+        const serviceExists = await this.#_serviceRepo.exists(serviceId);
+        if (!serviceExists) {
+            logger.error(`[SERVICE-SERVICE] ${method} service not found`);
+            return {
+                data: [],
+                total: 0,
+                page,
+                limit : options.limit
+            };
+        }
+        const [bookings, total] = await Promise.all([
+            this.#_bookingRepo.getBookingsByService(serviceId, { ...options, skip: (page - 1) * options.limit }),
+            this.#_bookingRepo.countBookingsByService(serviceId)
+        ]);
+        const response : GetBookingsByServiceResponseDTO[] = bookings.map((booking)=>{
+            const user = booking.userId as { name : string, email : string, avatar : string | null };
+            return {
+                user,
+                bookingDetails : {
+                    startDate : booking.startDate,
+                    endDate : booking.endDate,
+                    totalPrice : booking.totalPrice,
+                    status : booking.status
+                }
+            }
+        });
+        logger.info(`[SERVICE-SERVICE] ${method} bookings fetched`);
+        return {
+            data : response,
+            total,
+            page,
+            limit : options.limit
         }
     }
 }

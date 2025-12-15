@@ -73,9 +73,6 @@ export const GetServicesQuerySchema = z.object({
   limit: z.coerce
   .number('Limit must be a number')
   .int(),
-  skip: z.coerce
-  .number('Skip must be a number')
-  .int(),
   sort : z
   .string()
   .trim()
@@ -102,11 +99,24 @@ export const GetAvailableServicesQuerySchema = z.object({
     limit: z.coerce
     .number('Limit must be a number')
     .int(),
-    skip: z.coerce
-    .number('Skip must be a number')
-    .int(),
     sort : z
     .string()
     .trim()
     .optional(),
+})
+
+export const GetBookingsByServicesQuerySchema = z.object({
+  page: z.coerce
+  .number( "Page must be a number")
+  .int()
+  .min(1, "Page must be at least 1")
+  .optional(),
+  limit: z.coerce
+  .number('Limit must be a number')
+  .int()
+  .optional(),
+  sort : z
+  .string()
+  .trim()
+  .optional(),
 })

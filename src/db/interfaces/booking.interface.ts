@@ -7,7 +7,7 @@ export interface IBooking extends Document {
     serviceId : Types.ObjectId;
     startDate : Date;
     endDate : Date;
-    totalPrice : Number;
+    totalPrice : number;
     status : BookingStatus;
     createdAt : Date;
     updatedAt : Date;
