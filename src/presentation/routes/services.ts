@@ -14,8 +14,7 @@ export const serviceRouter = express.Router();
  *     summary: Get available services within date range
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
+ *     security: []
  *     parameters:
  *       - in: query
  *         name: startDate
@@ -68,8 +67,7 @@ serviceRouter.get(
  *     summary: Get service details
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
+ *     security: []
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -100,8 +98,6 @@ serviceRouter.use(authorizeRole(APP_LABELS.ADMIN));
  *     summary: Create a new service
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -127,8 +123,6 @@ serviceRouter.post(
  *     summary: Update service
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -157,8 +151,6 @@ serviceRouter.patch(
  *     summary: Archive service
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -182,8 +174,6 @@ serviceRouter.patch(
  *     summary: Get all services
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -214,8 +204,6 @@ serviceRouter.get(
  *     summary: Get bookings for a service
  *     tags:
  *       - Services
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: serviceId

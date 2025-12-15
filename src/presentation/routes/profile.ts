@@ -13,8 +13,6 @@ profileRouter.use(authenticate);
  *     summary: Get logged-in user profile
  *     tags:
  *       - Profile
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Profile fetched successfully

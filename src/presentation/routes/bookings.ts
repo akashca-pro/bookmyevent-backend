@@ -18,8 +18,6 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
  *     summary: Create booking for a service
  *     tags:
  *       - Bookings
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -52,8 +50,6 @@ bookingRouter.post(
  *     summary: Get booking details
  *     tags:
  *       - Bookings
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: bookingId
@@ -83,8 +79,6 @@ bookingRouter.get(
  *     summary: Get user bookings
  *     tags:
  *       - Bookings
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: query
  *         name: page
@@ -120,8 +114,6 @@ bookingRouter.get(
  *     summary: Cancel a booking
  *     tags:
  *       - Bookings
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: bookingId
@@ -147,8 +139,6 @@ bookingRouter.post(
  *     summary: Check service availability for date range
  *     tags:
  *       - Bookings
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: serviceId
