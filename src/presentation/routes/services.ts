@@ -7,8 +7,6 @@ import { authenticate, authorizeRole } from '../middlewares/jwt';
 
 export const serviceRouter = express.Router();
 
-serviceRouter.use(authenticate);
-
 /**
  * @openapi
  * /api/v1/services/available:
@@ -92,6 +90,7 @@ serviceRouter.get(
     controller.getService
 );
 
+serviceRouter.use(authenticate);
 serviceRouter.use(authorizeRole(APP_LABELS.ADMIN));
 
 /**
