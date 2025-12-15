@@ -57,6 +57,16 @@ export const UpdateServiceSchema = z.object({
       },
       z.boolean('isArchived must be boolean').optional()
     ),
+    isActive : z.preprocess(
+      (val) => {
+        if (typeof val === "string") {
+          if (val.toLowerCase() === "false") return false;
+          if (val.toLowerCase() === "true") return true;
+        }
+        return val;
+      },
+      z.boolean('isArchived must be boolean').optional()
+    ),
 })
 
 export const GetServicesQuerySchema = z.object({

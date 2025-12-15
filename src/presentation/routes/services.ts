@@ -1,5 +1,5 @@
 import express from 'express';
-import { validateRequest } from '../middlewares/validateRequest';
+import { validateFile, validateRequest } from '../middlewares/validateRequest';
 import {
   CreateServiceSchema,
   GetAvailableServicesQuerySchema,
@@ -10,6 +10,7 @@ import {
 import { serviceController as controller } from '../controllers/serviceController';
 import { APP_LABELS } from '@/const/labels.const';
 import { authenticate, authorizeRole } from '../middlewares/jwt';
+import { upload } from '@/utils/multer';
 
 export const serviceRouter = express.Router();
 
@@ -154,7 +155,7 @@ serviceRouter.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/CreateServiceRequest'
+ *             $ref: '#/components/schemas/UpdateServiceRequest'
  *     responses:
  *       200:
  *         description: Service updated
@@ -177,6 +178,8 @@ serviceRouter.post(
  */
 serviceRouter.patch(
   '/:serviceId/update',
+  upload.single("avatar"),
+  validateFile({ fieldName : 'avatar' }),
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
   controller.updateSerice
 );

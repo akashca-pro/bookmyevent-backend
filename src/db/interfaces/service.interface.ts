@@ -23,10 +23,12 @@ export interface IService extends Document {
     category : string;
     pricePerDay : number;
     description : string;
+    thumbnailUrl : string | null;
     location : ILocation;
     availability : IAvailability;
     contact : IContact;
     isArchived : boolean;
+    isActive : boolean;
     createdAt : Date;
     updatedAt : Date;
 }

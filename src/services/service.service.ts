@@ -18,6 +18,7 @@ import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { config } from "@/config";
 import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "@/dtos/service/getBookingsByServices.dto";
+import { ServiceMapper } from "@/dtos/service/ServiceMapper.dto";
 
 @injectable()
 export class ServiceService implements IServiceService {
@@ -98,41 +99,62 @@ export class ServiceService implements IServiceService {
     async archiveService(
         req: ArchiveServiceRequestDTO
     ): Promise<ResponseDTO<null>> {
-        const method = 'ServiceService.archiveService'
-        logger.info(`[SERVICE-SERVICE] ${method} started`);
-        const serviceExist = await this.#_serviceRepo.exists(req.id);
-        if(!serviceExist){
+        const method = 'ServiceService.archiveService';
+        logger.info(`[SERVICE-SERVICE] ${method} started`, { serviceId: req.id });
+
+        const service = await this.#_serviceRepo.getServiceById(req.id);
+        if (!service) {
             logger.error(`[SERVICE-SERVICE] ${method} service not found`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
-                success : false
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
+                success: false,
+            };
+        }
+
+        // If trying to archive AND bookings exist → block
+        if (!service.isArchived) {
+            const bookings = await this.#_bookingRepo.getBookingsByService(req.id);
+            if (bookings.length > 0) {
+                logger.error(
+                    `[SERVICE-SERVICE] ${method} cannot archive, bookings exist`,
+                    { serviceId: req.id, bookingsCount: bookings.length }
+                );
+                return {
+                    data: null,
+                    errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_HAS_BOOKINGS,
+                    success: false,
+                };
             }
         }
-        const getAllBookings = await this.#_bookingRepo.getBookingsByService(req.id);
-        if(getAllBookings.length > 0){
-            logger.error(`[SERVICE-SERVICE] ${method} service has bookings`);
+
+        const updated = await this.#_serviceRepo.toggleArchiveStatus(req.id);
+        if (!updated) {
+            logger.error(`[SERVICE-SERVICE] ${method} archive toggle failed`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_HAS_BOOKINGS,
-                success : false
-            }
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_ARCHIVING_FAILED,
+                success: false,
+            };
         }
-        const archived = await this.#_serviceRepo.archieveService(req.id);
-        if(!archived){
-            return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_ARCHIVING_FAILED,
-                success : false
-            }
-        }
+
         await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.SERVICE}${req.id}`);
-        logger.info(`[SERVICE-SERVICE] ${method} service archived`);
+
+        logger.info(
+            `[SERVICE-SERVICE] ${method} success`,
+            {
+                serviceId: req.id,
+                from: service.isArchived,
+                to: !service.isArchived,
+            }
+        );
+
         return {
-            data : null,
-            success : true
-        }
+            data: null,
+            success: true,
+        };
     }
+
 
     async getService(
         id: string
@@ -224,18 +246,7 @@ export class ServiceService implements IServiceService {
             this.#_bookingRepo.getBookingsByService(serviceId, { ...options, skip: (page - 1) * options.limit }),
             this.#_bookingRepo.countBookingsByService(serviceId)
         ]);
-        const response : GetBookingsByServiceResponseDTO[] = bookings.map((booking)=>{
-            const user = booking.userId as { name : string, email : string, avatar : string | null };
-            return {
-                user,
-                bookingDetails : {
-                    startDate : booking.startDate,
-                    endDate : booking.endDate,
-                    totalPrice : booking.totalPrice,
-                    status : booking.status
-                }
-            }
-        });
+        const response = ServiceMapper.toGetBookingsByServiceResponseDTO(bookings);
         logger.info(`[SERVICE-SERVICE] ${method} bookings fetched`);
         return {
             data : response,

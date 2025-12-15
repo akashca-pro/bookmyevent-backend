@@ -79,19 +79,39 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
         }
     }
 
-    async archieveService(
+    async toggleArchiveStatus(
         id: string
     ): Promise<boolean> {
         const startTime = Date.now();
-        const operation = 'archieveService';
+        const operation = 'toggleArchiveStatus';
+
         try {
-            logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.findByIdAndUpdate(id, { isArchived: true });
-            const updated = !!result;
-            logger.info(`[REPO] ${operation} successful`, { updated, id, duration: Date.now() - startTime });
+            logger.debug(`[REPO] Executing ${operation}`, { id });
+            const service = await this._model.findById(id).select('isArchived');
+            if (!service) {
+                logger.warn(`[REPO] ${operation} service not found`, { id });
+                return false;
+            }
+            const nextIsArchived = !service.isArchived;
+            const result = await this._model.updateOne(
+                { _id: id },
+                { $set: { isArchived: nextIsArchived } }
+            );
+            const updated = result.modifiedCount === 1;
+            logger.info(`[REPO] ${operation} successful`, {
+                id,
+                previous: service.isArchived,
+                current: nextIsArchived,
+                updated,
+                duration: Date.now() - startTime,
+            });
             return updated;
         } catch (error) {
-            logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
+            logger.error(`[REPO] ${operation} failed`, {
+                id,
+                error,
+                duration: Date.now() - startTime,
+            });
             throw error;
         }
     }

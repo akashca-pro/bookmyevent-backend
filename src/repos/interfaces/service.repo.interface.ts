@@ -15,7 +15,7 @@ export interface IServiceRepo {
     getServiceById(id : string) : Promise<IService | null>;
     getServiceByTitle(title : string) : Promise<IService | null>;
     updateService(id : string, data : Partial<IService>) : Promise<boolean>;
-    archieveService(id : string) : Promise<boolean>;
+    toggleArchiveStatus(id : string) : Promise<boolean>;
 
     // Admin-level listing (services created by admin)
     getServicesByAdmin(adminId: string, options: ListOptions): Promise<IService[]>;

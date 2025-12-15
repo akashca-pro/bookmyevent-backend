@@ -170,6 +170,8 @@
  *           type: number
  *         description:
  *           type: string
+ *         thumbnailUrl:
+ *           type: string
  *         location:
  *           $ref: '#/components/schemas/Location'
  *         availability:
@@ -177,6 +179,8 @@
  *         contact:
  *           $ref: '#/components/schemas/Contact'
  *         isArchived:
+ *           type: boolean
+ *         isActive:
  *           type: boolean
  *         createdAt:
  *           type: string
@@ -220,6 +224,28 @@
  *           type: number
  *         description:
  *           type: string
+ *         location:
+ *           $ref: '#/components/schemas/Location'
+ *         availability:
+ *           $ref: '#/components/schemas/Availability'
+ *         contact:
+ *           $ref: '#/components/schemas/Contact'
+ * 
+ *     UpdateServiceRequest:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *         category:
+ *           type: string
+ *         pricePerDay:
+ *           type: number
+ *         description:
+ *           type: string
+ *         isArchived: 
+ *           type: boolean
+ *         isActive: 
+ *           type: boolean
  *         location:
  *           $ref: '#/components/schemas/Location'
  *         availability:

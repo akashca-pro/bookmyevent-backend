@@ -3,6 +3,7 @@ import TYPES from "@/config/inversify/types";
 import { SERVICE_SUCCESS_MESSAGES } from "@/const/SuccessTypes.const";
 import { ServiceMapper } from "@/dtos/service/ServiceMapper.dto";
 import { IServiceService } from "@/services/interfaces/service.service.interface";
+import { uploadServiceImageBuffer } from "@/utils/cloudinary/uploadImageToCloudinary";
 import HTTP_STATUS from "@/utils/httpStatusCodes";
 import ResponseHandler from "@/utils/responseHandler";
 import { errorStatusCodeMapper } from "@/utils/statusCodeMapper";
@@ -41,7 +42,19 @@ export const serviceController = {
             req.log.info('Update service request received');
             const input = req.validated?.body;
             const { serviceId } = req.validated?.params;
-            const serviceData = ServiceMapper.toUpdateServiceRequestDTO(serviceId, input);
+            const thumbnailFile = req.file;
+            let thumbnailUrl = null;
+            if(thumbnailFile){
+                req.log.info(`${serviceId} Uploading thumbnail to cloudinary`);
+                const result = await uploadServiceImageBuffer(
+                    thumbnailFile.buffer, 
+                    serviceId, 
+                    'thumbnail'
+                );
+                thumbnailUrl = result.public_id;
+                req.log.info(`${serviceId} Thumbnail uploaded to cloudinary`);
+            }
+            const serviceData = ServiceMapper.toUpdateServiceRequestDTO(serviceId, input, thumbnailUrl);
             const response = await serviceService.updateService(serviceData);
             if(!response.success){
                 req.log.error({ error : response.errorMessage },'Update service request failed');

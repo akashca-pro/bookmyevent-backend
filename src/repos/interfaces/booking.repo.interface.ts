@@ -1,4 +1,5 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
+import { IService } from "@/db/interfaces/service.interface";
 import { IUser } from "@/db/interfaces/user.interface";
 import { ListOptions } from "@/dtos/Listoptions.dto";
 
@@ -10,7 +11,7 @@ export interface IBookingRepo {
     getBookingsByUser(
         userId: string,
         options: ListOptions
-    ): Promise<IBooking[]>;
+    ): Promise<(IBooking & { serviceId : Partial<IService> })[]>;
 
     countBookingsByUser(userId: string): Promise<number>;
     countBookingsByService(serviceId: string): Promise<number>;
@@ -19,7 +20,7 @@ export interface IBookingRepo {
     getBookingsByService(
         serviceId: string,
         options?: ListOptions,
-    ): Promise<(IBooking & { userId : IUser })[]>;
+    ): Promise<(IBooking & { userId : Partial<IUser> })[]>;
 
     // Booking conflict detection.
     getConflictingBookings(

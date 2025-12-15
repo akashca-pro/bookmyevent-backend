@@ -10,14 +10,14 @@ import { BOOKING_SERVICE_ERRORS, SERVICE_SERVICE_ERRORS } from "@/const/ErrorTyp
 import { BOOKING_STATUS } from "@/const/bookingStatus.const";
 import { Types } from "mongoose";
 import { IBooking } from "@/db/interfaces/booking.interface";
-import { GetUserBookingRequestDTO } from "@/dtos/booking/getUserBookings.dto";
+import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "@/dtos/booking/getUserBookings.dto";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
-import { GetServiceBookingsRequestDTO } from "@/dtos/booking/getServiceBookings.dto";
 import { CancelBookingRequestDTO } from "@/dtos/booking/cancelBooking.dto";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { config } from "@/config";
 import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
+import { BookingMapper } from "@/dtos/booking/BookingMapper.dto";
 
 
 @injectable()
@@ -129,7 +129,7 @@ export class BookingService implements IBookingService {
 
     async getUserBookings(
         req: GetUserBookingRequestDTO
-    ): Promise<PaginationDTO<IBooking>> {
+    ): Promise<PaginationDTO<GetUserBookingResponseDTO>> {
         const method = 'BookingService.getUserBookings'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { options, page, userId } = req;
@@ -138,29 +138,10 @@ export class BookingService implements IBookingService {
             this.#_bookingRepo.getBookingsByUser(userId, { ...options, skip }),
             this.#_bookingRepo.countBookingsByUser(userId)
         ])
+        const response = BookingMapper.toGetUserBookingResponseDTO(bookings);
         logger.info(`[BOOKING-SERVICE] ${method} bookings fetched`);
         return {
-            data : bookings,
-            total : count,
-            page,
-            limit : options.limit
-        }
-    }
-
-    async getServiceBookings(
-        req: GetServiceBookingsRequestDTO
-    ): Promise<PaginationDTO<IBooking>> {
-        const method = 'BookingService.getServiceBookings';
-        logger.info(`[BOOKING-SERVICE] ${method} started`);
-        const { options, page, serviceId } = req;
-        const skip = (page - 1) * options.limit;
-        const [bookings, count] = await Promise.all([
-            this.#_bookingRepo.getBookingsByService(serviceId, { ...options, skip }),
-            this.#_bookingRepo.countBookingsByService(serviceId)
-        ])
-        logger.info(`[BOOKING-SERVICE] ${method} bookings fetched`);
-        return {
-            data : bookings,
+            data : response,
             total : count,
             page,
             limit : options.limit

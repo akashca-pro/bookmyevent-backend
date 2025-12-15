@@ -5,6 +5,7 @@ import logger from "@/utils/pinoLogger";
 import { BaseRepo } from "./base.repo";
 import { ListOptions } from "@/dtos/Listoptions.dto";
 import { IUser } from "@/db/interfaces/user.interface";
+import { IService } from "@/db/interfaces/service.interface";
 
 export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     constructor(){
@@ -47,14 +48,18 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     async getBookingsByUser(
         userId: string, 
         options: ListOptions
-    ): Promise<IBooking[]> {
+    ): Promise<(IBooking & { serviceId : Partial<IService> })[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByUser';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ userId }).skip(options.skip).limit(options.limit).sort(options.sort);
+            const result = await this._model.find({ userId })
+            .skip(options.skip)
+            .limit(options.limit)
+            .sort(options.sort)
+            .populate('serviceId', 'title description thumbnailUrl');
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
-            return result;
+            return result as (IBooking & { serviceId : IService })[];
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
             throw error;
@@ -96,7 +101,7 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     async getBookingsByService(
         serviceId: string, 
         options: ListOptions
-    ): Promise<(IBooking & { userId : IUser })[]> {
+    ): Promise<(IBooking & { userId : Partial<IUser> })[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByService';
         try {

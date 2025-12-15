@@ -14,6 +14,9 @@ interface Config  {
     BOOKING_CACHE_EXPIRY : number;
     SWAGGER_URL_DEV : string;
     SWAGGER_URL_PROD : string;
+    CLOUDINARY_CLOUD_NAME : string;
+    CLOUDINARY_API_KEY : string;
+    CLOUDINARY_API_SECRET : string;
 }
 
 export const config : Config = {
@@ -29,4 +32,7 @@ export const config : Config = {
     BOOKING_CACHE_EXPIRY : Number(process.env.BOOKING_CACHE_EXPIRY),
     SWAGGER_URL_DEV : process.env.SWAGGER_URL!,
     SWAGGER_URL_PROD : process.env.SWAGGER_URL!,
+    CLOUDINARY_CLOUD_NAME : process.env.CLOUDINARY_CLOUD_NAME!,
+    CLOUDINARY_API_KEY : process.env.CLOUDINARY_API_KEY!,
+    CLOUDINARY_API_SECRET : process.env.CLOUDINARY_API_SECRET!,
 }
