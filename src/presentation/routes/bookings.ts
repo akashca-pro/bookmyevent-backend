@@ -2,7 +2,12 @@ import express from 'express';
 import { authenticate, authorizeRole } from '../middlewares/jwt';
 import { APP_LABELS } from '@/const/labels.const';
 import { validateRequest } from '../middlewares/validateRequest';
-import { BookingIdParamSchema, CheckAvailabilityQuerySchema, CreateBookingSchema, GetBookingsQuerySchema } from '@/validation/booking.schema';
+import {
+  BookingIdParamSchema,
+  CheckAvailabilityQuerySchema,
+  CreateBookingSchema,
+  GetBookingsQuerySchema,
+} from '@/validation/booking.schema';
 import { ServiceIdParamsSchema } from '@/validation/service.schema';
 import { bookingController as controller } from '../controllers/bookingController';
 
@@ -16,8 +21,7 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
  * /api/v1/bookings/{serviceId}/create:
  *   post:
  *     summary: Create booking for a service
- *     tags:
- *       - Bookings
+ *     tags: [Bookings]
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -32,15 +36,29 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
  *             $ref: '#/components/schemas/CreateBookingRequest'
  *     responses:
  *       200:
- *         description: Booking created successfully
- *       400:
- *         description: Booking failed or validation error
+ *         description: Booking created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – user role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.post(
-    '/:serviceId/create',
-    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-    validateRequest(CreateBookingSchema),
-    controller.createBooking
+  '/:serviceId/create',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  validateRequest(CreateBookingSchema),
+  controller.createBooking
 );
 
 /**
@@ -48,8 +66,7 @@ bookingRouter.post(
  * /api/v1/bookings/{bookingId}:
  *   get:
  *     summary: Get booking details
- *     tags:
- *       - Bookings
+ *     tags: [Bookings]
  *     parameters:
  *       - in: path
  *         name: bookingId
@@ -58,18 +75,39 @@ bookingRouter.post(
  *           type: string
  *     responses:
  *       200:
- *         description: Booking fetched successfully
+ *         description: Booking fetched
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/BookingResponse'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Booking'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – user role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
  *         description: Booking not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.get(
-    '/:bookingId',
-    validateRequest(BookingIdParamSchema, APP_LABELS.PARAM),
-    controller.getBooking
+  '/:bookingId',
+  validateRequest(BookingIdParamSchema, APP_LABELS.PARAM),
+  controller.getBooking
 );
 
 /**
@@ -77,34 +115,40 @@ bookingRouter.get(
  * /api/v1/bookings:
  *   get:
  *     summary: Get user bookings
- *     tags:
- *       - Bookings
+ *     tags: [Bookings]
  *     parameters:
  *       - in: query
  *         name: page
  *         schema:
  *           type: number
- *           default: 1
  *       - in: query
  *         name: limit
  *         schema:
  *           type: number
- *       - in: query
- *         name: sort
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Bookings fetched
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/BookingListResponse'
+ *               $ref: '#/components/schemas/PaginatedBookingResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – user role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.get(
-    '/',
-    validateRequest(GetBookingsQuerySchema, APP_LABELS.QUERY),
-    controller.getBookings
+  '/',
+  validateRequest(GetBookingsQuerySchema, APP_LABELS.QUERY),
+  controller.getBookings
 );
 
 /**
@@ -112,8 +156,7 @@ bookingRouter.get(
  * /api/v1/bookings/{bookingId}/cancel:
  *   post:
  *     summary: Cancel a booking
- *     tags:
- *       - Bookings
+ *     tags: [Bookings]
  *     parameters:
  *       - in: path
  *         name: bookingId
@@ -122,23 +165,36 @@ bookingRouter.get(
  *           type: string
  *     responses:
  *       200:
- *         description: Booking cancelled successfully
- *       400:
- *         description: Cancellation failed
+ *         description: Booking cancelled
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – user role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.post(
-    '/:bookingId/cancel',
-    validateRequest(BookingIdParamSchema, APP_LABELS.PARAM),
-    controller.cancelBooking
-)
+  '/:bookingId/cancel',
+  validateRequest(BookingIdParamSchema, APP_LABELS.PARAM),
+  controller.cancelBooking
+);
 
 /**
  * @openapi
  * /api/v1/bookings/{serviceId}/checkAvailability:
  *   get:
- *     summary: Check service availability for date range
- *     tags:
- *       - Bookings
+ *     summary: Check service availability
+ *     tags: [Bookings]
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -163,11 +219,31 @@ bookingRouter.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CheckAvailabilityResponse'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         available:
+ *                           type: boolean
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – user role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.get(
-    '/:serviceId/checkAvailability',
-    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-    validateRequest(CheckAvailabilityQuerySchema, APP_LABELS.QUERY),
-    controller.checkAvailability
-)
+  '/:serviceId/checkAvailability',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  validateRequest(CheckAvailabilityQuerySchema, APP_LABELS.QUERY),
+  controller.checkAvailability
+);

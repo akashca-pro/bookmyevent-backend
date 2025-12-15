@@ -1,6 +1,12 @@
 import express from 'express';
 import { validateRequest } from '../middlewares/validateRequest';
-import { CreateServiceSchema, GetAvailableServicesQuerySchema, GetBookingsByServicesQuerySchema, GetServicesQuerySchema, ServiceIdParamsSchema } from '@/validation/service.schema';
+import {
+  CreateServiceSchema,
+  GetAvailableServicesQuerySchema,
+  GetBookingsByServicesQuerySchema,
+  GetServicesQuerySchema,
+  ServiceIdParamsSchema,
+} from '@/validation/service.schema';
 import { serviceController as controller } from '../controllers/serviceController';
 import { APP_LABELS } from '@/const/labels.const';
 import { authenticate, authorizeRole } from '../middlewares/jwt';
@@ -12,8 +18,7 @@ export const serviceRouter = express.Router();
  * /api/v1/services/available:
  *   get:
  *     summary: Get available services within date range
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     security: []
  *     parameters:
  *       - in: query
@@ -43,30 +48,20 @@ export const serviceRouter = express.Router();
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/ServiceResponse'
+ *               $ref: '#/components/schemas/PaginatedServiceResponse'
  */
 serviceRouter.get(
-    '/available',
-    validateRequest(GetAvailableServicesQuerySchema, APP_LABELS.QUERY),
-    controller.getAvailableServices
-)
+  '/available',
+  validateRequest(GetAvailableServicesQuerySchema, APP_LABELS.QUERY),
+  controller.getAvailableServices
+);
 
 /**
  * @openapi
  * /api/v1/services/{serviceId}:
  *   get:
  *     summary: Get service details
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     security: []
  *     parameters:
  *       - in: path
@@ -80,13 +75,26 @@ serviceRouter.get(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ServiceResponse'
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Service'
+ *       404:
+ *         description: Service not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 serviceRouter.get(
-    '/:serviceId',
-    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-    controller.getService
+  '/:serviceId',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  controller.getService
 );
+
+// ───────────────────────── ADMIN PROTECTED ─────────────────────────
 
 serviceRouter.use(authenticate);
 serviceRouter.use(authorizeRole(APP_LABELS.ADMIN));
@@ -96,8 +104,7 @@ serviceRouter.use(authorizeRole(APP_LABELS.ADMIN));
  * /api/v1/services/create:
  *   post:
  *     summary: Create a new service
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     requestBody:
  *       required: true
  *       content:
@@ -106,14 +113,28 @@ serviceRouter.use(authorizeRole(APP_LABELS.ADMIN));
  *             $ref: '#/components/schemas/CreateServiceRequest'
  *     responses:
  *       200:
- *         description: Service created successfully
- *       400:
- *         description: Validation or business error
+ *         description: Service created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – admin only
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 serviceRouter.post(
-    '/create',
-    validateRequest(CreateServiceSchema),
-    controller.createService
+  '/create',
+  validateRequest(CreateServiceSchema),
+  controller.createService
 );
 
 /**
@@ -121,8 +142,7 @@ serviceRouter.post(
  * /api/v1/services/{serviceId}/update:
  *   patch:
  *     summary: Update service
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -130,18 +150,35 @@ serviceRouter.post(
  *         schema:
  *           type: string
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/CreateServiceRequest'
  *     responses:
  *       200:
- *         description: Service updated successfully
+ *         description: Service updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – admin only
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 serviceRouter.patch(
-    '/:serviceId/update',
-    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-    controller.updateSerice
+  '/:serviceId/update',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  controller.updateSerice
 );
 
 /**
@@ -149,8 +186,7 @@ serviceRouter.patch(
  * /api/v1/services/{serviceId}/archive:
  *   patch:
  *     summary: Archive service
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -159,12 +195,28 @@ serviceRouter.patch(
  *           type: string
  *     responses:
  *       200:
- *         description: Service archived successfully
+ *         description: Service archived
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – admin only
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 serviceRouter.patch(
-    '/:serviceId/archive',
-    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-    controller.archiveService
+  '/:serviceId/archive',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  controller.archiveService
 );
 
 /**
@@ -172,8 +224,7 @@ serviceRouter.patch(
  * /api/v1/services:
  *   get:
  *     summary: Get all services
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     parameters:
  *       - in: query
  *         name: page
@@ -190,11 +241,27 @@ serviceRouter.patch(
  *     responses:
  *       200:
  *         description: Services list fetched
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PaginatedServiceResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – admin only
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 serviceRouter.get(
-    '/',
-    validateRequest(GetServicesQuerySchema, APP_LABELS.QUERY),
-    controller.getServices
+  '/',
+  validateRequest(GetServicesQuerySchema, APP_LABELS.QUERY),
+  controller.getServices
 );
 
 /**
@@ -202,8 +269,7 @@ serviceRouter.get(
  * /api/v1/services/{serviceId}/bookings:
  *   get:
  *     summary: Get bookings for a service
- *     tags:
- *       - Services
+ *     tags: [Services]
  *     parameters:
  *       - in: path
  *         name: serviceId
@@ -213,24 +279,34 @@ serviceRouter.get(
  *       - in: query
  *         name: page
  *         schema:
- *           type: integer
+ *           type: number
  *       - in: query
  *         name: limit
  *         schema:
- *           type: integer
+ *           type: number
  *     responses:
  *       200:
  *         description: Bookings fetched
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/BookingByServiceResponse'
+ *               $ref: '#/components/schemas/PaginatedBookingResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden – admin only
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 serviceRouter.get(
-    '/:serviceId/bookings',
-    validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-    validateRequest(GetBookingsByServicesQuerySchema, APP_LABELS.QUERY),
-    controller.getBookingsByService
-)
+  '/:serviceId/bookings',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  validateRequest(GetBookingsByServicesQuerySchema, APP_LABELS.QUERY),
+  controller.getBookingsByService
+);

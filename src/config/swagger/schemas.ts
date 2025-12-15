@@ -5,36 +5,59 @@
  *
  *     ApiResponse:
  *       type: object
+ *       required: [success, message]
  *       properties:
  *         success:
  *           type: boolean
+ *           description: Indicates whether the request was successful
  *         message:
  *           type: string
+ *           description: Human-readable message
  *         data:
  *           nullable: true
+ *           description: Payload data or null
  *
- *     ValidationErrorResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *           example: false
- *         message:
- *           type: string
- *           example: VALIDATION_ERROR
- *         data:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               field:
- *                 type: string
- *               message:
- *                 type: string
+ *     SuccessResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ApiResponse'
+ *         - type: object
+ *           properties:
+ *             success:
+ *               type: boolean
+ *               example: true
  *
  *     ErrorResponse:
  *       allOf:
  *         - $ref: '#/components/schemas/ApiResponse'
+ *         - type: object
+ *           properties:
+ *             success:
+ *               type: boolean
+ *               example: false
+ *             data:
+ *               nullable: true
+ *               example: null
+ *
+ *     ValidationErrorResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/ApiResponse'
+ *         - type: object
+ *           properties:
+ *             success:
+ *               type: boolean
+ *               example: false
+ *             data:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 required: [field, message]
+ *                 properties:
+ *                   field:
+ *                     type: string
+ *                     example: email
+ *                   message:
+ *                     type: string
+ *                     example: Invalid email format
  *
  *     SignupRequest:
  *       type: object
@@ -42,10 +65,13 @@
  *       properties:
  *         name:
  *           type: string
+ *           example: Akash
  *         email:
  *           type: string
+ *           example: akash@gmail.com
  *         password:
  *           type: string
+ *           example: Password@123
  *
  *     LoginRequest:
  *       type: object
@@ -53,16 +79,19 @@
  *       properties:
  *         email:
  *           type: string
+ *           example: akash@gmail.com
  *         password:
  *           type: string
+ *           example: Password@123
  *
  *     AuthResponse:
  *       allOf:
- *         - $ref: '#/components/schemas/ApiResponse'
+ *         - $ref: '#/components/schemas/SuccessResponse'
  *         - type: object
  *           properties:
  *             data:
  *               type: object
+ *               required: [id, name, email, role]
  *               properties:
  *                 id:
  *                   type: string
@@ -73,7 +102,7 @@
  *                 role:
  *                   type: string
  *
- *     ProfileResponse:
+ *     Profile:
  *       type: object
  *       properties:
  *         id:
@@ -92,13 +121,13 @@
  *           type: string
  *           format: date-time
  *
- *     ProfileResponseWrapper:
+ *     ProfileResponse:
  *       allOf:
- *         - $ref: '#/components/schemas/ApiResponse'
+ *         - $ref: '#/components/schemas/SuccessResponse'
  *         - type: object
  *           properties:
  *             data:
- *               $ref: '#/components/schemas/ProfileResponse'
+ *               $ref: '#/components/schemas/Profile'
  *
  *     Location:
  *       type: object
@@ -156,6 +185,22 @@
  *           type: string
  *           format: date-time
  *
+ *     PaginatedServiceResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/SuccessResponse'
+ *         - type: object
+ *           properties:
+ *             data:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Service'
+ *             total:
+ *               type: number
+ *             page:
+ *               type: number
+ *             limit:
+ *               type: number
+ *
  *     CreateServiceRequest:
  *       type: object
  *       required:
@@ -182,20 +227,6 @@
  *         contact:
  *           $ref: '#/components/schemas/Contact'
  *
- *     PaginatedServiceResponse:
- *       type: object
- *       properties:
- *         data:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Service'
- *         total:
- *           type: number
- *         page:
- *           type: number
- *         limit:
- *           type: number
- *
  *     Booking:
  *       type: object
  *       properties:
@@ -221,45 +252,20 @@
  *           format: date-time
  *
  *     PaginatedBookingResponse:
- *       type: object
- *       properties:
- *         data:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Booking'
- *         total:
- *           type: number
- *         page:
- *           type: number
- *         limit:
- *           type: number
- *
- *     BookingByService:
- *       type: object
- *       properties:
- *         user:
- *           type: object
+ *       allOf:
+ *         - $ref: '#/components/schemas/SuccessResponse'
+ *         - type: object
  *           properties:
- *             name:
- *               type: string
- *             email:
- *               type: string
- *             avatar:
- *               type: string
- *               nullable: true
- *         bookingDetails:
- *           type: object
- *           properties:
- *             startDate:
- *               type: string
- *               format: date-time
- *             endDate:
- *               type: string
- *               format: date-time
- *             totalPrice:
+ *             data:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Booking'
+ *             total:
  *               type: number
- *             status:
- *               type: string
+ *             page:
+ *               type: number
+ *             limit:
+ *               type: number
  *
  *     CreateBookingRequest:
  *       type: object

@@ -11,24 +11,16 @@ profileRouter.use(authenticate);
  * /api/v1/profile:
  *   get:
  *     summary: Get logged-in user profile
- *     tags:
- *       - Profile
+ *     tags: [Profile]
+ *     security:
+ *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: Profile fetched successfully
+ *         description: Profile fetched
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: Profile fetched successfully
- *                 data:
- *                   $ref: '#/components/schemas/ProfileResponse'
+ *               $ref: '#/components/schemas/ProfileResponse'
  *       401:
  *         description: Unauthorized
  *         content:

@@ -36,7 +36,7 @@ app.get('/health', (req : Request, res : Response)=>{
 })
 
 // To exports full api details in json.
-app.get("/bookmyevent-openapi.json", (req, res) => {
+app.get("/openapi.json", (req, res) => {
   res.json(swaggerSpec);
 });
 

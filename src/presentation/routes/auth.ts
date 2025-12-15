@@ -10,8 +10,7 @@ export const authRouter = express.Router();
  * /api/v1/auth/signup:
  *   post:
  *     summary: User signup
- *     tags:
- *       - Auth
+ *     tags: [Auth]
  *     security: []
  *     requestBody:
  *       required: true
@@ -21,19 +20,17 @@ export const authRouter = express.Router();
  *             $ref: '#/components/schemas/SignupRequest'
  *     responses:
  *       200:
- *         description: User registered successfully
+ *         description: Signup successful
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/AuthSuccessResponse'
+ *               $ref: '#/components/schemas/AuthResponse'
  *       400:
- *         description: Validation or business error
+ *         description: Validation error
  *         content:
  *           application/json:
  *             schema:
- *               oneOf:
- *                 - $ref: '#/components/schemas/ValidationErrorResponse'
- *                 - $ref: '#/components/schemas/ErrorResponse'
+ *               $ref: '#/components/schemas/ValidationErrorResponse'
  */
 authRouter.post(
     '/signup',
@@ -46,8 +43,7 @@ authRouter.post(
  * /api/v1/auth/user/login:
  *   post:
  *     summary: User login
- *     tags:
- *       - Auth
+ *     tags: [Auth]
  *     security: []
  *     requestBody:
  *       required: true
@@ -66,9 +62,9 @@ authRouter.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/AuthSuccessResponse'
+ *               $ref: '#/components/schemas/AuthResponse'
  *       400:
- *         description: Invalid credentials or validation error
+ *         description: Invalid credentials
  *         content:
  *           application/json:
  *             schema:
@@ -85,8 +81,7 @@ authRouter.post(
  * /api/v1/auth/admin/login:
  *   post:
  *     summary: Admin login
- *     tags:
- *       - Auth
+ *     tags: [Auth]
  *     security: []
  *     requestBody:
  *       required: true
@@ -100,9 +95,9 @@ authRouter.post(
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/AuthSuccessResponse'
- *       401:
- *         description: Unauthorized
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Invalid credentials
  *         content:
  *           application/json:
  *             schema:
