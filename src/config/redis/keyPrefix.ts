@@ -6,6 +6,7 @@ export const REDIS_KEY_PREFIX = {
     USER_BLOCKED : 'user:blocked',
 
     SERVICE : 'service:',
-    BOOKING : 'booking:'
+    BOOKING : 'booking:',
+    CATEGORY : 'category:'
 
 } as const

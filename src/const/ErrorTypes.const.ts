@@ -39,3 +39,11 @@ export const BOOKING_SERVICE_ERRORS = {
     BOOKING_FAILED : 'booking failed', 
     CANCELLATION_FAILED : 'cancellation failed',
 } as const
+
+export const CATEGORY_SERVICE_ERRORS = {
+    CATEGORY_NOT_FOUND : 'category not found',
+    CATEGORY_SLUG_ALREADY_EXISTS : 'category slug already exists',
+    CATEGORY_CREATION_FAILED : 'category creation failed',
+    CATEGORY_UPDATION_FAILED : 'category updation failed',
+    CATEGORY_ARCHIVING_FAILED : 'category archiving failed',
+} as const
