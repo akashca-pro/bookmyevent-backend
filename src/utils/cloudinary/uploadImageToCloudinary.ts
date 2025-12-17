@@ -16,6 +16,7 @@ export const uploadServiceImageBuffer = async (
       },
       (error, result) => {
         if (error) return reject(error);
+        if (!result) return reject(new Error("Cloudinary upload failed"));
         resolve(result!);
       }
     );

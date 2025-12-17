@@ -35,4 +35,11 @@ export interface IBookingRepo {
     ): Promise<string[]>;
 
     cancelBooking(id: string): Promise<boolean>;
+
+    getMonthlyBookingMap(
+        serviceId: string,
+        month: number,
+        year: number
+    ): Promise<Record<string, boolean>>;
+
 }

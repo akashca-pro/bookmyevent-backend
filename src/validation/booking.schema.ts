@@ -40,3 +40,16 @@ export const CheckAvailabilityQuerySchema = z.object({
     .date('End date is required')
     .refine((d) => !isNaN(d.getTime()), "End date must be a valid date"),
 })
+
+export const GetMonthlyAvailabilitySchema = z.object({
+    month : z.coerce
+    .number('Month must be a number')
+    .int()
+    .min(1, "Month must be at least 1")
+    .max(12, "Month must be at most 12"),
+    year : z.coerce
+    .number('Year must be a number')
+    .int()
+    .min(2025, "Year must be at least 2025")
+    .max(new Date().getFullYear(), "Year must be at most current year")
+})

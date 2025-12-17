@@ -24,4 +24,5 @@ export const BOOKING_SUCCESS_MESSAGES = {
     BOOKING_FETCHED : 'Booking fetched successfully',
     BOOKINGS_FETCHED : 'Bookings fetched successfully',
     AVAILABILITY_CHECKED : 'Availability checked successfully',
+    MONTHLY_AVAILABILITY_FETCHED : 'Monthly Availability fetched successfully'
 } as const

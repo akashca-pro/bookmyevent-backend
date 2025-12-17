@@ -163,6 +163,12 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
                 if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
             }
 
+            if (filter.search && filter.search.trim()) {
+                query.$text = {
+                    $search: filter.search.trim(),
+                };
+            }
+
             const result = await this._model
                 .find(query)
                 .skip(options.skip)
@@ -260,6 +266,12 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
                 query.pricePerDay = {};
                 if (filter.minPrice != null) query.pricePerDay.$gte = filter.minPrice;
                 if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
+            }
+
+            if (filter.search && filter.search.trim()) {
+                query.$text = {
+                    $search: filter.search.trim(),
+                };
             }
 
             const result = await this._model

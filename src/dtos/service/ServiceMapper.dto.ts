@@ -55,11 +55,12 @@ export class ServiceMapper {
         return {
             page : input.page ?? 1,
             filter : {
-                category : input.filter?.category,
-                minPrice : input.filter?.minPrice,
-                maxPrice : input.filter?.maxPrice,
-                city : input.filter?.city,
-                adminId : input.filter?.adminId
+                category : input?.category,
+                minPrice : input?.minPrice,
+                maxPrice : input?.maxPrice,
+                city : input?.city,
+                adminId : input?.adminId,
+                search : input?.search
             },
             options : {
                 limit : input.limit ?? 10,
@@ -73,11 +74,12 @@ export class ServiceMapper {
             startDate : input.startDate,
             endDate : input.endDate,
             filter : {
-                category : input.filter?.category,
-                minPrice : input.filter?.minPrice,
-                maxPrice : input.filter?.maxPrice,
-                city : input.filter?.city,
-                adminId : input.filter?.adminId
+                category : input?.category,
+                minPrice : input?.minPrice,
+                maxPrice : input?.maxPrice,
+                city : input?.city,
+                adminId : input?.adminId,
+                search : input?.search
             },
             page : input.page ?? 1,
             options : {

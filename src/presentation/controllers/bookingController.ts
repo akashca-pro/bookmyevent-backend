@@ -132,5 +132,33 @@ export const bookingController = {
             req.log.error(error);
             next(error);
         }
+    },
+
+    getMonthlyAvailability : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            req.log.info('Get monthly availability request received');
+            const { serviceId } = req.validated?.params;
+            const input = req.validated?.query;
+            const bookingData = BookingMapper.toMonthlyAvailabilityRequestDTO(input, serviceId);
+            const response = await bookingService.getMonthlyAvailability(bookingData);
+            if(!response.success){
+                req.log.error('Get monthly availability request failed');
+                return ResponseHandler.error(
+                    res, 
+                    response.errorMessage,
+                    errorStatusCodeMapper(response.errorMessage!)
+                )
+            }
+            req.log.info('Get monthly availability request successful');
+            return ResponseHandler.success(
+                res,
+                BOOKING_SUCCESS_MESSAGES.MONTHLY_AVAILABILITY_FETCHED,
+                HTTP_STATUS.OK,
+                response.data
+            )
+        } catch (error) {
+            req.log.error(error);
+            next(error);
+        }
     }
 }

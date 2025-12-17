@@ -7,6 +7,7 @@ import {
   CheckAvailabilityQuerySchema,
   CreateBookingSchema,
   GetBookingsQuerySchema,
+  GetMonthlyAvailabilitySchema,
 } from '@/validation/booking.schema';
 import { ServiceIdParamsSchema } from '@/validation/service.schema';
 import { bookingController as controller } from '../controllers/bookingController';
@@ -55,7 +56,7 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.post(
-  '/:serviceId/create',
+  '/services/:serviceId/create',
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
   validateRequest(CreateBookingSchema),
   controller.createBooking
@@ -247,3 +248,10 @@ bookingRouter.get(
   validateRequest(CheckAvailabilityQuerySchema, APP_LABELS.QUERY),
   controller.checkAvailability
 );
+
+bookingRouter.get(
+  '/services/:serviceId/availability',
+  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  validateRequest(GetMonthlyAvailabilitySchema, APP_LABELS.QUERY),
+  controller.getMonthlyAvailability
+)

@@ -7,6 +7,7 @@ export interface ServiceFilter {
     maxPrice?: number;
     city?: string;
     adminId?: string;
+    search? : string;
 }
 
 export interface IServiceRepo {

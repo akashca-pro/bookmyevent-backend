@@ -2,6 +2,7 @@ import { IBooking } from "@/db/interfaces/booking.interface";
 import { CancelBookingRequestDTO } from "@/dtos/booking/cancelBooking.dto";
 import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
 import { CreateBookingRequestDTO } from "@/dtos/booking/createBooking.dto";
+import { GetMonthlyAvailabilityDTO } from "@/dtos/booking/getMonthlyAvailability.dto";
 import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "@/dtos/booking/getUserBookings.dto";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { ResponseDTO } from "@/dtos/Response.dto";
@@ -29,4 +30,8 @@ export interface IBookingService {
     checkAvailability(
         req : CheckAvailabilityRequestDTO
     ): Promise<ResponseDTO<null>>;
+
+    getMonthlyAvailability(
+        req : GetMonthlyAvailabilityDTO
+    ): Promise<ResponseDTO<Record<string, boolean> | null>>;
 }

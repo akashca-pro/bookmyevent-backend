@@ -6,6 +6,7 @@ import {
   GetBookingsByServicesQuerySchema,
   GetServicesQuerySchema,
   ServiceIdParamsSchema,
+  UpdateServiceSchema,
 } from '@/validation/service.schema';
 import { serviceController as controller } from '../controllers/serviceController';
 import { APP_LABELS } from '@/const/labels.const';
@@ -181,6 +182,7 @@ serviceRouter.patch(
   upload.single("thumbnail"),
   validateFile({ fieldName : 'thumbnail' }),
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
+  validateRequest(UpdateServiceSchema),
   controller.updateSerice
 );
 

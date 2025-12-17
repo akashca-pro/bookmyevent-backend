@@ -87,6 +87,10 @@ export const GetServicesQuerySchema = z.object({
   .string()
   .trim()
   .optional(),
+  search : z
+  .string()
+  .trim()
+  .optional()
 })
 
 export const GetAvailableServicesQuerySchema = z.object({
@@ -113,6 +117,10 @@ export const GetAvailableServicesQuerySchema = z.object({
     .string()
     .trim()
     .optional(),
+    search : z
+    .string()
+    .trim()
+    .optional()
 })
 
 export const GetBookingsByServicesQuerySchema = z.object({

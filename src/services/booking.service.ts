@@ -18,6 +18,7 @@ import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { config } from "@/config";
 import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
 import { BookingMapper } from "@/dtos/booking/BookingMapper.dto";
+import { GetMonthlyAvailabilityDTO } from "@/dtos/booking/getMonthlyAvailability.dto";
 
 
 @injectable()
@@ -226,4 +227,34 @@ export class BookingService implements IBookingService {
             success : true
         }
     }
+
+    async getMonthlyAvailability(
+        req: GetMonthlyAvailabilityDTO
+    ): Promise<ResponseDTO<Record<string, boolean> | null>> {
+
+        const method = 'BookingService.getMonthlyAvailability';
+        logger.info(`[BOOKING-SERVICE] ${method} started`);
+
+        const { serviceId, month, year } = req;
+
+        const service = await this.#_serviceRepo.getServiceById(serviceId);
+        if (!service || service.isArchived) {
+            return {
+                data: null,
+                success: false,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND
+            };
+        }
+
+        const availabilityMap =
+            await this.#_bookingRepo.getMonthlyBookingMap(serviceId, month, year);
+
+        logger.info(`[BOOKING-SERVICE] ${method} completed`);
+
+        return {
+            data: availabilityMap,
+            success: true
+        };
+    }
+
 }

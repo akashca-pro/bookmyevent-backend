@@ -4,6 +4,7 @@ import { CheckAvailabilityRequestDTO } from "./checkAvailability.dto";
 import { CreateBookingRequestDTO } from "./createBooking.dto";
 import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "./getUserBookings.dto";
 import { IService } from "@/db/interfaces/service.interface";
+import { GetMonthlyAvailabilityDTO } from "./getMonthlyAvailability.dto";
 
 export class BookingMapper{
     static toCreateBookingRequestDTO(input : any, userId : string) : CreateBookingRequestDTO {
@@ -53,6 +54,13 @@ export class BookingMapper{
             serviceId : input.serviceId,
             startDate : input.startDate,
             endDate : input.endDate
+        }
+    }
+    static toMonthlyAvailabilityRequestDTO(input : any, serviceId : string) : GetMonthlyAvailabilityDTO {
+        return {
+            serviceId,
+            month : input.month,
+            year : input.year
         }
     }
 }
