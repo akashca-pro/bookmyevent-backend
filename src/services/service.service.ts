@@ -52,7 +52,7 @@ export class ServiceService implements IServiceService {
                 success : false
             }
         }
-        const service = await this.#_serviceRepo.createService({...req, adminId : new Types.ObjectId(req.adminId) });
+        const service = await this.#_serviceRepo.createService({...req.data, adminId : new Types.ObjectId(req.adminId) });
         if(!service){
             logger.error(`[SERVICE-SERVICE] ${method} service creation failed`);
             return {
@@ -217,9 +217,10 @@ export class ServiceService implements IServiceService {
             this.#_serviceRepo.getAvailableServices(bookedServiceIds, req.startDate, req.endDate, req.filter, { ...req.options, skip }),
             this.#_serviceRepo.countAvailableServices(bookedServiceIds, req.startDate, req.endDate, req.filter)
         ]);
+        const response = ServiceMapper.toGetAvailableServicesResponseDTO(data);
         logger.info(`[SERVICE-SERVICE] ${method} services fetched`);
         return {
-            data,
+            data : response,
             total : count,
             page : req.page,
             limit : req.options.limit

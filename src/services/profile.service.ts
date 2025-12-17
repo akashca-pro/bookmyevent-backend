@@ -53,6 +53,7 @@ export class ProfileService implements IProfileService {
             name : user.name,
             email : user.email,
             avatar : user.avatar ?? null,
+            role : user.role,
             createdAt : user.createdAt,
             updatedAt : user.updatedAt,
         }

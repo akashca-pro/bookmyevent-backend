@@ -108,3 +108,8 @@ authRouter.post(
     validateRequest(LoginSchema),
     controller.adminLogin
 )
+
+authRouter.delete(
+    '/logout',
+    controller.logout
+)

@@ -27,7 +27,7 @@ export class BookingMapper{
     }
     static toGetUserBookingResponseDTO(bookings : (IBooking & { serviceId: Partial<IService> })[]) : GetUserBookingResponseDTO[] {
         const response : GetUserBookingResponseDTO[] = bookings.map((booking)=>{
-            const service = booking.serviceId as { title : string, description : string, thumbnailUrl : string | null };
+            const service = booking.serviceId as { title : string, description : string, thumbnail : string | null };
             return {
                 serviceDetails : service,
                 bookingDetails : {

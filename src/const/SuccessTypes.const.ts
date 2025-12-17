@@ -1,6 +1,7 @@
 export const AUTH_SUCCESS_MESSAGES = {
     USER_CREATED : 'User signup successfully',
-    LOGIN_SUCCESSFUL : 'Login successful'
+    LOGIN_SUCCESSFUL : 'Login successful',
+    LOGOUT_SUCCESSFUL : 'Logout successful'
 } as const
 
 export const PROFILE_SUCCESS_MESSAGES = {

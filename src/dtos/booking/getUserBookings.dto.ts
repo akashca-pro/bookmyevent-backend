@@ -18,6 +18,6 @@ export interface GetUserBookingResponseDTO {
     serviceDetails : {
         title : string;
         description : string;
-        thumbnailUrl : string | null;
+        thumbnail : string | null;
     }
 }

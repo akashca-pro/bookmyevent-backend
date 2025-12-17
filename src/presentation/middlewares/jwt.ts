@@ -70,7 +70,7 @@ export const authorizeRole = (acceptedRole: string) => {
             );
         }
 
-        if (req.role !== acceptedRole.toUpperCase()) {
+        if (req.role !== acceptedRole.toLowerCase()) {
             return ResponseHandler.error(
                 res,
                 APP_ERRORS.ENTRY_RESTRICTED,

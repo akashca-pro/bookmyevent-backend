@@ -84,5 +84,15 @@ export const authController = {
             req.log.error(error);
             next(error);
         }
+    },
+    logout : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            req.log.info('Logout request received');
+            res.clearCookie(APP_LABELS.ACCESS_TOKEN);
+            return ResponseHandler.success(res, AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESSFUL, HTTP_STATUS.OK)
+        } catch (error) {
+            req.log.error(error);
+            next(error);
+        }
     }
 }
