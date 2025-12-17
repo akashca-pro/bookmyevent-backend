@@ -24,6 +24,8 @@ import { IServiceService } from '@/services/interfaces/service.service.interface
 import { ServiceService } from '@/services/service.service';
 import { IBookingService } from '@/services/interfaces/booking.service.interface';
 import { BookingService } from '@/services/booking.service';
+import { ICategoryRepo } from '@/repos/interfaces/category.repo.interface';
+import { CategoryRepo } from '@/repos/category.repo';
 
 const container = new Container();
 
@@ -42,6 +44,7 @@ container.bind<ICacheProvider>(TYPES.ICacheProvider).to(RedisCacheProvider).inSi
 container.bind<IUserRepo>(TYPES.IUserRepo).to(UserRepo).inSingletonScope();
 container.bind<IServiceRepo>(TYPES.IServiceRepo).to(ServiceRepo).inSingletonScope();
 container.bind<IBookingRepo>(TYPES.IBookingRepo).to(BookingRepo).inSingletonScope();
+container.bind<ICategoryRepo>(TYPES.ICategoryRepo).to(CategoryRepo).inSingletonScope();
 
 /**
  * Services

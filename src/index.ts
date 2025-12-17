@@ -13,6 +13,7 @@ import { bookingRouter } from '@/presentation/routes/bookings';
 import { connectDB } from '@/config/db';
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
+import { categoryRouter } from './presentation/routes/category';
 
 const app = express();
 app.use(httpLogger);
@@ -45,6 +46,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/services', serviceRouter);
 app.use('/api/v1/bookings', bookingRouter);
+app.use('/api/v1/categories', categoryRouter);
 
 // 404
 app.use(notFound);

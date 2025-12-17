@@ -3,6 +3,7 @@ const TYPES = {
     IUserRepo : Symbol.for("IUserRepo"),
     IServiceRepo : Symbol.for("IServiceRepo"),
     IBookingRepo : Symbol.for("IBookingRepo"),
+    ICategoryRepo : Symbol.for("ICategoryRepo"),
 
     // Services
     IAuthService : Symbol.for("IAuthService"),
