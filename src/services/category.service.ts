@@ -13,7 +13,6 @@ import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { ICategory } from "@/db/interfaces/category.interface";
 import { CreateCategoryRequestDTO } from "@/dtos/category/createCategory.dto";
 import { UpdateCategoryRequestDTO } from "@/dtos/category/updateCategory.dto";
-import { ArchiveCategoryRequestDTO } from "@/dtos/category/archiveCategory.dto";
 import { GetCategoriesRequestDTO } from "@/dtos/category/getCategories.dto";
 
 import { CATEGORY_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
@@ -100,12 +99,12 @@ export class CategoryService implements ICategoryService {
     }
 
     async archiveCategory(
-        req: ArchiveCategoryRequestDTO
+        id : string
     ): Promise<ResponseDTO<null>> {
         const method = "CategoryService.archiveCategory";
-        logger.info(`[CATEGORY-SERVICE] ${method} started`, { categoryId: req.id });
+        logger.info(`[CATEGORY-SERVICE] ${method} started`, { categoryId: id });
 
-        const category = await this.#_categoryRepo.getCategoryById(req.id);
+        const category = await this.#_categoryRepo.getCategoryById(id);
         if (!category) {
             logger.error(`[CATEGORY-SERVICE] ${method} category not found`);
             return {
@@ -115,7 +114,7 @@ export class CategoryService implements ICategoryService {
             };
         }
 
-        const updated = await this.#_categoryRepo.toggleArchiveStatus(req.id);
+        const updated = await this.#_categoryRepo.toggleArchiveStatus(id);
         if (!updated) {
             return {
                 data: null,
@@ -124,7 +123,7 @@ export class CategoryService implements ICategoryService {
             };
         }
 
-        await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.CATEGORY}${req.id}`);
+        await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.CATEGORY}${id}`);
 
         return {
             data: null,

@@ -65,7 +65,13 @@ export const ServieFilterSchema = z.object({
     adminId: z.string().optional(),
 })
     
-export const ListOptionsSchema = z.object({
+export const ListOptionsQuerySchema = z.object({
+    page: z.coerce
+    .number( "Page must be a number")
+    .int()
+    .min(1, "Page must be at least 1")
+    .default(1),
+
     limit: z.coerce
     .number('Limit must be a number')
     .int(),

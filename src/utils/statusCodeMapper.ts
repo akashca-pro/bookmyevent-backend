@@ -1,4 +1,4 @@
-import { AUTH_SERVICE_ERRORS, BOOKING_SERVICE_ERRORS, SERVICE_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
+import { AUTH_SERVICE_ERRORS, BOOKING_SERVICE_ERRORS, CATEGORY_SERVICE_ERRORS, SERVICE_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import HTTP_STATUS, { HttpStatusCode } from "./httpStatusCodes";
 
 export const errorStatusCodeMapper = (message : string) : HttpStatusCode => {
@@ -6,6 +6,7 @@ export const errorStatusCodeMapper = (message : string) : HttpStatusCode => {
         case message === SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND:
         case message === AUTH_SERVICE_ERRORS.USER_NOT_FOUND:
         case message === BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND:
+        case message === CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND:
             return HTTP_STATUS.NOT_FOUND
         
         case message === SERVICE_SERVICE_ERRORS.SERVICE_CREATION_FAILED:
@@ -14,6 +15,9 @@ export const errorStatusCodeMapper = (message : string) : HttpStatusCode => {
         case message === AUTH_SERVICE_ERRORS.ACCESS_TOKEN_ISSUE_ERROR:
         case message === BOOKING_SERVICE_ERRORS.BOOKING_FAILED:
         case message === BOOKING_SERVICE_ERRORS.CANCELLATION_FAILED:
+        case message === CATEGORY_SERVICE_ERRORS.CATEGORY_ARCHIVING_FAILED:
+        case message === CATEGORY_SERVICE_ERRORS.CATEGORY_CREATION_FAILED:
+        case message === CATEGORY_SERVICE_ERRORS.CATEGORY_UPDATION_FAILED:
             return HTTP_STATUS.UNPROCESSABLE_ENTITY
         
         case message === SERVICE_SERVICE_ERRORS.SERVICE_ALREADY_EXISTS:
@@ -26,6 +30,7 @@ export const errorStatusCodeMapper = (message : string) : HttpStatusCode => {
         case message === AUTH_SERVICE_ERRORS.INVALID_CREDENTIALS:
         case message === SERVICE_SERVICE_ERRORS.INVALID_DATE_RANGE:
         case message === SERVICE_SERVICE_ERRORS.SERVICE_OUTSIDE_AVAILABILITY:
+        case message === CATEGORY_SERVICE_ERRORS.CATEGORY_SLUG_ALREADY_EXISTS:
             return HTTP_STATUS.BAD_REQUEST
 
         default :

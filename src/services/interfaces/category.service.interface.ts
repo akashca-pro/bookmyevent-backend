@@ -4,7 +4,6 @@ import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { ResponseDTO } from "@/dtos/Response.dto";
 import { CreateCategoryRequestDTO } from "@/dtos/category/createCategory.dto";
 import { UpdateCategoryRequestDTO } from "@/dtos/category/updateCategory.dto";
-import { ArchiveCategoryRequestDTO } from "@/dtos/category/archiveCategory.dto";
 import { GetCategoriesRequestDTO } from "@/dtos/category/getCategories.dto";
 
 export interface ICategoryService {
@@ -17,7 +16,7 @@ export interface ICategoryService {
     ): Promise<ResponseDTO<null>>;
 
     archiveCategory(
-        req: ArchiveCategoryRequestDTO
+        id : string
     ): Promise<ResponseDTO<null>>;
 
     getCategory(

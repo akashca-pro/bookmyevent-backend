@@ -26,3 +26,11 @@ export const BOOKING_SUCCESS_MESSAGES = {
     AVAILABILITY_CHECKED : 'Availability checked successfully',
     MONTHLY_AVAILABILITY_FETCHED : 'Monthly Availability fetched successfully'
 } as const
+
+export const CATEGORY_SUCCESS_MESSAGES = {
+    CATEGORY_CREATED : 'Category created successfully',
+    CATEGORY_UPDATED : 'Category updated successfully',
+    CATEGORY_ARCHIVED : 'Category archived successfully',
+    CATEGORY_FETCHED : 'Category fetched successfully',
+    CATEGORIES_FETCHED : 'Categories fetched successfully',
+} as const
