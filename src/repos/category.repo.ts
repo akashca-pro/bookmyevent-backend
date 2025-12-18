@@ -18,7 +18,7 @@ export class CategoryRepo extends BaseRepo<ICategory> implements ICategoryRepo {
         const operation = "createCategory";
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.create(data);
+            const result = await this._model.create({...data, isActive : true});
             logger.info(`[REPO] ${operation} successful`, {
                 id: result._id.toString(),
                 duration: Date.now() - startTime,

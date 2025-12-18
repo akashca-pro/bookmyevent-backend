@@ -13,11 +13,12 @@ import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { ICategory } from "@/db/interfaces/category.interface";
 import { CreateCategoryRequestDTO } from "@/dtos/category/createCategory.dto";
 import { UpdateCategoryRequestDTO } from "@/dtos/category/updateCategory.dto";
-import { GetCategoriesRequestDTO } from "@/dtos/category/getCategories.dto";
+import { GetCategoriesRequestDTO, GetCategoriesResponseDTO } from "@/dtos/category/getCategories.dto";
 
 import { CATEGORY_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { config } from "@/config";
+import { CategoryMapper } from "@/dtos/category/categoryMapper.dto";
 
 @injectable()
 export class CategoryService implements ICategoryService {
@@ -70,7 +71,6 @@ export class CategoryService implements ICategoryService {
     ): Promise<ResponseDTO<null>> {
         const method = "CategoryService.updateCategory";
         logger.info(`[CATEGORY-SERVICE] ${method} started`);
-
         const exists = await this.#_categoryRepo.getCategoryById(req.id);
         if (!exists) {
             logger.error(`[CATEGORY-SERVICE] ${method} category not found`);
@@ -80,7 +80,6 @@ export class CategoryService implements ICategoryService {
                 errorMessage: CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
             };
         }
-
         const updated = await this.#_categoryRepo.updateCategory(req.id, req.data);
         if (!updated) {
             return {
@@ -171,7 +170,7 @@ export class CategoryService implements ICategoryService {
 
     async getCategories(
         req: GetCategoriesRequestDTO
-    ): Promise<PaginationDTO<ICategory>> {
+    ): Promise<PaginationDTO<GetCategoriesResponseDTO>> {
         const method = "CategoryService.getCategories";
         logger.info(`[CATEGORY-SERVICE] ${method} started`);
 
@@ -181,9 +180,10 @@ export class CategoryService implements ICategoryService {
             this.#_categoryRepo.getCategories({ ...req.options, skip }),
             this.#_categoryRepo.countCategories(),
         ]);
-
+        logger.info(`[CATEGORY-SERVICE] ${method} categories fetched`);
+        const response = CategoryMapper.toGetCategoriesResponseDTO(categories);
         return {
-            data: categories,
+            data: response,
             total,
             page: req.page,
             limit: req.options.limit,

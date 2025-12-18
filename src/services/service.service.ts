@@ -6,36 +6,39 @@ import { IBookingRepo } from "@/repos/interfaces/booking.repo.interface";
 import { ResponseDTO } from "@/dtos/Response.dto";
 import { CreateServiceRequestDTO } from "@/dtos/service/createService.dto";
 import logger from "@/utils/pinoLogger";
-import { Types } from "mongoose";
-import { SERVICE_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
+import { CATEGORY_SERVICE_ERRORS, SERVICE_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { UpdateServiceRequestDTO } from "@/dtos/service/updateService.dto";
 import { ArchiveServiceRequestDTO } from "@/dtos/service/archiveService.dto";
 import { IService } from "@/db/interfaces/service.interface";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
-import { GetServicesRequestDTO } from "@/dtos/service/getServices.dto";
+import { GetServicesRequestDTO, GetServicesResponseDTO } from "@/dtos/service/getServices.dto";
 import { GetAvailableServicesRequestDTO, GetAvailableServicesResponseDTO } from "@/dtos/service/getAvailableServices.dto";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { config } from "@/config";
 import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "@/dtos/service/getBookingsByServices.dto";
 import { ServiceMapper } from "@/dtos/service/ServiceMapper.dto";
+import { ICategoryRepo } from "@/repos/interfaces/category.repo.interface";
 
 @injectable()
 export class ServiceService implements IServiceService {
 
     #_serviceRepo : IServiceRepo;
     #_bookingRepo : IBookingRepo;
+    #_categoryRepo : ICategoryRepo;
     #_cacheProvider : ICacheProvider;
 
 
     constructor(
         @inject(TYPES.IServiceRepo) serviceRepo : IServiceRepo,
         @inject(TYPES.IBookingRepo) bookingRepo : IBookingRepo,
-        @inject(TYPES.ICacheProvider) cacheProvider : ICacheProvider
+        @inject(TYPES.ICacheProvider) cacheProvider : ICacheProvider,
+        @inject(TYPES.ICategoryRepo) categoryRepo : ICategoryRepo
     ){
         this.#_serviceRepo = serviceRepo;
         this.#_bookingRepo = bookingRepo;
         this.#_cacheProvider = cacheProvider;
+        this.#_categoryRepo = categoryRepo;
     }
 
     async createService(
@@ -52,7 +55,20 @@ export class ServiceService implements IServiceService {
                 success : false
             }
         }
-        const service = await this.#_serviceRepo.createService({...req.data, adminId : new Types.ObjectId(req.adminId) });
+        if(req.data.category){
+            const category = await this.#_categoryRepo.getCategoryById(req.data.category.toString());
+            if(!category || category.isArchived || !category.isActive){
+                logger.error(`[SERVICE-SERVICE] ${method} category not found`);
+                return {
+                    data : null,
+                    errorMessage : CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
+                    success : false
+                }
+            }
+        }
+        const service = await this.#_serviceRepo.createService({
+            ...req.data,
+        });
         if(!service){
             logger.error(`[SERVICE-SERVICE] ${method} service creation failed`);
             return {
@@ -81,7 +97,18 @@ export class ServiceService implements IServiceService {
                 success : false
             }
         }
-        const updated = await this.#_serviceRepo.updateService(req.id, req.data);
+        if(req.data.category){
+            const category = await this.#_categoryRepo.getCategoryById(req.data.category.toString());
+            if(!category || category.isArchived || !category.isActive){
+                logger.error(`[SERVICE-SERVICE] ${method} category not found`);
+                return {
+                    data : null,
+                    errorMessage : CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
+                    success : false
+                }
+            }
+        }
+        const updated = await this.#_serviceRepo.updateService(req.id, { ...req.data });
         if(!updated){
             return{
                 data : null,
@@ -189,17 +216,32 @@ export class ServiceService implements IServiceService {
 
     async getServices(
         req: GetServicesRequestDTO
-    ): Promise<PaginationDTO<IService>> {
+    ): Promise<PaginationDTO<GetServicesResponseDTO>> {
         const method = 'ServiceService.getServices';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const skip = (req.page - 1) * req.options.limit;
+        console.log(req)
+        if(req.filter.category){
+            const category = await this.#_categoryRepo.getCategoryBySlug(req.filter.category);
+            if(!category || category.isArchived || !category.isActive){
+                logger.error(`[SERVICE-SERVICE] ${method} category not found`);
+                return {
+                    data: [],
+                    total: 0,
+                    page : 1,
+                    limit : req.options.limit
+                };
+            }
+            req.filter.category = category._id
+        }
         const [services, count] = await Promise.all([
             this.#_serviceRepo.getServices(req.filter, { ...req.options, skip }),
             this.#_serviceRepo.countServices(req.filter)
         ])
         logger.info(`[SERVICE-SERVICE] ${method} services fetched`);
+        const response = ServiceMapper.toGetServicesResponseDTO(services);
         return {
-            data : services,
+            data : response,
             total : count,
             page : req.page,
             limit : req.options.limit
@@ -212,6 +254,19 @@ export class ServiceService implements IServiceService {
         const method = 'ServiceService.getAvailableServices';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const bookedServiceIds = await this.#_bookingRepo.getBookedServiceIdsInRange(req.startDate, req.endDate);
+        if(req.filter.category){
+            const category = await this.#_categoryRepo.getCategoryBySlug(req.filter.category);
+            if(!category || category.isArchived || !category.isActive){
+                logger.error(`[SERVICE-SERVICE] ${method} category not found`);
+                return {
+                    data: [],
+                    total: 0,
+                    page : 1,
+                    limit : req.options.limit
+                };
+            }
+            req.filter.category = category._id
+        }
         const skip = (req.page - 1) * req.options.limit;
         const [data, count] = await Promise.all([
             this.#_serviceRepo.getAvailableServices(bookedServiceIds, req.startDate, req.endDate, req.filter, { ...req.options, skip }),

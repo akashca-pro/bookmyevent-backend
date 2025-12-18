@@ -31,7 +31,7 @@ const ServiceSchema = new Schema<IService>(
         adminId : { type : Schema.Types.ObjectId, ref : 'User', required : true },
         title : { type : String, required : true },
         description : { type : String, required : true },
-        category : { type : String, required : true },
+        category : { type : Schema.Types.ObjectId, ref : 'Category', required : true },
         pricePerDay : { type : Number, required : true },
         thumbnail : { type : String, default : null },
         isActive : { type : Boolean, default : false },

@@ -3,19 +3,21 @@ import { ArchiveServiceRequestDTO } from "./archiveService.dto";
 import { CreateServiceRequestDTO } from "./createService.dto";
 import { GetAvailableServicesRequestDTO, GetAvailableServicesResponseDTO } from "./getAvailableServices.dto";
 import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "./getBookingsByServices.dto";
-import { GetServicesRequestDTO } from "./getServices.dto";
+import { GetServicesRequestDTO, GetServicesResponseDTO } from "./getServices.dto";
 import { UpdateServiceRequestDTO } from "./updateService.dto";
 import { IUser } from "@/db/interfaces/user.interface";
 import { IService } from "@/db/interfaces/service.interface";
+import { Types } from "mongoose";
+import { CategoryPublicData } from "../category/categoryPublic.dto";
 
 export class ServiceMapper {
     static toCreateServiceRequestDTO(adminId : string, input : any) : CreateServiceRequestDTO {
         return {
-            adminId,
+            adminId : new Types.ObjectId(adminId),
             data : {
                 title : input.title,
                 description : input.description,
-                category : input.category,
+                category : new Types.ObjectId(input.category),
                 pricePerDay : input.pricePerDay,
                 location : input.location,
                 availability : input.availability,
@@ -29,7 +31,7 @@ export class ServiceMapper {
             data : {
                 title : input.title ?? undefined,
                 description : input.description ?? undefined,
-                category : input.category ?? undefined,
+                category : input.category ? new Types.ObjectId(input.category) : undefined,
                 pricePerDay : input.pricePerDay ?? undefined,
                 thumbnail : thumbnail ?? undefined,
                 location : input.location ?? undefined,
@@ -69,6 +71,38 @@ export class ServiceMapper {
             }
         }
     }
+    static toGetServicesResponseDTO(services : IService[]) : GetServicesResponseDTO[] {
+        const response : GetServicesResponseDTO[] = services.map((service)=>{
+            const category = service.category as unknown as { name : string, slug : string, _id : string };
+            if (!category || !category._id) {
+                throw new Error("Category not populated in getAvailableServices");
+            }
+            return {
+                id: service._id!.toString(),
+                adminId: service.adminId.toString(),
+                title: service.title,
+                description: service.description,
+                category: {
+                    id: category._id.toString(),
+                    name: category.name,
+                    slug: category.slug,
+                },
+                pricePerDay: service.pricePerDay,
+                thumbnail: service.thumbnail,
+                location: service.location,
+                availability: {
+                    from: service.availability.from.toISOString(),
+                    to: service.availability.to.toISOString(),
+                },
+                contact: service.contact,
+                isArchived: service.isArchived,
+                isActive: service.isActive,
+                createdAt: service.createdAt.toISOString(),
+                updatedAt: service.updatedAt.toISOString(),
+            }
+        })
+        return response
+    }
     static toGetAvailableServicesRequestDTO(input : any) : GetAvailableServicesRequestDTO {
         return {
             startDate : input.startDate,
@@ -91,10 +125,18 @@ export class ServiceMapper {
     }
     static toGetAvailableServicesResponseDTO(services : IService[]) : GetAvailableServicesResponseDTO[] {
         const response : GetAvailableServicesResponseDTO[] = services.map((service)=>{
+            const category = service.category as unknown as { name : string, slug : string, _id : string };
+            if (!category || !category._id) {
+                throw new Error("Category not populated in getAvailableServices");
+            }
             return {
-                id : service._id!,
+                id : service._id!.toString(),
                 title : service.title,
-                category : service.category,
+                category : {
+                    id : category._id.toString(),
+                    name : category.name,
+                    slug : category.slug
+                },
                 pricePerDay : service.pricePerDay,
                 thumbnail : service.thumbnail,
                 city : service.location.city

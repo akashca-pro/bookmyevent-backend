@@ -1,11 +1,12 @@
 import { IAvailability, IContact, ILocation } from "@/db/interfaces/service.interface";
+import { Types } from "mongoose";
 
 export interface UpdateServiceRequestDTO {
     id : string;
     data : {
         title? : string;
         description? : string;
-        category? : string;
+        category? : Types.ObjectId;
         pricePerDay? : number;
         thumbnail? : string;
         location? : ILocation;

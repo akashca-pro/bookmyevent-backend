@@ -1,5 +1,7 @@
+import { ICategory } from "@/db/interfaces/category.interface";
 import { CreateCategoryRequestDTO } from "./createCategory.dto";
 import { UpdateCategoryRequestDTO } from "./updateCategory.dto";
+import { GetCategoriesRequestDTO, GetCategoriesResponseDTO } from "./getCategories.dto";
 
 export class CategoryMapper {
     static toCreateCategoryRequestDTO (input : any) : CreateCategoryRequestDTO {
@@ -9,7 +11,7 @@ export class CategoryMapper {
             description : input.description
         }
     }
-    static toUpdateCategoryRequestDTO (input : any, categoryId : string) : UpdateCategoryRequestDTO {
+    static toUpdateCategoryRequestDTO (categoryId : string, input : any) : UpdateCategoryRequestDTO {
         return {
             id : categoryId,
             data : {
@@ -17,7 +19,7 @@ export class CategoryMapper {
             }
         }
     }
-    static toGetCategoriesRequestDTO (input : any) {
+    static toGetCategoriesRequestDTO (input : any) : GetCategoriesRequestDTO {
         return {
             page : input.page ?? 1,
             options : {
@@ -26,5 +28,20 @@ export class CategoryMapper {
                 sort : input.sort ?? { createdAt : -1 }
             }
         }
+    }
+    static toGetCategoriesResponseDTO (categories : ICategory[]) :GetCategoriesResponseDTO[] {
+        const response = categories.map((category)=>{
+            return {
+                id : category._id!.toString(),
+                name : category.name,
+                slug : category.slug,
+                description : category.description,
+                isArchived : category.isArchived,
+                isActive : category.isActive,
+                createdAt : category.createdAt.toISOString(),
+                updatedAt : category.updatedAt.toISOString()    
+            }
+        })
+        return response
     }
 }

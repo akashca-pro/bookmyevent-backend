@@ -34,7 +34,12 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
         const operation = 'getServiceByTitle';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.findOne({ title });
+            const result = await this._model.findOne({ title })
+            .populate({
+                path: 'category',
+                select: 'name slug',
+                match: { isActive: true, isArchived: false }
+            });
             const found = !!result;
             logger.info(`[REPO] ${operation} successful`, { title, found, duration: Date.now() - startTime });
             return result;
@@ -51,7 +56,12 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
         const operation = 'getServiceById';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.findById(id);
+            const result = await this._model.findById(id)
+            .populate({
+                path: 'category',
+                select: 'name slug',
+                match: { isActive: true, isArchived: false }
+            });
             const found = !!result;
             logger.info(`[REPO] ${operation} successful`, { id, found, duration: Date.now() - startTime });
             return result;
@@ -129,7 +139,13 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
                 .find({ adminId, isArchived: false })
                 .skip(options.skip)
                 .limit(options.limit)
-                .sort(options.sort);
+                .sort(options.sort)
+                .populate({
+                    path: 'category',
+                    select: 'name slug',
+                    match: { isActive: true, isArchived: false }
+                });
+
 
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result;
@@ -173,7 +189,13 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
                 .find(query)
                 .skip(options.skip)
                 .limit(options.limit)
-                .sort(options.sort);
+                .sort(options.sort)
+                .populate({
+                    path: 'category',
+                    select: 'name slug',
+                    match: { isActive: true, isArchived: false }
+                });
+
 
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result;
@@ -278,7 +300,12 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
                 .find(query)
                 .skip(options.skip)
                 .limit(options.limit)
-                .sort(options.sort);
+                .sort(options.sort)
+                .populate({
+                    path: 'category',
+                    select: 'name slug',
+                    match: { isActive: true, isArchived: false }
+                });
 
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result;

@@ -4,7 +4,7 @@ import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { ResponseDTO } from "@/dtos/Response.dto";
 import { CreateCategoryRequestDTO } from "@/dtos/category/createCategory.dto";
 import { UpdateCategoryRequestDTO } from "@/dtos/category/updateCategory.dto";
-import { GetCategoriesRequestDTO } from "@/dtos/category/getCategories.dto";
+import { GetCategoriesRequestDTO, GetCategoriesResponseDTO } from "@/dtos/category/getCategories.dto";
 
 export interface ICategoryService {
     createCategory(
@@ -25,7 +25,7 @@ export interface ICategoryService {
 
     getCategories(
         req: GetCategoriesRequestDTO
-    ): Promise<PaginationDTO<ICategory>>;
+    ): Promise<PaginationDTO<GetCategoriesResponseDTO>>;
 
     getActiveCategories(): Promise<ResponseDTO<ICategory[]>>;
 

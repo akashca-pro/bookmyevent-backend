@@ -20,7 +20,7 @@ export interface IService extends Document {
     _id? : string;
     adminId : Types.ObjectId;
     title : string;
-    category : string;
+    category : Types.ObjectId;
     pricePerDay : number;
     description : string;
     thumbnail : string | null;

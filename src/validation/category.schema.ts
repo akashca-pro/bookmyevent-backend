@@ -44,6 +44,16 @@ export const UpdateCategorySchema = z.object({
         }
         return val;
       },
-      z.boolean('isActive must be boolean').optional()
+      z.boolean('isArchived must be boolean').optional()
+    ),
+    isArchived : z.preprocess(
+      (val) => {
+        if (typeof val === "string") {
+          if (val.toLowerCase() === "false") return false;
+          if (val.toLowerCase() === "true") return true;
+        }
+        return val;
+      },
+      z.boolean('isArchived must be boolean').optional()
     ),
 })
