@@ -56,7 +56,7 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 bookingRouter.post(
-  '/services/:serviceId/create',
+  '/bookings/services/:serviceId/create',
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
   validateRequest(CreateBookingSchema),
   controller.createBooking
