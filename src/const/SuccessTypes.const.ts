@@ -33,4 +33,5 @@ export const CATEGORY_SUCCESS_MESSAGES = {
     CATEGORY_ARCHIVED : 'Category archived successfully',
     CATEGORY_FETCHED : 'Category fetched successfully',
     CATEGORIES_FETCHED : 'Categories fetched successfully',
+    CATEGORY_DELETED : 'Category deleted successfully'
 } as const

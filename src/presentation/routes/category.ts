@@ -35,3 +35,9 @@ categoryRouter.patch(
     validateRequest(UpdateCategorySchema),
     controller.updateCategory
 )
+
+categoryRouter.delete(
+    '/:categoryId/delete',
+    validateRequest(CategoryIdParamsSchema, APP_LABELS.PARAM),
+    controller.deleteCategory
+)

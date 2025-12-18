@@ -107,5 +107,30 @@ export const categoryController = {
             req.log.error(error);
             next(error);
         }
+    },
+
+    deleteCategory : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            req.log.info('Delete category request received');
+            const { categoryId } = req.validated?.params;
+            const response = await categoryService.deleteCategory(categoryId);
+            if(!response.success){
+                req.log.error('Delete category request failed');
+                return ResponseHandler.error(
+                    res,
+                    response.errorMessage!,
+                    errorStatusCodeMapper(response.errorMessage!)
+                );
+            }
+            req.log.info('Delete category request successful');
+            return ResponseHandler.success(
+                res,
+                CATEGORY_SUCCESS_MESSAGES.CATEGORY_DELETED,
+                HTTP_STATUS.OK
+            );
+        } catch (error) {
+            req.log.error(error);
+            next(error);
+        }
     }
 }

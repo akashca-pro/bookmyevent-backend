@@ -248,4 +248,21 @@ export class CategoryRepo extends BaseRepo<ICategory> implements ICategoryRepo {
             throw error;
         }
     }
+
+    async deleteCategory(id : string) : Promise<boolean> {
+        const startTime = Date.now();
+        const operation = 'deleteCategory';
+        try {
+            logger.debug(`[REPO] Executing ${operation}`, { id });
+            const result = await this._model.findByIdAndDelete(id);
+            const deleted = !!result
+            return deleted
+        } catch (error) {
+            logger.error(`[REPO] ${operation} failed`, {
+                error,
+                duration: Date.now() - startTime,
+            });
+            throw error;
+        }
+    }
 }

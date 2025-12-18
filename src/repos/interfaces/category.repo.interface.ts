@@ -9,6 +9,7 @@ export interface ICategoryRepo {
     getCategoryBySlug(slug: string): Promise<ICategory | null>;
     updateCategory(id: string, data: Partial<ICategory>): Promise<boolean>;
     toggleArchiveStatus(id: string): Promise<boolean>;
+    deleteCategory(id : string) : Promise<boolean>;
 
     // Listing
     getCategories(options: ListOptions): Promise<ICategory[]>;

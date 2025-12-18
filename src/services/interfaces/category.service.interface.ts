@@ -28,4 +28,8 @@ export interface ICategoryService {
     ): Promise<PaginationDTO<ICategory>>;
 
     getActiveCategories(): Promise<ResponseDTO<ICategory[]>>;
+
+    deleteCategory(
+        id: string
+    ): Promise<ResponseDTO<null>>;
 }

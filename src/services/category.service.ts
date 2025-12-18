@@ -201,4 +201,17 @@ export class CategoryService implements ICategoryService {
             success: true,
         };
     }
+
+    async deleteCategory(
+        id: string
+    ): Promise<ResponseDTO<null>> {
+        const method = 'CategoryService.deleteCategory';
+        logger.info(`[CATEGORY-SERVICE] ${method} started`);
+        await this.#_categoryRepo.deleteCategory(id);
+        return {
+            data : null,
+            success : true
+        }
+    }
+
 }
