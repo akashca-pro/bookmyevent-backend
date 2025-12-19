@@ -3,6 +3,9 @@ import { ListOptions } from "../Listoptions.dto";
 export interface GetBookingByServiceRequestDTO {
     serviceId : string;
     page : number;
+    filter : {
+        status : string;
+    },
     options : ListOptions;
 }
 

@@ -8,14 +8,6 @@ import TYPES from '@/config/inversify/types';
 
 const cacheProvider = container.get<ICacheProvider>(TYPES.ICacheProvider)
 
-const RELEASE_LUA_SCRIPT = `
-    if redis.call("get", KEYS[1]) == ARGV[1] then
-        return redis.call("del", KEYS[1])
-    else
-        return 0
-    end
-`;
-
 export const setupBookingCleanupCron = () => {
     cron.schedule('* * * * *', async () => {
         const expiryThreshold = new Date(Date.now() - 5 * 60 * 1000); 
@@ -27,15 +19,9 @@ export const setupBookingCleanupCron = () => {
             });
 
             for (const booking of abandoned) {
-                // 1. Mark as Expired in DB
                 booking.status = BOOKING_STATUS.EXPIRED;
                 await booking.save();
 
-                // 2. Safe Release in Redis
-                if (booking.lockKey && booking.lockToken) {
-                    await cacheProvider.releaseLock(booking.lockKey, booking.lockToken);
-                }
-                
                 logger.info(`[CRON] Released abandoned booking: ${booking._id}`);
             }
         } catch (err) {

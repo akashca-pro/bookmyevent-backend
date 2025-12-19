@@ -18,10 +18,6 @@ export interface IServiceService {
         req : UpdateServiceRequestDTO
     ) : Promise<ResponseDTO<null>>
 
-    archiveService(
-        req : ArchiveServiceRequestDTO
-    ) : Promise<ResponseDTO<null>>
-
     getService(
         id : string
     ) : Promise<ResponseDTO<IService | null>>;

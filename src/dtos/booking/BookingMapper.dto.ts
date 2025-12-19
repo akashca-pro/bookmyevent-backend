@@ -32,7 +32,7 @@ export class BookingMapper{
             userId : userId,
             page : input.page ?? 1,
             filter : {
-                status : input.status ?? BOOKING_STATUS.CONFIRMED
+                status : input.status ?? undefined
             },
             options : {
                 limit : input.limit ?? 10,

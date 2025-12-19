@@ -53,7 +53,7 @@ export class BookingService implements IBookingService {
             logger.error(`[BOOKING-SERVICE] ${method} failed to acquire lock`);
             return {
                 data: null,
-                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED,
+                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKING,
                 success: false
             };
         }
@@ -81,8 +81,11 @@ export class BookingService implements IBookingService {
 
             if (hasConflict) {
                 logger.error(`[BOOKING-SERVICE] ${method} booking already exists`);
-                await this.#_cacheProvider.releaseLock(lockKey, lockToken);
-                return { data: null, errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED, success: false };
+                return { 
+                    data: null, 
+                    errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKING, 
+                    success: false 
+                };
             }
             const diffDays = Math.ceil(
                 (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -102,6 +105,9 @@ export class BookingService implements IBookingService {
             logger.error(`[BOOKING-SERVICE] ${method} failed to reserve booking`);
             await this.#_cacheProvider.releaseLock(lockKey, lockToken);
             throw error;
+        } finally {
+            logger.info(`[BOOKING-SERVICE] ${method} lock released`);
+            await this.#_cacheProvider.releaseLock(lockKey, lockToken);
         }
     }
 
@@ -121,12 +127,33 @@ export class BookingService implements IBookingService {
             };
         }
 
+        const conflicts = await this.#_bookingRepo.getConflictingBookings(
+            booking.serviceId.toString(),
+            booking.startDate,
+            booking.endDate
+        );
+
+        const hasConfirmedConflict = conflicts.some(
+            b =>
+            b._id!.toString() !== bookingId &&
+            b.status === BOOKING_STATUS.CONFIRMED
+        );
+
+        if (hasConfirmedConflict) {
+            await this.#_bookingRepo.updateStatus(
+            bookingId,
+            BOOKING_STATUS.EXPIRED
+            );
+
+            return {
+                data: null,
+                success: false,
+                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED,
+            };
+        }
+
         await this.#_bookingRepo.updateStatus(bookingId, BOOKING_STATUS.CONFIRMED);
         logger.info(`[BOOKING-SERVICE] ${method} booking confirmed`);
-        if (booking.lockKey && booking.lockToken) {
-            await this.#_cacheProvider.releaseLock(booking.lockKey, booking.lockToken);
-        }
-        logger.info(`[BOOKING-SERVICE] ${method} lock released`);
         return {
             data: null,
             success: true
@@ -171,10 +198,9 @@ export class BookingService implements IBookingService {
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { options, page, userId, filter } = req;
         const skip = (page - 1) * options.limit;
-        console.log(req);
         const [bookings, count] = await Promise.all([
             this.#_bookingRepo.getBookingsByUser(userId, { ...options, skip }, filter),
-            this.#_bookingRepo.countBookingsByUser(userId)
+            this.#_bookingRepo.countBookingsByUser(userId, filter)
         ])
         const response = BookingMapper.toGetUserBookingResponseDTO(bookings);
         logger.info(`[BOOKING-SERVICE] ${method} bookings fetched`);

@@ -11,17 +11,18 @@ export interface IBookingRepo {
     getBookingsByUser(
         userId: string,
         options: ListOptions,
-        filter : { status? : string }
-    ): Promise<(IBooking & { serviceId : Partial<IService> })[]>;
+        filter: { status?: string }
+    ): Promise<(IBooking & { serviceId: Partial<IService> })[]>;
 
-    countBookingsByUser(userId: string): Promise<number>;
-    countBookingsByService(serviceId: string): Promise<number>;
+    countBookingsByUser(userId: string, filter?: { status?: string }): Promise<number>;
+    countBookingsByService(serviceId: string, filter?: { status?: string }): Promise<number>;
 
     // All bookings for a service (admin dashboard)
     getBookingsByService(
         serviceId: string,
+        filter: { status?: string },
         options?: ListOptions,
-    ): Promise<(IBooking & { userId : Partial<IUser> })[]>;
+    ): Promise<(IBooking & { userId: Partial<IUser> })[]>;
 
     // Booking conflict detection.
     getConflictingBookings(

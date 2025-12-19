@@ -188,44 +188,6 @@ serviceRouter.patch(
 
 /**
  * @openapi
- * /api/v1/services/{serviceId}/archive:
- *   patch:
- *     summary: Archive service
- *     tags: [Services]
- *     parameters:
- *       - in: path
- *         name: serviceId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Service archived
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/SuccessResponse'
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       403:
- *         description: Forbidden – admin only
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
-serviceRouter.patch(
-  '/:serviceId/archive',
-  validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
-  controller.archiveService
-);
-
-/**
- * @openapi
  * /api/v1/services:
  *   get:
  *     summary: Get all services

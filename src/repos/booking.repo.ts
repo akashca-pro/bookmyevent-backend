@@ -9,7 +9,7 @@ import { IService } from "@/db/interfaces/service.interface";
 import { BOOKING_STATUS } from "@/const/bookingStatus.const";
 
 export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
-    constructor(){
+    constructor() {
         super(BookingModel)
     }
 
@@ -47,21 +47,25 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     }
 
     async getBookingsByUser(
-        userId: string, 
+        userId: string,
         options: ListOptions,
-        filter : { status? : string }
-    ): Promise<(IBooking & { serviceId : Partial<IService> })[]> {
+        filter: { status?: string }
+    ): Promise<(IBooking & { serviceId: Partial<IService> })[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByUser';
         try {
+            const query: any = { userId };
+            if (filter.status) {
+                query.status = filter.status;
+            }
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ userId, status : filter.status })
-            .skip(options.skip)
-            .limit(options.limit)
-            .sort(options.sort)
-            .populate('serviceId', 'title description thumbnail');
+            const result = await this._model.find(query)
+                .skip(options.skip)
+                .limit(options.limit)
+                .sort(options.sort)
+                .populate('serviceId', 'title description thumbnail');
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
-            return result as (IBooking & { serviceId : IService })[];
+            return result as (IBooking & { serviceId: IService })[];
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
             throw error;
@@ -69,9 +73,9 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     }
 
     async updateStatus(
-        id : string, 
-        status : string
-    ) : Promise<boolean> {
+        id: string,
+        status: string
+    ): Promise<boolean> {
         const startTime = Date.now();
         const operation = 'updateStatus';
         try {
@@ -105,14 +109,15 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     }
 
     async countBookingsByService(
-        serviceId: string
+        serviceId: string,
+        filter?: { status?: string }
     ): Promise<number> {
         const startTime = Date.now();
         const operation = 'countBookingsByService';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.countDocuments({ serviceId });
-            logger.info(`[REPO] ${operation} successful`, { result, duration: Date.now() - startTime});
+            const result = await this._model.countDocuments({ serviceId, ...filter });
+            logger.info(`[REPO] ${operation} successful`, { result, duration: Date.now() - startTime });
             return result;
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
@@ -121,19 +126,24 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     }
 
     async getBookingsByService(
-        serviceId: string, 
-        options: ListOptions
-    ): Promise<(IBooking & { userId : Partial<IUser> })[]> {
+        serviceId: string,
+        filter: { status?: string },
+        options: ListOptions,
+    ): Promise<(IBooking & { userId: Partial<IUser> })[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByService';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ serviceId })
-            .skip(options.skip)
-            .limit(options.limit)
-            .sort(options.sort)
-            .populate('userId', 'name email avatar');
-            logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime});
+            const query: any = { serviceId };
+            if (filter.status) {
+                query.status = filter.status;
+            }
+            const result = await this._model.find(query)
+                .skip(options.skip)
+                .limit(options.limit)
+                .sort(options.sort)
+                .populate('userId', 'name email avatar');
+            logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result as (IBooking & { userId: IUser })[];
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
@@ -142,8 +152,8 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     }
 
     async getConflictingBookings(
-        serviceId: string, 
-        startDate: Date, 
+        serviceId: string,
+        startDate: Date,
         endDate: Date
     ): Promise<IBooking[]> {
         const startTime = Date.now();
@@ -167,7 +177,7 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
     }
 
     async getBookedServiceIdsInRange(
-        startDate: Date, 
+        startDate: Date,
         endDate: Date
     ): Promise<string[]> {
         const startTime = Date.now();
@@ -262,7 +272,7 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
 
             return result;
         } catch (error) {
-                logger.error(`[REPO] ${operation} failed`, {
+            logger.error(`[REPO] ${operation} failed`, {
                 error,
                 duration: Date.now() - startTime
             });

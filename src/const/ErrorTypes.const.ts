@@ -38,8 +38,9 @@ export const BOOKING_SERVICE_ERRORS = {
     BOOKING_ALREADY_EXISTS : 'Someone booked already for this range',
     BOOKING_FAILED : 'booking failed', 
     CANCELLATION_FAILED : 'cancellation failed',
-    SLOT_ALREADY_BOOKED : 'Slot already booked',
+    SLOT_ALREADY_BOOKING : 'Slot is currently booking by someone, please try again later.',
     BOOKING_SESSION_EXPIRED : 'Booking session expired or invalid.',
+    SLOT_ALREADY_BOOKED : 'Slot is already booked by someone else.',
 } as const
 
 export const CATEGORY_SERVICE_ERRORS = {

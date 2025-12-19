@@ -32,7 +32,7 @@ export class ServiceMapper {
                 description : input.description ?? undefined,
                 category : input.category ? new Types.ObjectId(input.category) : undefined,
                 pricePerDay : input.pricePerDay ?? undefined,
-                thumbnail : thumbnail ? thumbnail : '',
+                thumbnail : thumbnail ?? undefined,
                 location : input.location ?? undefined,
                 availability : input.availability ?? undefined,
                 contact : input.contact ?? undefined,
@@ -146,10 +146,13 @@ export class ServiceMapper {
         });
         return response;
     }
-    static toGetBookingsByServiceRequestDTO(input : any) : GetBookingByServiceRequestDTO {
+    static toGetBookingsByServiceRequestDTO(input : any, serviceId : string) : GetBookingByServiceRequestDTO {
         return {
-            serviceId : input.serviceId,
+            serviceId : serviceId,
             page : input.page ?? 1,
+            filter : {
+                status : input.status ?? undefined
+            },
             options : {
                 limit : input.limit ?? 10,
                 skip : input.skip ?? 0,

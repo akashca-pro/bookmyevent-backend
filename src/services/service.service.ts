@@ -23,18 +23,18 @@ import { ICategoryRepo } from "@/repos/interfaces/category.repo.interface";
 @injectable()
 export class ServiceService implements IServiceService {
 
-    #_serviceRepo : IServiceRepo;
-    #_bookingRepo : IBookingRepo;
-    #_categoryRepo : ICategoryRepo;
-    #_cacheProvider : ICacheProvider;
+    #_serviceRepo: IServiceRepo;
+    #_bookingRepo: IBookingRepo;
+    #_categoryRepo: ICategoryRepo;
+    #_cacheProvider: ICacheProvider;
 
 
     constructor(
-        @inject(TYPES.IServiceRepo) serviceRepo : IServiceRepo,
-        @inject(TYPES.IBookingRepo) bookingRepo : IBookingRepo,
-        @inject(TYPES.ICacheProvider) cacheProvider : ICacheProvider,
-        @inject(TYPES.ICategoryRepo) categoryRepo : ICategoryRepo
-    ){
+        @inject(TYPES.IServiceRepo) serviceRepo: IServiceRepo,
+        @inject(TYPES.IBookingRepo) bookingRepo: IBookingRepo,
+        @inject(TYPES.ICacheProvider) cacheProvider: ICacheProvider,
+        @inject(TYPES.ICategoryRepo) categoryRepo: ICategoryRepo
+    ) {
         this.#_serviceRepo = serviceRepo;
         this.#_bookingRepo = bookingRepo;
         this.#_cacheProvider = cacheProvider;
@@ -47,40 +47,40 @@ export class ServiceService implements IServiceService {
         const method = 'ServiceService.createService'
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const titleExists = await this.#_serviceRepo.getServiceByTitle(req.data.title);
-        if(titleExists){
+        if (titleExists) {
             logger.error(`[SERVICE-SERVICE] ${method} title already exists`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_TITLE_ALREADY_EXISTS,
-                success : false
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_TITLE_ALREADY_EXISTS,
+                success: false
             }
         }
-        if(req.data.category){
+        if (req.data.category) {
             const category = await this.#_categoryRepo.getCategoryById(req.data.category.toString());
-            if(!category || category.isArchived || !category.isActive){
+            if (!category || category.isArchived || !category.isActive) {
                 logger.error(`[SERVICE-SERVICE] ${method} category not found`);
                 return {
-                    data : null,
-                    errorMessage : CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
-                    success : false
+                    data: null,
+                    errorMessage: CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
+                    success: false
                 }
             }
         }
         const service = await this.#_serviceRepo.createService({
             ...req.data,
-            adminId : req.adminId
+            adminId: req.adminId
         });
-        if(!service){
+        if (!service) {
             logger.error(`[SERVICE-SERVICE] ${method} service creation failed`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_CREATION_FAILED,
-                success : false
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_CREATION_FAILED,
+                success: false
             }
         }
         return {
-            data : null,
-            success : true
+            data: null,
+            success: true
         }
     }
 
@@ -90,99 +90,39 @@ export class ServiceService implements IServiceService {
         const method = 'ServiceService.updateService'
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const serviceExist = await this.#_serviceRepo.exists(req.id);
-        if(!serviceExist){
-            logger.error(`[SERVICE-SERVICE] ${method} service not found`);
-            return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
-                success : false
-            }
-        }
-        if(req.data.category){
-            const category = await this.#_categoryRepo.getCategoryById(req.data.category.toString());
-            if(!category || category.isArchived || !category.isActive){
-                logger.error(`[SERVICE-SERVICE] ${method} category not found`);
-                return {
-                    data : null,
-                    errorMessage : CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
-                    success : false
-                }
-            }
-        }
-        const updated = await this.#_serviceRepo.updateService(req.id, { ...req.data });
-        if(!updated){
-            return{
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_UPDATION_FAILED,
-                success : false
-            }
-        }
-        logger.info(`[SERVICE-SERVICE] ${method} service updated`);
-        return {
-            data : null,
-            success : true
-        }
-    }
-
-    async archiveService(
-        req: ArchiveServiceRequestDTO
-    ): Promise<ResponseDTO<null>> {
-        const method = 'ServiceService.archiveService';
-        logger.info(`[SERVICE-SERVICE] ${method} started`, { serviceId: req.id });
-
-        const service = await this.#_serviceRepo.getServiceById(req.id);
-        if (!service) {
+        if (!serviceExist) {
             logger.error(`[SERVICE-SERVICE] ${method} service not found`);
             return {
                 data: null,
                 errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
-                success: false,
-            };
+                success: false
+            }
         }
-
-        // If trying to archive AND bookings exist → block
-        if (!service.isArchived) {
-            const bookings = await this.#_bookingRepo.getBookingsByService(req.id);
-            if (bookings.length > 0) {
-                logger.error(
-                    `[SERVICE-SERVICE] ${method} cannot archive, bookings exist`,
-                    { serviceId: req.id, bookingsCount: bookings.length }
-                );
+        if (req.data.category) {
+            const category = await this.#_categoryRepo.getCategoryById(req.data.category.toString());
+            if (!category || category.isArchived || !category.isActive) {
+                logger.error(`[SERVICE-SERVICE] ${method} category not found`);
                 return {
                     data: null,
-                    errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_HAS_BOOKINGS,
-                    success: false,
-                };
+                    errorMessage: CATEGORY_SERVICE_ERRORS.CATEGORY_NOT_FOUND,
+                    success: false
+                }
             }
         }
-
-        const updated = await this.#_serviceRepo.toggleArchiveStatus(req.id);
+        const updated = await this.#_serviceRepo.updateService(req.id, { ...req.data });
         if (!updated) {
-            logger.error(`[SERVICE-SERVICE] ${method} archive toggle failed`);
             return {
                 data: null,
-                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_ARCHIVING_FAILED,
-                success: false,
-            };
-        }
-
-        await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.SERVICE}${req.id}`);
-
-        logger.info(
-            `[SERVICE-SERVICE] ${method} success`,
-            {
-                serviceId: req.id,
-                from: service.isArchived,
-                to: !service.isArchived,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_UPDATION_FAILED,
+                success: false
             }
-        );
-
+        }
+        logger.info(`[SERVICE-SERVICE] ${method} service updated`);
         return {
             data: null,
-            success: true,
-        };
+            success: true
+        }
     }
-
 
     async getService(
         id: string
@@ -191,27 +131,27 @@ export class ServiceService implements IServiceService {
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const cacheKey = `${REDIS_KEY_PREFIX.SERVICE}${id}`;
         const cachedData = await this.#_cacheProvider.get(cacheKey) as IService;
-        if(cachedData){
+        if (cachedData) {
             logger.info(`[SERVICE-SERVICE] ${method} data fetched from cache`);
             return {
-                data : cachedData,
-                success : true
+                data: cachedData,
+                success: true
             }
         }
         const service = await this.#_serviceRepo.getServiceById(id);
-        if(!service){
+        if (!service) {
             logger.error(`[SERVICE-SERVICE] ${method} service not found`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
-                success : false
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
+                success: false
             }
         }
         await this.#_cacheProvider.set(cacheKey, service, config.SERVICE_CACHE_EXPIRY);
         logger.info(`[SERVICE-SERVICE] ${method} service fetched`);
         return {
-            data : service,
-            success : true
+            data: service,
+            success: true
         }
     }
 
@@ -221,15 +161,15 @@ export class ServiceService implements IServiceService {
         const method = 'ServiceService.getServices';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const skip = (req.page - 1) * req.options.limit;
-        if(req.filter.category){
+        if (req.filter.category) {
             const category = await this.#_categoryRepo.getCategoryBySlug(req.filter.category);
-            if(!category || category.isArchived || !category.isActive){
+            if (!category || category.isArchived || !category.isActive) {
                 logger.error(`[SERVICE-SERVICE] ${method} category not found`);
                 return {
                     data: [],
                     total: 0,
-                    page : 1,
-                    limit : req.options.limit
+                    page: 1,
+                    limit: req.options.limit
                 };
             }
             req.filter.category = category._id
@@ -241,10 +181,10 @@ export class ServiceService implements IServiceService {
         logger.info(`[SERVICE-SERVICE] ${method} services fetched`);
         const response = ServiceMapper.toGetServicesResponseDTO(services);
         return {
-            data : response,
-            total : count,
-            page : req.page,
-            limit : req.options.limit
+            data: response,
+            total: count,
+            page: req.page,
+            limit: req.options.limit
         }
     }
 
@@ -254,15 +194,15 @@ export class ServiceService implements IServiceService {
         const method = 'ServiceService.getAvailableServices';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const bookedServiceIds = await this.#_bookingRepo.getBookedServiceIdsInRange(req.startDate, req.endDate);
-        if(req.filter.category){
+        if (req.filter.category) {
             const category = await this.#_categoryRepo.getCategoryBySlug(req.filter.category);
-            if(!category || category.isArchived || !category.isActive){
+            if (!category || category.isArchived || !category.isActive) {
                 logger.error(`[SERVICE-SERVICE] ${method} category not found`);
                 return {
                     data: [],
                     total: 0,
-                    page : 1,
-                    limit : req.options.limit
+                    page: 1,
+                    limit: req.options.limit
                 };
             }
             req.filter.category = category._id
@@ -275,19 +215,19 @@ export class ServiceService implements IServiceService {
         const response = ServiceMapper.toGetAvailableServicesResponseDTO(data);
         logger.info(`[SERVICE-SERVICE] ${method} services fetched`);
         return {
-            data : response,
-            total : count,
-            page : req.page,
-            limit : req.options.limit
+            data: response,
+            total: count,
+            page: req.page,
+            limit: req.options.limit
         }
     }
 
     async getBookingsByService(
-        req : GetBookingByServiceRequestDTO
+        req: GetBookingByServiceRequestDTO
     ): Promise<PaginationDTO<GetBookingsByServiceResponseDTO>> {
         const method = 'ServiceService.getBookingsByService';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
-        const { serviceId, page, options} = req;
+        const { serviceId, page, options } = req;
         const serviceExists = await this.#_serviceRepo.exists(serviceId);
         if (!serviceExists) {
             logger.error(`[SERVICE-SERVICE] ${method} service not found`);
@@ -295,20 +235,20 @@ export class ServiceService implements IServiceService {
                 data: [],
                 total: 0,
                 page,
-                limit : options.limit
+                limit: options.limit
             };
         }
         const [bookings, total] = await Promise.all([
-            this.#_bookingRepo.getBookingsByService(serviceId, { ...options, skip: (page - 1) * options.limit }),
-            this.#_bookingRepo.countBookingsByService(serviceId)
+            this.#_bookingRepo.getBookingsByService(serviceId, req.filter, { ...options, skip: (page - 1) * options.limit }),
+            this.#_bookingRepo.countBookingsByService(serviceId, req.filter)
         ]);
         const response = ServiceMapper.toGetBookingsByServiceResponseDTO(bookings);
         logger.info(`[SERVICE-SERVICE] ${method} bookings fetched`);
         return {
-            data : response,
+            data: response,
             total,
             page,
-            limit : options.limit
+            limit: options.limit
         }
     }
 }

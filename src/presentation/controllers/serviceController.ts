@@ -78,32 +78,6 @@ export const serviceController = {
         }
     },
 
-    archiveService : async (req : Request, res : Response, next : NextFunction) => {
-        try {
-            req.log.info('Archive service request received');
-            const { serviceId } = req.validated?.params;
-            const serviceData = ServiceMapper.toArchiveServiceRequestDTO(serviceId, req.userId!);
-            const response = await serviceService.archiveService(serviceData);
-            if(!response.success){
-                req.log.error({ error : response.errorMessage },'Archive service request failed');
-                return ResponseHandler.error(
-                    res,
-                    response.errorMessage,
-                    errorStatusCodeMapper(response.errorMessage!),
-                )
-            }
-            req.log.info('Archive service request successfull');
-            return ResponseHandler.success(
-                res,
-                SERVICE_SUCCESS_MESSAGES.SERVICE_ARCHIVED,
-                HTTP_STATUS.OK
-            );
-        } catch (error) {
-            req.log.error(error);
-            next(error);
-        }
-    },
-
     getService : async (req : Request, res : Response, next : NextFunction) => {
         try {
             req.log.info('Get service request received');
@@ -172,7 +146,8 @@ export const serviceController = {
         try {
             req.log.info('Get bookings by service request received');
             const input = req.validated?.query;
-            const bookingData = ServiceMapper.toGetBookingsByServiceRequestDTO(input);
+            const { serviceId } = req.validated?.params;
+            const bookingData = ServiceMapper.toGetBookingsByServiceRequestDTO(input, serviceId);
             const response = await serviceService.getBookingsByService(bookingData);
             req.log.info('Get bookings by service request successfull');
             return ResponseHandler.success(

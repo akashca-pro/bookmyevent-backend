@@ -1,5 +1,5 @@
 import {  z } from 'zod';
-import { AvailabilitySchema, ContactSchema, LocationSchema, StrictString } from './helpers.schema';
+import { AvailabilitySchema, ContactSchema, LocationSchema, SortSchema, StrictString } from './helpers.schema';
 
 export const CreateServiceSchema = z.object({
     title : StrictString('Title')
@@ -135,8 +135,6 @@ export const GetBookingsByServicesQuerySchema = z.object({
   .number('Limit must be a number')
   .int()
   .optional(),
-  sort : z
-  .string()
-  .trim()
-  .optional(),
+  sort : SortSchema,
+  status : z.string('Status is required').optional()
 })
