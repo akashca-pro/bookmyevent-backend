@@ -68,6 +68,7 @@ export class ServiceService implements IServiceService {
         }
         const service = await this.#_serviceRepo.createService({
             ...req.data,
+            adminId : req.adminId
         });
         if(!service){
             logger.error(`[SERVICE-SERVICE] ${method} service creation failed`);

@@ -134,7 +134,7 @@
  *       properties:
  *         address:
  *           type: string
- *         city:
+ *         municipality:
  *           type: string
  *         pincode:
  *           type: string

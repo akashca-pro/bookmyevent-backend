@@ -4,7 +4,8 @@ import { IAvailability, IContact, ILocation, IService } from "../interfaces/serv
 const LocationSchema = new Schema<ILocation>(
     {
         address : { type : String, required : true },
-        city : { type : String, required : true },
+        district : { type : String, required : true },
+        municipality : { type : String, required : true },
         pincode : { type : String, required : true },
     },
     { _id : false }
@@ -45,7 +46,7 @@ const ServiceSchema = new Schema<IService>(
 
 ServiceSchema.index({ category : 1 });
 ServiceSchema.index({ title : 'text' });
-ServiceSchema.index({ 'location.city' : 1});
+ServiceSchema.index({ 'location.municipality' : 1});
 ServiceSchema.index({ 'availability.from' : 1})
 ServiceSchema.index({ 'availability.to' : 1})
 

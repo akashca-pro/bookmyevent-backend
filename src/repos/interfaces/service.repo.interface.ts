@@ -5,7 +5,8 @@ export interface ServiceFilter {
     category?: string;
     minPrice?: number;
     maxPrice?: number;
-    city?: string;
+    municipality?: string;
+    district? : string;
     adminId?: string;
     search? : string;
 }
@@ -28,7 +29,7 @@ export interface IServiceRepo {
     exists(id: string): Promise<boolean>;
 
     getServicesByCategory(category: string, options: ListOptions): Promise<IService[]>;
-    getServicesByCity(city: string, options: ListOptions): Promise<IService[]>;
+    getServicesByCity(municipality: string, options: ListOptions): Promise<IService[]>;
 
     getAvailableServices(
         bookedServiceIds : string[],

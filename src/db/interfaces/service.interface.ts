@@ -1,9 +1,10 @@
 import { Document, Types } from "mongoose";
 
 export interface ILocation {
-    address : string,
-    city : string;
-    pincode : string;
+    address: string;
+    district: string;
+    municipality: string;
+    pincode: string;
 }
 
 export interface IAvailability {

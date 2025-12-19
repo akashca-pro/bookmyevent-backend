@@ -240,7 +240,7 @@ serviceRouter.patch(
  *         schema:
  *           type: string
  *       - in: query
- *         name: city
+ *         name: municipality
  *         schema:
  *           type: string
  *     responses:

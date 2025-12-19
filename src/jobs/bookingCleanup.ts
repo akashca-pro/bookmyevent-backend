@@ -1,7 +1,6 @@
 import cron from 'node-cron';
 import { BookingModel } from '@/db/models/booking.model';
 import { BOOKING_STATUS } from '@/const/bookingStatus.const';
-import RedisClient from '@/config/redis'; 
 import logger from '@/utils/pinoLogger';
 import container from '@/config/inversify/container';
 import { ICacheProvider } from '@/providers/interfaces/cacheProvider.interface';

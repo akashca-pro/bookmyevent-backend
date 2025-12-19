@@ -4,7 +4,7 @@ import { UploadApiResponse } from 'cloudinary';
 export const uploadServiceImageBuffer = async (
   buffer: Buffer,
   serviceId: string,
-  imageName: 'cover' | 'thumbnail' | `gallery_${number}`,
+  imageName: 'cover' | 'thumbnail' | `gallery_${number}`| `gallery_${number}_${string}` ,
 ): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(

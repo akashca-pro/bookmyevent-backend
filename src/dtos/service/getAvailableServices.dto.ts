@@ -16,5 +16,6 @@ export interface GetAvailableServicesResponseDTO {
   category: CategoryPublicData;
   pricePerDay: number;
   thumbnail: string | null;
-  city: string;
+  municipality: string;
+  district : string
 }

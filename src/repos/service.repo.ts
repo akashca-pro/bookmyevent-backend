@@ -170,7 +170,8 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
             const query: any = { isArchived: false };
 
             if (filter.category) query.category = filter.category;
-            if (filter.city) query["location.city"] = filter.city;
+            if (filter.municipality) query["location.municipality"] = filter.municipality;
+            if (filter.district) query["location.district"] = filter.district;
             if (filter.adminId) query.adminId = filter.adminId;
 
             if (filter.minPrice != null || filter.maxPrice != null) {
@@ -242,14 +243,14 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async getServicesByCity(
-        city: string, 
+        municipality: string, 
         options: ListOptions
     ): Promise<IService[]> {
         const startTime = Date.now();
         const operation = 'getServicesByCity';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ 'location.city' : city }).skip(options.skip).limit(options.limit).sort(options.sort);
+            const result = await this._model.find({ 'location.municipality' : municipality }).skip(options.skip).limit(options.limit).sort(options.sort);
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result;
         } catch (error) {
@@ -281,7 +282,8 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
             };
 
             if (filter.category) query.category = filter.category;
-            if (filter.city) query["location.city"] = filter.city;
+            if (filter.municipality) query["location.municipality"] = filter.municipality;
+            if (filter.district) query["location.district"] = filter.district;
             if (filter.adminId) query.adminId = filter.adminId;
 
             if (filter.minPrice != null || filter.maxPrice != null) {
@@ -327,7 +329,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
             const query: any = { isArchived: false };
             
             if (filter.category) query.category = filter.category;
-            if (filter.city) query["location.city"] = filter.city;
+            if (filter.municipality) query["location.municipality"] = filter.municipality;
             if (filter.adminId) query.adminId = filter.adminId;
 
             if (filter.minPrice != null || filter.maxPrice != null) {
@@ -366,7 +368,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
             };
 
             if (filter.category) query.category = filter.category;
-            if (filter.city) query["location.city"] = filter.city;
+            if (filter.municipality) query["location.municipality"] = filter.municipality;
             if (filter.adminId) query.adminId = filter.adminId;
 
             if (filter.minPrice != null || filter.maxPrice != null) {

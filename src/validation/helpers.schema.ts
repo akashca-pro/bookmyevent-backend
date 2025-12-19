@@ -56,10 +56,15 @@ export const LocationSchema = z
       .min(5, "Address must be at least 5 characters long")
       .max(200, "Address must not exceed 200 characters"),
 
-    city: StrictString("City")
+    district: StrictString("Municipality")
       .trim()
-      .min(2, "City must be at least 2 characters long")
-      .max(100, "City must not exceed 100 characters"),
+      .min(2, "District must be at least 2 characters long")
+      .max(100, "District must not exceed 100 characters"),
+
+    municipality: StrictString("Municipality")
+      .trim()
+      .min(2, "Municipality must be at least 2 characters long")
+      .max(100, "Municipality must not exceed 100 characters"),
 
     pincode: z
       .string("Pincode is required")
@@ -101,7 +106,7 @@ export const ServieFilterSchema = z.object({
     category: StrictString().optional(),
     minPrice: z.coerce.number('Min price must be a number').int().optional(),
     maxPrice: z.coerce.number('Max price must be a number').int().optional(),
-    city: StrictString().optional(),
+    municipality: StrictString().optional(),
     adminId: z.string().optional(),
 })
     

@@ -78,7 +78,8 @@ export const GetServicesQuerySchema = z.object({
   category: StrictString().optional(),
   minPrice: z.coerce.number('Min price must be a number').int().optional(),
   maxPrice: z.coerce.number('Max price must be a number').int().optional(),
-  city: StrictString().optional(),
+  municipality: StrictString().optional(),
+  district : StrictString().optional(),
   adminId: z.string().optional(),
   limit: z.coerce
   .number('Limit must be a number')
@@ -108,7 +109,8 @@ export const GetAvailableServicesQuerySchema = z.object({
     category: StrictString().optional(),
     minPrice: z.coerce.number('Min price must be a number').int().optional(),
     maxPrice: z.coerce.number('Max price must be a number').int().optional(),
-    city: StrictString().optional(),
+    municipality: StrictString().optional(),
+    district: StrictString().optional(),
     adminId: z.string().optional(),
     limit: z.coerce
     .number('Limit must be a number')

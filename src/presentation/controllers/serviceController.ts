@@ -46,10 +46,12 @@ export const serviceController = {
             let thumbnail = null;
             if(thumbnailFile){
                 req.log.info(`${serviceId} Uploading thumbnail to cloudinary`);
+                const random = Math.random().toString(36).slice(2, 8);
+                const galleryKey = `gallery_${Date.now()}_${random}` as const;
                 const result = await uploadServiceImageBuffer(
                     thumbnailFile.buffer, 
                     serviceId, 
-                    'thumbnail'
+                    galleryKey
                 );
                 thumbnail = result.public_id;
                 req.log.info(`${serviceId} Thumbnail uploaded to cloudinary`);

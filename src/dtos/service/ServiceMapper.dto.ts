@@ -8,7 +8,6 @@ import { UpdateServiceRequestDTO } from "./updateService.dto";
 import { IUser } from "@/db/interfaces/user.interface";
 import { IService } from "@/db/interfaces/service.interface";
 import { Types } from "mongoose";
-import { CategoryPublicData } from "../category/categoryPublic.dto";
 
 export class ServiceMapper {
     static toCreateServiceRequestDTO(adminId : string, input : any) : CreateServiceRequestDTO {
@@ -33,7 +32,7 @@ export class ServiceMapper {
                 description : input.description ?? undefined,
                 category : input.category ? new Types.ObjectId(input.category) : undefined,
                 pricePerDay : input.pricePerDay ?? undefined,
-                thumbnail : thumbnail ?? undefined,
+                thumbnail : thumbnail ? thumbnail : '',
                 location : input.location ?? undefined,
                 availability : input.availability ?? undefined,
                 contact : input.contact ?? undefined,
@@ -60,7 +59,8 @@ export class ServiceMapper {
                 category : input?.category,
                 minPrice : input?.minPrice,
                 maxPrice : input?.maxPrice,
-                city : input?.city,
+                municipality : input?.municipality,
+                district : input?.district,
                 adminId : input?.adminId,
                 search : input?.search
             },
@@ -111,7 +111,8 @@ export class ServiceMapper {
                 category : input?.category,
                 minPrice : input?.minPrice,
                 maxPrice : input?.maxPrice,
-                city : input?.city,
+                district : input?.district,
+                municipality : input?.municipality,
                 adminId : input?.adminId,
                 search : input?.search
             },
@@ -139,7 +140,8 @@ export class ServiceMapper {
                 },
                 pricePerDay : service.pricePerDay,
                 thumbnail : service.thumbnail,
-                city : service.location.city
+                municipality : service.location.municipality,
+                district : service.location.district,
             }
         });
         return response;
