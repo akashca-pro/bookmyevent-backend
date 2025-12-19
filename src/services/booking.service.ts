@@ -23,15 +23,15 @@ import { GetMonthlyAvailabilityDTO } from "@/dtos/booking/getMonthlyAvailability
 @injectable()
 export class BookingService implements IBookingService {
 
-    #_bookingRepo : IBookingRepo;
-    #_serviceRepo : IServiceRepo;
-    #_cacheProvider : ICacheProvider;
+    #_bookingRepo: IBookingRepo;
+    #_serviceRepo: IServiceRepo;
+    #_cacheProvider: ICacheProvider;
 
     constructor(
-        @inject(TYPES.IBookingRepo) bookingRepo : IBookingRepo,
-        @inject(TYPES.IServiceRepo) serviceRepo : IServiceRepo,
-        @inject(TYPES.ICacheProvider) cacheProvider : ICacheProvider
-    ){
+        @inject(TYPES.IBookingRepo) bookingRepo: IBookingRepo,
+        @inject(TYPES.IServiceRepo) serviceRepo: IServiceRepo,
+        @inject(TYPES.ICacheProvider) cacheProvider: ICacheProvider
+    ) {
         this.#_bookingRepo = bookingRepo;
         this.#_serviceRepo = serviceRepo;
         this.#_cacheProvider = cacheProvider;
@@ -43,42 +43,42 @@ export class BookingService implements IBookingService {
         const method = 'BookingService.reserveBooking'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { serviceId, startDate, endDate } = req;
-        
+
         const resourceId = `${REDIS_KEY_PREFIX.BOOKING_LOCK}:${serviceId}:${startDate.toISOString()}`;
         const lockKey = `lock:${resourceId}`;
-        
+
         const lockToken = await this.#_cacheProvider.acquireLock(resourceId, config.BOOKING_CACHE_EXPIRY);
 
         if (!lockToken) {
             logger.error(`[BOOKING-SERVICE] ${method} failed to acquire lock`);
-            return { 
-                data: null, 
-                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED, 
-                success: false 
+            return {
+                data: null,
+                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED,
+                success: false
             };
         }
 
         try {
             const service = await this.#_serviceRepo.getServiceById(serviceId.toString());
-            if(!service){
+            if (!service) {
                 logger.error(`[BOOKING-SERVICE] ${method} service not found`);
                 return {
-                    data : null,
-                    errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
-                    success : false
+                    data: null,
+                    errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
+                    success: false
                 }
             }
-            if(startDate < service.availability.from || endDate > service.availability.to){
+            if (startDate < service.availability.from || endDate > service.availability.to) {
                 logger.error(`[BOOKING-SERVICE] ${method} booking outside service availability`);
                 return {
-                    data : null,
-                    errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_OUTSIDE_AVAILABILITY,
-                    success : false
+                    data: null,
+                    errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_OUTSIDE_AVAILABILITY,
+                    success: false
                 }
             }
             const conflicting = await this.#_bookingRepo.getConflictingBookings(serviceId.toString(), startDate, endDate);
             const hasConflict = conflicting.some(b => b.status === BOOKING_STATUS.CONFIRMED || b.status === BOOKING_STATUS.PENDING);
-            
+
             if (hasConflict) {
                 logger.error(`[BOOKING-SERVICE] ${method} booking already exists`);
                 await this.#_cacheProvider.releaseLock(lockKey, lockToken);
@@ -114,10 +114,10 @@ export class BookingService implements IBookingService {
 
         if (!booking || booking.status !== BOOKING_STATUS.PENDING) {
             logger.error(`[BOOKING-SERVICE] ${method} booking not found or already confirmed`);
-            return { 
-                data: null, 
-                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_SESSION_EXPIRED, 
-                success: false 
+            return {
+                data: null,
+                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_SESSION_EXPIRED,
+                success: false
             };
         }
 
@@ -127,9 +127,9 @@ export class BookingService implements IBookingService {
             await this.#_cacheProvider.releaseLock(booking.lockKey, booking.lockToken);
         }
         logger.info(`[BOOKING-SERVICE] ${method} lock released`);
-        return { 
-            data: null, 
-            success: true 
+        return {
+            data: null,
+            success: true
         };
     }
 
@@ -140,27 +140,27 @@ export class BookingService implements IBookingService {
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const cacheKey = `${REDIS_KEY_PREFIX.BOOKING}${id}`;
         const cachedData = await this.#_cacheProvider.get(cacheKey) as IBooking;
-        if(cachedData){
+        if (cachedData) {
             logger.info(`[BOOKING-SERVICE] ${method} data fetched from cache`);
             return {
-                data : cachedData,
-                success : true
+                data: cachedData,
+                success: true
             }
         }
         const booking = await this.#_bookingRepo.getBookingById(id);
-        if(!booking){
+        if (!booking) {
             logger.error(`[BOOKING-SERVICE] ${method} booking not found`);
             return {
-                data : null,
-                errorMessage : BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND,
-                success : false
+                data: null,
+                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND,
+                success: false
             }
         }
         await this.#_cacheProvider.set(cacheKey, booking, config.BOOKING_CACHE_EXPIRY);
         logger.info(`[BOOKING-SERVICE] ${method} booking fetched`);
         return {
-            data : booking,
-            success : true
+            data: booking,
+            success: true
         }
     }
 
@@ -179,10 +179,10 @@ export class BookingService implements IBookingService {
         const response = BookingMapper.toGetUserBookingResponseDTO(bookings);
         logger.info(`[BOOKING-SERVICE] ${method} bookings fetched`);
         return {
-            data : response,
-            total : count,
+            data: response,
+            total: count,
             page,
-            limit : options.limit
+            limit: options.limit
         }
     }
 
@@ -193,75 +193,86 @@ export class BookingService implements IBookingService {
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { bookingId, userId } = req;
         const booking = await this.#_bookingRepo.getBookingById(bookingId);
-        if(!booking){
+        if (!booking) {
             logger.error(`[BOOKING-SERVICE] ${method} booking not found`);
             return {
-                data : null,
-                errorMessage : BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND,
-                success : false
+                data: null,
+                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND,
+                success: false
             }
         }
-        if(booking.userId.toString() !== userId){
+        if (booking.userId.toString() !== userId) {
             logger.error(`[BOOKING-SERVICE] ${method} unauthorized access`);
             return {
-                data : null,
-                success : false,
-                errorMessage : BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND
+                data: null,
+                success: false,
+                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_NOT_FOUND
             }
         }
-        const cancelled = await this.#_bookingRepo.cancelBooking(bookingId);
-        if(!cancelled){
+
+        const cancelled = await this.#_bookingRepo.updateStatus(bookingId, BOOKING_STATUS.CANCELLED);
+        if (!cancelled) {
             logger.error(`[BOOKING-SERVICE] ${method} booking cancellation failed`);
             return {
-                data : null,
-                success : false,
-                errorMessage : BOOKING_SERVICE_ERRORS.BOOKING_FAILED
+                data: null,
+                success: false,
+                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_FAILED
             }
         }
+
+        if (booking.status === BOOKING_STATUS.PENDING && booking.lockKey && booking.lockToken) {
+            logger.info(`[BOOKING-SERVICE] ${method} releasing lock`, { lockKey: booking.lockKey });
+            try {
+                await this.#_cacheProvider.releaseLock(booking.lockKey, booking.lockToken);
+            } catch (error) {
+                logger.warn(`[BOOKING-SERVICE] ${method} failed to release lock after cancellation`, { error, lockKey: booking.lockKey });
+            }
+        }
+
         logger.info(`[BOOKING-SERVICE] ${method} booking cancelled`);
         await this.#_cacheProvider.del(`${REDIS_KEY_PREFIX.BOOKING}${bookingId}`);
         return {
-            data : null,
-            success : true
+            data: null,
+            success: true
         }
     }
 
     async checkAvailability(
-        req : CheckAvailabilityRequestDTO
+        req: CheckAvailabilityRequestDTO
     ): Promise<ResponseDTO<null>> {
         const method = 'BookingService.checkAvailability'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { serviceId, startDate, endDate } = req;
         const service = await this.#_serviceRepo.getServiceById(serviceId);
-        if(!service || service.isArchived){
+        if (!service || service.isArchived) {
             logger.error(`[BOOKING-SERVICE] ${method} service not found`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
-                success : false
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_NOT_FOUND,
+                success: false
             }
         }
-        if(startDate < service.availability.from || endDate > service.availability.to){
+        if (startDate < service.availability.from || endDate > service.availability.to) {
             logger.error(`[BOOKING-SERVICE] ${method} booking outside service availability`);
             return {
-                data : null,
-                errorMessage : SERVICE_SERVICE_ERRORS.SERVICE_OUTSIDE_AVAILABILITY,
-                success : false
+                data: null,
+                errorMessage: SERVICE_SERVICE_ERRORS.SERVICE_OUTSIDE_AVAILABILITY,
+                success: false
             }
         }
         const conflictingBookings = await this.#_bookingRepo.getConflictingBookings(serviceId, startDate, endDate);
-        if(conflictingBookings.length > 0){
+        if (conflictingBookings.length > 0) {
             logger.error(`[BOOKING-SERVICE] ${method} conflicting bookings found`);
             return {
-                data : null,
-                errorMessage : BOOKING_SERVICE_ERRORS.BOOKING_ALREADY_EXISTS,
-                success : false
+                data: null,
+                errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_ALREADY_EXISTS,
+                success: false
             }
         }
         logger.info(`[BOOKING-SERVICE] ${method} booking available`);
         return {
-            data : null,
-            success : true
+            data: null,
+            success: true
         }
     }
 
