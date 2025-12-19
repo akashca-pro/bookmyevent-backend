@@ -220,7 +220,6 @@ export class ServiceService implements IServiceService {
         const method = 'ServiceService.getServices';
         logger.info(`[SERVICE-SERVICE] ${method} started`);
         const skip = (req.page - 1) * req.options.limit;
-        console.log(req)
         if(req.filter.category){
             const category = await this.#_categoryRepo.getCategoryBySlug(req.filter.category);
             if(!category || category.isArchived || !category.isActive){

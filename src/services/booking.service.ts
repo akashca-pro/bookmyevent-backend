@@ -169,10 +169,11 @@ export class BookingService implements IBookingService {
     ): Promise<PaginationDTO<GetUserBookingResponseDTO>> {
         const method = 'BookingService.getUserBookings'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
-        const { options, page, userId } = req;
+        const { options, page, userId, filter } = req;
         const skip = (page - 1) * options.limit;
+        console.log(req);
         const [bookings, count] = await Promise.all([
-            this.#_bookingRepo.getBookingsByUser(userId, { ...options, skip }),
+            this.#_bookingRepo.getBookingsByUser(userId, { ...options, skip }, filter),
             this.#_bookingRepo.countBookingsByUser(userId)
         ])
         const response = BookingMapper.toGetUserBookingResponseDTO(bookings);

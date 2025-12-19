@@ -10,7 +10,8 @@ export interface IBookingRepo {
     // User bookings
     getBookingsByUser(
         userId: string,
-        options: ListOptions
+        options: ListOptions,
+        filter : { status? : string }
     ): Promise<(IBooking & { serviceId : Partial<IService> })[]>;
 
     countBookingsByUser(userId: string): Promise<number>;

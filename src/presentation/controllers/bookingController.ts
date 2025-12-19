@@ -93,7 +93,7 @@ export const bookingController = {
         try {
             req.log.info('Get bookings request received');
             const input = req.validated?.query;
-            const bookingData = BookingMapper.toGetUserBookingRequestDTO(input);
+            const bookingData = BookingMapper.toGetUserBookingRequestDTO(input, req.userId!);
             const response = await bookingService.getUserBookings(bookingData);
             req.log.info('Get bookings request successful');
             return ResponseHandler.success(

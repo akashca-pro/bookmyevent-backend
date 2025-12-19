@@ -1,5 +1,6 @@
 
 import {  z } from 'zod';
+import { SortSchema } from './helpers.schema';
 
 export const CreateBookingSchema = z.object({
     startDate : z.coerce
@@ -28,10 +29,8 @@ export const GetBookingsQuerySchema = z.object({
     limit: z.coerce
     .number('Limit must be a number')
     .int(),
-    sort : z
-    .string()
-    .trim()
-    .optional(),
+    sort : SortSchema,
+    status : z.string('Status is required').optional()
 })
 
 export const CheckAvailabilityQuerySchema = z.object({

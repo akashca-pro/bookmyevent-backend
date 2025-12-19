@@ -9,6 +9,46 @@ export const StrictString = (fieldName: string = "Field") => z
         `${fieldName} contains invalid characters or has consecutive spaces, punctuation, apostrophes, or hyphens.`
     );
 
+export const SortSchema = z
+  .string()
+  .trim()
+  .optional()
+  .transform((value) => {
+    if (!value) return { createdAt: -1 };
+
+    let parsed: unknown;
+
+    try {
+      parsed = JSON.parse(value);
+    } catch {
+      throw new Error("Invalid sort JSON");
+    }
+
+    if (
+      typeof parsed !== "object" ||
+      parsed === null ||
+      Array.isArray(parsed)
+    ) {
+      throw new Error("Sort must be an object");
+    }
+
+    // whitelist allowed fields
+    const allowedFields = ["createdAt", "startDate", "endDate", "totalPrice"];
+    const sort: Record<string, 1 | -1> = {};
+
+    for (const [key, val] of Object.entries(parsed)) {
+      if (!allowedFields.includes(key)) {
+        throw new Error(`Sorting by '${key}' is not allowed`);
+      }
+      if (val !== 1 && val !== -1) {
+        throw new Error("Sort order must be 1 or -1");
+      }
+      sort[key] = val;
+    }
+
+    return sort;
+  });    
+
 export const LocationSchema = z
   .object({
     address: StrictString("Address")

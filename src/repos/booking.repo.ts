@@ -48,17 +48,18 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
 
     async getBookingsByUser(
         userId: string, 
-        options: ListOptions
+        options: ListOptions,
+        filter : { status? : string }
     ): Promise<(IBooking & { serviceId : Partial<IService> })[]> {
         const startTime = Date.now();
         const operation = 'getBookingsByUser';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ userId })
+            const result = await this._model.find({ userId, status : filter.status })
             .skip(options.skip)
             .limit(options.limit)
             .sort(options.sort)
-            .populate('serviceId', 'title description thumbnailUrl');
+            .populate('serviceId', 'title description thumbnail');
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result as (IBooking & { serviceId : IService })[];
         } catch (error) {

@@ -6,6 +6,7 @@ import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "./getUserBo
 import { IService } from "@/db/interfaces/service.interface";
 import { GetMonthlyAvailabilityDTO } from "./getMonthlyAvailability.dto";
 import { Types } from "mongoose";
+import { BOOKING_STATUS } from "@/const/bookingStatus.const";
 
 export class BookingMapper{
     static toReserveBookingRequestDTO(input : any, userId : string, serviceId : string) : ReserveBookingRequestDTO {
@@ -26,10 +27,13 @@ export class BookingMapper{
             updatedAt : booking.updatedAt
         }
     }
-    static toGetUserBookingRequestDTO(input : any) : GetUserBookingRequestDTO {
+    static toGetUserBookingRequestDTO(input : any, userId : string) : GetUserBookingRequestDTO {
         return {
-            userId : input.userId,
+            userId : userId,
             page : input.page ?? 1,
+            filter : {
+                status : input.status ?? BOOKING_STATUS.CONFIRMED
+            },
             options : {
                 limit : input.limit ?? 10,
                 skip : input.skip ?? 0,
