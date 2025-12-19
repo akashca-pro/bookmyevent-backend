@@ -1,16 +1,21 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
 import { CancelBookingRequestDTO } from "@/dtos/booking/cancelBooking.dto";
 import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
-import { CreateBookingRequestDTO } from "@/dtos/booking/createBooking.dto";
 import { GetMonthlyAvailabilityDTO } from "@/dtos/booking/getMonthlyAvailability.dto";
 import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "@/dtos/booking/getUserBookings.dto";
+import { ReserveBookingRequestDTO, ReserveBookingResponseDTO } from "@/dtos/booking/reserveBooking.dto";
 import { PaginationDTO } from "@/dtos/Pagination.dto";
 import { ResponseDTO } from "@/dtos/Response.dto";
 
 export interface IBookingService {
-    createBooking(
-        req : CreateBookingRequestDTO
-    ): Promise<ResponseDTO<null>>;
+
+    reserveBooking(
+        req : ReserveBookingRequestDTO
+    ) : Promise<ResponseDTO<ReserveBookingResponseDTO | null>>;
+
+    confirmBooking(
+        bookingId : string
+    ) : Promise<ResponseDTO<null>>;
 
     // Get single booking
     getBookingById(

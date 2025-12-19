@@ -22,7 +22,7 @@ export const CreateServiceSchema = z.object({
 }).strict();
 
 export const ServiceIdParamsSchema = z.object({
-    serviceId : z.string('Problem Id is required')
+    serviceId : z.string('Service Id is required')
 })
 
 export const UpdateServiceSchema = z.object({

@@ -4,7 +4,7 @@ import { IUser } from "@/db/interfaces/user.interface";
 import { ListOptions } from "@/dtos/Listoptions.dto";
 
 export interface IBookingRepo {
-    createBooking(data: Partial<IBooking>): Promise<IBooking | null>;
+    createBooking(data: Partial<IBooking>): Promise<IBooking>;
     getBookingById(id: string): Promise<IBooking | null>;
 
     // User bookings
@@ -28,6 +28,8 @@ export interface IBookingRepo {
         startDate: Date,
         endDate: Date
     ): Promise<IBooking[]>;
+
+    updateStatus(id: string, status: string): Promise<boolean>;
 
     getBookedServiceIdsInRange(
         startDate: Date,

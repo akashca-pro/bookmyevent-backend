@@ -15,7 +15,7 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
 
     async createBooking(
         data: Partial<IBooking>
-    ): Promise<IBooking | null> {
+    ): Promise<IBooking> {
         const startTime = Date.now();
         const operation = 'createBooking';
         try {
@@ -61,6 +61,26 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
             .populate('serviceId', 'title description thumbnailUrl');
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result as (IBooking & { serviceId : IService })[];
+        } catch (error) {
+            logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
+            throw error;
+        }
+    }
+
+    async updateStatus(
+        id : string, 
+        status : string
+    ) : Promise<boolean> {
+        const startTime = Date.now();
+        const operation = 'updateStatus';
+        try {
+            logger.debug(`[REPO] Executing ${operation}`);
+            const result = await this._model.updateOne(
+                { _id: id, status: { $ne: status } },
+                { $set: { status } }
+            );
+            logger.info(`[REPO] ${operation} successful`, { id, duration: Date.now() - startTime });
+            return result.modifiedCount === 1;
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
             throw error;

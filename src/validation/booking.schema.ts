@@ -10,6 +10,11 @@ export const CreateBookingSchema = z.object({
     .refine((d) => !isNaN(d.getTime()), "End date must be a valid date"),
 })
 
+export const ReserveBookingParamSchema = z.object({
+    serviceId : z.string('Service id is required'),
+    bookingId : z.string('Booking id is required')
+})
+
 export const BookingIdParamSchema = z.object({
     bookingId : z.string('Booking id is required')
 })
@@ -22,9 +27,6 @@ export const GetBookingsQuerySchema = z.object({
     .default(1),
     limit: z.coerce
     .number('Limit must be a number')
-    .int(),
-    skip: z.coerce
-    .number('Skip must be a number')
     .int(),
     sort : z
     .string()

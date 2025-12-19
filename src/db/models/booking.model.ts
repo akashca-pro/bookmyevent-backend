@@ -9,7 +9,9 @@ export const BookingSchema = new Schema<IBooking>(
         startDate : { type : Date, required : true },
         endDate : { type : Date, required : true },
         totalPrice : { type : Number, required : true },
-        status : { type : String, enum : Object.values(BOOKING_STATUS), required : true }
+        status : { type : String, enum : Object.values(BOOKING_STATUS), required : true },
+        lockToken: { type: String }, 
+        lockKey: { type: String }
     },
     { timestamps : true }
 ) 

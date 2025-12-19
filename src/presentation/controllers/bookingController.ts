@@ -11,25 +11,52 @@ import { NextFunction, Request, Response } from "express";
 const bookingService = container.get<IBookingService>(TYPES.IBookingService)
 
 export const bookingController = {
-    createBooking : async (req : Request, res : Response, next : NextFunction)=> {
+    reserveBooking : async (req : Request, res : Response, next : NextFunction)=> {
         try {
-            req.log.info('Create booking request received');
+            req.log.info('Reserve booking request received');
+            const {serviceId} = req.validated?.params;
             const input = req.validated?.body;
-            const bookingData = BookingMapper.toCreateBookingRequestDTO(input, req.userId!);
-            const response = await bookingService.createBooking(bookingData);
+            const bookingData = BookingMapper.toReserveBookingRequestDTO(input, req.userId!, serviceId!);
+            const response = await bookingService.reserveBooking(bookingData);
             if(!response.success){
-                req.log.error('Create booking request failed');
+                req.log.error('Reserve booking request failed');
                 return ResponseHandler.error(
                     res,
                     response.errorMessage,
                     errorStatusCodeMapper(response.errorMessage!)
                 );
             }
-            req.log.info('Create booking request successful');
+            req.log.info('Reserve booking request successful');
             return ResponseHandler.success(
                 res,
-                BOOKING_SUCCESS_MESSAGES.BOOKING_CREATED,
+                BOOKING_SUCCESS_MESSAGES.BOOKING_RESERVED,
                 HTTP_STATUS.OK,
+                response.data
+            )
+        } catch (error) {
+            req.log.error(error);
+            next(error);
+        }
+    },
+
+    confirmBooking : async (req : Request, res : Response, next : NextFunction) => {
+        try {
+            req.log.info('Confirm booking request received');
+            const { bookingId } = req.validated?.params;
+            const response = await bookingService.confirmBooking(bookingId);
+            if(!response.success){
+                req.log.error('Confirm booking request failed');
+                return ResponseHandler.error(
+                    res,
+                    response.errorMessage!,
+                    errorStatusCodeMapper(response.errorMessage!)
+                );
+            }
+            req.log.info('Confirm booking request successful');
+            return ResponseHandler.success(
+                res,
+                BOOKING_SUCCESS_MESSAGES.BOOKING_CONFIRMED,
+                HTTP_STATUS.OK
             )
         } catch (error) {
             req.log.error(error);

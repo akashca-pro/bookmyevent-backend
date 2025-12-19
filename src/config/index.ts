@@ -18,6 +18,7 @@ interface Config  {
     CLOUDINARY_CLOUD_NAME : string;
     CLOUDINARY_API_KEY : string;
     CLOUDINARY_API_SECRET : string;
+    BOOKING_LOCK_TIMEOUT : number;
 }
 
 export const config : Config = {
@@ -37,4 +38,5 @@ export const config : Config = {
     CLOUDINARY_CLOUD_NAME : process.env.CLOUDINARY_CLOUD_NAME!,
     CLOUDINARY_API_KEY : process.env.CLOUDINARY_API_KEY!,
     CLOUDINARY_API_SECRET : process.env.CLOUDINARY_API_SECRET!,
+    BOOKING_LOCK_TIMEOUT : Number(process.env.BOOKING_LOCK_TIMEOUT)
 }

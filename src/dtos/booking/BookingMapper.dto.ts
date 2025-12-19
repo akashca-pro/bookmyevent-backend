@@ -1,18 +1,29 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
 import { CancelBookingRequestDTO } from "./cancelBooking.dto";
 import { CheckAvailabilityRequestDTO } from "./checkAvailability.dto";
-import { CreateBookingRequestDTO } from "./createBooking.dto";
+import { ReserveBookingRequestDTO, ReserveBookingResponseDTO } from "./reserveBooking.dto";
 import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "./getUserBookings.dto";
 import { IService } from "@/db/interfaces/service.interface";
 import { GetMonthlyAvailabilityDTO } from "./getMonthlyAvailability.dto";
+import { Types } from "mongoose";
 
 export class BookingMapper{
-    static toCreateBookingRequestDTO(input : any, userId : string) : CreateBookingRequestDTO {
+    static toReserveBookingRequestDTO(input : any, userId : string, serviceId : string) : ReserveBookingRequestDTO {
         return {
-            userId : userId,
-            serviceId : input.serviceId,
+            userId : new Types.ObjectId(userId),
+            serviceId : new Types.ObjectId(serviceId),
             startDate : input.startDate,
             endDate : input.endDate
+        }
+    }
+    static toReserveBookingResponseDTO(booking : IBooking) : ReserveBookingResponseDTO {
+        return {
+            id : booking._id!,
+            startDate : booking.startDate,
+            endDate : booking.endDate,
+            totalPrice : booking.totalPrice,
+            createdAt : booking.createdAt,
+            updatedAt : booking.updatedAt
         }
     }
     static toGetUserBookingRequestDTO(input : any) : GetUserBookingRequestDTO {
