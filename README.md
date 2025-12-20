@@ -30,22 +30,22 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔐 Authentication & Authorization
+### Authentication & Authorization
 
 - JWT-based authentication with HTTP-only cookies
 - Role-based access control (User / Admin)
 - Secure password hashing with bcrypt
 
-### 📦 Service Management (Admin)
+### Service Management (Admin)
 
 - Create, update, and manage event services
 - Category management for service organization
 - Image upload support via Cloudinary
 - Service availability tracking
 
-### 📅 Booking System
+### Booking System
 
 - Real-time service availability checking
 - Reservation with automatic timeout (booking locks)
@@ -53,14 +53,14 @@
 - Monthly availability calendar view
 - Booking status management (Reserved → Confirmed → Cancelled)
 
-### 🚀 Performance & Reliability
+### Performance & Reliability
 
 - Redis caching for profiles, services, bookings, and categories
 - Structured logging with Pino
 - Automated booking cleanup via cron jobs
 - Request validation with Zod schemas
 
-### 📚 Developer Experience
+### Developer Experience
 
 - OpenAPI/Swagger documentation
 - TypeScript with strict type safety
@@ -88,7 +88,7 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -114,7 +114,7 @@ src/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -200,7 +200,7 @@ src/
 
 ---
 
-## 📚 API Documentation
+## API Documentation
 
 ### Interactive Swagger UI
 
@@ -272,7 +272,7 @@ http://localhost:9000/openapi.json
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ### Build and Run with Docker
 
@@ -299,7 +299,7 @@ The project uses a multi-stage Docker build for optimized production images:
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### CI/CD Pipeline
 
@@ -329,7 +329,7 @@ gcloud run deploy bookmyevent \
 
 ---
 
-## 🔒 Security
+## Security
 
 - **HTTP-only Cookies**: JWT tokens stored in secure HTTP-only cookies
 - **Helmet**: Security headers middleware
@@ -358,13 +358,13 @@ Response:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the ISC License.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
