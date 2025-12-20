@@ -30,22 +30,22 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔐 Authentication & Authorization
+### Authentication & Authorization
 
 - JWT-based authentication with HTTP-only cookies
 - Role-based access control (User / Admin)
 - Secure password hashing with bcrypt
 
-### 📦 Service Management (Admin)
+### Service Management (Admin)
 
 - Create, update, and manage event services
 - Category management for service organization
 - Image upload support via Cloudinary
 - Service availability tracking
 
-### 📅 Booking System
+### Booking System
 
 - Real-time service availability checking
 - Reservation with automatic timeout (booking locks)
@@ -53,14 +53,14 @@
 - Monthly availability calendar view
 - Booking status management (Reserved → Confirmed → Cancelled)
 
-### 🚀 Performance & Reliability
+### Performance & Reliability
 
 - Redis caching for profiles, services, bookings, and categories
 - Structured logging with Pino
 - Automated booking cleanup via cron jobs
 - Request validation with Zod schemas
 
-### 📚 Developer Experience
+### Developer Experience
 
 - OpenAPI/Swagger documentation
 - TypeScript with strict type safety
@@ -88,7 +88,7 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -114,7 +114,7 @@ src/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -200,7 +200,7 @@ src/
 
 ---
 
-## 📚 API Documentation
+## API Documentation
 
 ### Interactive Swagger UI
 
@@ -222,57 +222,57 @@ http://localhost:9000/openapi.json
 
 #### Authentication (`/api/v1/auth`)
 
-| Method | Endpoint       | Description       | Auth |
-| ------ | -------------- | ----------------- | ---- |
-| POST   | `/signup`      | User registration | ❌   |
-| POST   | `/user/login`  | User login        | ❌   |
-| POST   | `/admin/login` | Admin login       | ❌   |
-| DELETE | `/logout`      | Logout            | 🔒   |
+| Method | Endpoint       | Description       | Auth         |
+| ------ | -------------- | ----------------- | ------------ |
+| POST   | `/signup`      | User registration | Nil          |
+| POST   | `/user/login`  | User login        | Nil          |
+| POST   | `/admin/login` | Admin login       | Nil          |
+| DELETE | `/logout`      | Logout            | User | Admin |
 
 #### Profile (`/api/v1/profile`)
 
-| Method | Endpoint | Description              | Auth |
-| ------ | -------- | ------------------------ | ---- |
-| GET    | `/`      | Get current user profile | 🔒   |
+| Method | Endpoint | Description              | Auth         |
+| ------ | -------- | ------------------------ | ------------ |
+| GET    | `/`      | Get current user profile | User | Admin |
 
 #### Services (`/api/v1/services`)
 
-| Method | Endpoint               | Description            | Auth     |
-| ------ | ---------------------- | ---------------------- | -------- |
-| GET    | `/available`           | Get available services | ❌       |
-| GET    | `/:serviceId`          | Get service details    | ❌       |
-| POST   | `/create`              | Create new service     | 🔒 Admin |
-| PATCH  | `/:serviceId/update`   | Update service         | 🔒 Admin |
-| GET    | `/`                    | Get all services       | 🔒 Admin |
-| GET    | `/:serviceId/bookings` | Get service bookings   | 🔒 Admin |
+| Method | Endpoint               | Description            | Auth      |
+| ------ | ---------------------- | ---------------------- | --------- |
+| GET    | `/available`           | Get available services | Nil       |
+| GET    | `/:serviceId`          | Get service details    | Nil       |
+| POST   | `/create`              | Create new service     | Admin     |
+| PATCH  | `/:serviceId/update`   | Update service         | Admin     |
+| GET    | `/`                    | Get all services       | Admin     |
+| GET    | `/:serviceId/bookings` | Get service bookings   | Admin     |
 
 #### Bookings (`/api/v1/bookings`)
 
-| Method | Endpoint                                       | Description          | Auth    |
-| ------ | ---------------------------------------------- | -------------------- | ------- |
-| POST   | `/services/:serviceId/book/reserve`            | Reserve booking      | 🔒 User |
-| POST   | `/services/:serviceId/book/:bookingId/confirm` | Confirm booking      | 🔒 User |
-| GET    | `/:bookingId`                                  | Get booking details  | 🔒 User |
-| GET    | `/`                                            | Get user bookings    | 🔒 User |
-| POST   | `/:bookingId/cancel`                           | Cancel booking       | 🔒 User |
-| GET    | `/:serviceId/checkAvailability`                | Check availability   | 🔒 User |
-| GET    | `/services/:serviceId/availability`            | Monthly availability | 🔒 User |
+| Method | Endpoint                                       | Description          | Auth      |
+| ------ | ---------------------------------------------- | -------------------- | --------- |
+| POST   | `/services/:serviceId/book/reserve`            | Reserve booking      | User      |
+| POST   | `/services/:serviceId/book/:bookingId/confirm` | Confirm booking      | User      |
+| GET    | `/:bookingId`                                  | Get booking details  | User      |
+| GET    | `/`                                            | Get user bookings    | User      |
+| POST   | `/:bookingId/cancel`                           | Cancel booking       | User      |
+| GET    | `/:serviceId/checkAvailability`                | Check availability   | User      |
+| GET    | `/services/:serviceId/availability`            | Monthly availability | User      |
 
 #### Categories (`/api/v1/categories`)
 
-| Method | Endpoint              | Description        | Auth     |
-| ------ | --------------------- | ------------------ | -------- |
-| POST   | `/create`             | Create category    | 🔒 Admin |
-| GET    | `/`                   | Get all categories | 🔒 Admin |
-| GET    | `/:categoryId`        | Get category       | 🔒 Admin |
-| PATCH  | `/:categoryId/update` | Update category    | 🔒 Admin |
-| DELETE | `/:categoryId/delete` | Delete category    | 🔒 Admin |
+| Method | Endpoint              | Description        | Auth      |
+| ------ | --------------------- | ------------------ | --------- |
+| POST   | `/create`             | Create category    | Admin     |
+| GET    | `/`                   | Get all categories | Admin     |
+| GET    | `/:categoryId`        | Get category       | Admin     |
+| PATCH  | `/:categoryId/update` | Update category    | Admin     |
+| DELETE | `/:categoryId/delete` | Delete category    | Admin     |
 
-**Legend:** ❌ Public | 🔒 Authenticated | 🔒 Admin = Admin role required | 🔒 User = User role required
+**Legend:** No = Public | Yes = Authenticated | Yes Admin = Admin role required | Yes User = User role required
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ### Build and Run with Docker
 
@@ -299,7 +299,7 @@ The project uses a multi-stage Docker build for optimized production images:
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### CI/CD Pipeline
 
@@ -329,7 +329,7 @@ gcloud run deploy bookmyevent \
 
 ---
 
-## 🔒 Security
+## Security
 
 - **HTTP-only Cookies**: JWT tokens stored in secure HTTP-only cookies
 - **Helmet**: Security headers middleware
@@ -358,13 +358,13 @@ Response:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the ISC License.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
