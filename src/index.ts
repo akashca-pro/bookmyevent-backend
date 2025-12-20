@@ -14,6 +14,7 @@ import { connectDB } from '@/config/db';
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 import { categoryRouter } from './presentation/routes/category';
+import path from "path";
 
 const app = express();
 app.use(httpLogger);
@@ -38,18 +39,20 @@ app.get('/health', (req: Request, res: Response) => {
 
 // To exports full api details in json.
 app.get("/openapi.json", (req, res) => {
-    res.json(swaggerSpec);
+  res.sendFile(path.join(process.cwd(), "swagger.json"));
 });
+
 
 app.use(
   "/doc",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
+  swaggerUi.setup(undefined, {
     swaggerOptions: {
-      withCredentials: true
-    }
+      url: "/openapi.json",
+    },
   })
 );
+
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/services', serviceRouter);
