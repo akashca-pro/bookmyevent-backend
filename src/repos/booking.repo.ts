@@ -163,7 +163,6 @@ export class BookingRepo extends BaseRepo<IBooking> implements IBookingRepo {
             const result = await this._model.find(
                 {
                     serviceId,
-                    status: "CONFIRMED",
                     startDate: { $lte: endDate },
                     endDate: { $gte: startDate }
                 }
