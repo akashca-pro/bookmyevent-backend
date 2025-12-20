@@ -24,7 +24,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 **BookMyEvent Backend** is a scalable event booking platform API that enables users to discover and book various event services while providing administrators with powerful management capabilities. Built with clean architecture principles and industry best practices.
 
@@ -69,7 +69,7 @@
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Category                 | Technology             |
 | ------------------------ | ---------------------- |
@@ -373,7 +373,3 @@ This project is licensed under the ISC License.
 5. Open a Pull Request
 
 ---
-
-<p align="center">
-  Made with ❤️ for event booking
-</p>
