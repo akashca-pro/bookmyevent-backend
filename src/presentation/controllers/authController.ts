@@ -6,7 +6,7 @@ import { AUTH_SUCCESS_MESSAGES } from "@/const/SuccessTypes.const";
 import { IAuthService } from "@/services/interfaces/auth.service.interface";
 import HTTP_STATUS from "@/utils/httpStatusCodes";
 import ResponseHandler from "@/utils/responseHandler";
-import { setCookie } from "@/utils/set-cookie";
+import { getCookieOptions, setCookie } from "@/utils/set-cookie";
 import ms from "ms";
 import { NextFunction, Request, Response } from "express";
 import { AuthMapper } from "@/dtos/mappers/AuthMapper.dto";
@@ -88,7 +88,8 @@ export const authController = {
     logout : async (req : Request, res : Response, next : NextFunction) => {
         try {
             req.log.info('Logout request received');
-            res.clearCookie(APP_LABELS.ACCESS_TOKEN);
+            const cookieOptions = getCookieOptions();
+            res.clearCookie(APP_LABELS.ACCESS_TOKEN, cookieOptions);
             return ResponseHandler.success(res, AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESSFUL, HTTP_STATUS.OK)
         } catch (error) {
             req.log.error(error);
