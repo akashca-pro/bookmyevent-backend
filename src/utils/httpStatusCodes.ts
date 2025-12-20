@@ -72,3 +72,5 @@ const HTTP_STATUS = Object.freeze({
   });
   
 export default HTTP_STATUS
+
+export type HttpStatusCode = (typeof HTTP_STATUS)[keyof typeof HTTP_STATUS];
