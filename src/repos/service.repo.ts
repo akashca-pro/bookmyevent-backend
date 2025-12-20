@@ -7,7 +7,7 @@ import { ListOptions } from "@/dtos/Listoptions.dto";
 
 
 export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
-    constructor(){
+    constructor() {
         super(ServiceModel);
     }
 
@@ -28,18 +28,18 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async getServiceByTitle(
-        title : string
-    ) : Promise<IService | null> {
+        title: string
+    ): Promise<IService | null> {
         const startTime = Date.now();
         const operation = 'getServiceByTitle';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
             const result = await this._model.findOne({ title })
-            .populate({
-                path: 'category',
-                select: 'name slug',
-                match: { isActive: true, isArchived: false }
-            });
+                .populate({
+                    path: 'category',
+                    select: 'name slug',
+                    match: { isActive: true, isArchived: false }
+                });
             const found = !!result;
             logger.info(`[REPO] ${operation} successful`, { title, found, duration: Date.now() - startTime });
             return result;
@@ -57,11 +57,11 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
         try {
             logger.debug(`[REPO] Executing ${operation}`);
             const result = await this._model.findById(id)
-            .populate({
-                path: 'category',
-                select: 'name slug',
-                match: { isActive: true, isArchived: false }
-            });
+                .populate({
+                    path: 'category',
+                    select: 'name slug',
+                    match: { isActive: true, isArchived: false }
+                });
             const found = !!result;
             logger.info(`[REPO] ${operation} successful`, { id, found, duration: Date.now() - startTime });
             return result;
@@ -72,7 +72,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async updateService(
-        id: string, 
+        id: string,
         data: Partial<IService>
     ): Promise<boolean> {
         const startTime = Date.now();
@@ -127,7 +127,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async getServicesByAdmin(
-        adminId: string, 
+        adminId: string,
         options: ListOptions
     ): Promise<IService[]> {
         const startTime = Date.now();
@@ -158,7 +158,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
 
 
     async getServices(
-        filter: ServiceFilter, 
+        filter: ServiceFilter,
         options: ListOptions
     ): Promise<IService[]> {
         const startTime = Date.now();
@@ -168,23 +168,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
             logger.debug(`[REPO] Executing ${operation}`);
             const adminId = filter.adminId;
             const query: any = { isArchived: false };
-            console.log(query);
-            if (filter.category) query.category = filter.category;
-            if (filter.municipality) query["location.municipality"] = filter.municipality;
-            if (filter.district) query["location.district"] = filter.district;
-            if (filter.adminId) query.adminId = filter.adminId;
-
-            if (filter.minPrice != null || filter.maxPrice != null) {
-                query.pricePerDay = {};
-                if (filter.minPrice != null) query.pricePerDay.$gte = filter.minPrice;
-                if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
-            }
-
-            if (filter.search && filter.search.trim()) {
-                query.$text = {
-                    $search: filter.search.trim(),
-                };
-            }
+            this.#_applyCommonFilters(query, filter);
 
             const result = await this._model
                 .find(query)
@@ -226,7 +210,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async getServicesByCategory(
-        category: string, 
+        category: string,
         options: ListOptions
     ): Promise<IService[]> {
         const startTime = Date.now();
@@ -243,24 +227,24 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async getServicesByCity(
-        municipality: string, 
+        municipality: string,
         options: ListOptions
     ): Promise<IService[]> {
         const startTime = Date.now();
         const operation = 'getServicesByCity';
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-            const result = await this._model.find({ 'location.municipality' : municipality }).skip(options.skip).limit(options.limit).sort(options.sort);
+            const result = await this._model.find({ 'location.municipality': municipality }).skip(options.skip).limit(options.limit).sort(options.sort);
             logger.info(`[REPO] ${operation} successful`, { count: result.length, duration: Date.now() - startTime });
             return result;
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
             throw error;
-        }   
+        }
     }
 
     async getAvailableServices(
-        bookedServiceIds : string[],
+        bookedServiceIds: string[],
         startDate: Date,
         endDate: Date,
         filter: ServiceFilter,
@@ -275,28 +259,13 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
 
             const query: any = {
                 isArchived: false,
-                isActive : true,
+                isActive: true,
                 _id: { $nin: bookedServiceIds },
                 "availability.from": { $lte: endDate },
                 "availability.to": { $gte: startDate }
             };
 
-            if (filter.category) query.category = filter.category;
-            if (filter.municipality) query["location.municipality"] = filter.municipality;
-            if (filter.district) query["location.district"] = filter.district;
-            if (filter.adminId) query.adminId = filter.adminId;
-
-            if (filter.minPrice != null || filter.maxPrice != null) {
-                query.pricePerDay = {};
-                if (filter.minPrice != null) query.pricePerDay.$gte = filter.minPrice;
-                if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
-            }
-
-            if (filter.search && filter.search.trim()) {
-                query.$text = {
-                    $search: filter.search.trim(),
-                };
-            }
+            this.#_applyCommonFilters(query, filter);
 
             const result = await this._model
                 .find(query)
@@ -327,16 +296,8 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
             logger.debug(`[REPO] Executing ${operation}`);
 
             const query: any = { isArchived: false };
-            
-            if (filter.category) query.category = filter.category;
-            if (filter.municipality) query["location.municipality"] = filter.municipality;
-            if (filter.adminId) query.adminId = filter.adminId;
 
-            if (filter.minPrice != null || filter.maxPrice != null) {
-                query.pricePerDay = {};
-                if (filter.minPrice != null) query.pricePerDay.$gte = filter.minPrice;
-                if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
-            }
+            this.#_applyCommonFilters(query, filter);
 
             const result = await this._model.countDocuments(query);
             logger.info(`[REPO] ${operation} successful`, { count: result, duration: Date.now() - startTime });
@@ -348,7 +309,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
     }
 
     async countAvailableServices(
-        bookedServiceIds : string[],
+        bookedServiceIds: string[],
         startDate: Date,
         endDate: Date,
         filter: ServiceFilter
@@ -367,15 +328,7 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
                 "availability.to": { $gte: startDate }
             };
 
-            if (filter.category) query.category = filter.category;
-            if (filter.municipality) query["location.municipality"] = filter.municipality;
-            if (filter.adminId) query.adminId = filter.adminId;
-
-            if (filter.minPrice != null || filter.maxPrice != null) {
-                query.pricePerDay = {};
-                if (filter.minPrice != null) query.pricePerDay.$gte = filter.minPrice;
-                if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
-            }
+            this.#_applyCommonFilters(query, filter);
 
             const count = await this._model.countDocuments(query);
 
@@ -385,6 +338,23 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
         } catch (error) {
             logger.error(`[REPO] ${operation} failed`, { error, duration: Date.now() - startTime });
             throw error;
+        }
+    }
+
+    #_applyCommonFilters(query: any, filter: ServiceFilter) {
+        if (filter.category) query.category = filter.category;
+        if (filter.municipality) query["location.municipality"] = filter.municipality;
+        if (filter.district) query["location.district"] = filter.district;
+        if (filter.adminId) query.adminId = filter.adminId;
+
+        if (filter.minPrice != null || filter.maxPrice != null) {
+            query.pricePerDay = {};
+            if (filter.minPrice != null) query.pricePerDay.$gte = filter.minPrice;
+            if (filter.maxPrice != null) query.pricePerDay.$lte = filter.maxPrice;
+        }
+
+        if (filter.search && filter.search.trim()) {
+            query.title = { $regex: filter.search.trim(), $options: 'i' };
         }
     }
 }
