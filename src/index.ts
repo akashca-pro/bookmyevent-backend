@@ -69,7 +69,7 @@ const startServer = async () => {
         await connectDB();
         setupBookingCleanupCron();
         app.listen(config.PORT, () => {
-            logger.info(`HTTPS ${config.SERVICE_NAME} running on port ${config.PORT}`);
+            logger.info(`HTTPS ${config.SERVICE_NAME} running on port ${config.PORT || 9000}`);
         });
 
     } catch (error) {
