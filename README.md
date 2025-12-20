@@ -222,53 +222,53 @@ http://localhost:9000/openapi.json
 
 #### Authentication (`/api/v1/auth`)
 
-| Method | Endpoint       | Description       | Auth |
-| ------ | -------------- | ----------------- | ---- |
-| POST   | `/signup`      | User registration | ❌   |
-| POST   | `/user/login`  | User login        | ❌   |
-| POST   | `/admin/login` | Admin login       | ❌   |
-| DELETE | `/logout`      | Logout            | 🔒   |
+| Method | Endpoint       | Description       | Auth         |
+| ------ | -------------- | ----------------- | ------------ |
+| POST   | `/signup`      | User registration | Nil          |
+| POST   | `/user/login`  | User login        | Nil          |
+| POST   | `/admin/login` | Admin login       | Nil          |
+| DELETE | `/logout`      | Logout            | User | Admin |
 
 #### Profile (`/api/v1/profile`)
 
-| Method | Endpoint | Description              | Auth |
-| ------ | -------- | ------------------------ | ---- |
-| GET    | `/`      | Get current user profile | 🔒   |
+| Method | Endpoint | Description              | Auth         |
+| ------ | -------- | ------------------------ | ------------ |
+| GET    | `/`      | Get current user profile | User | Admin |
 
 #### Services (`/api/v1/services`)
 
-| Method | Endpoint               | Description            | Auth     |
-| ------ | ---------------------- | ---------------------- | -------- |
-| GET    | `/available`           | Get available services | ❌       |
-| GET    | `/:serviceId`          | Get service details    | ❌       |
-| POST   | `/create`              | Create new service     | 🔒 Admin |
-| PATCH  | `/:serviceId/update`   | Update service         | 🔒 Admin |
-| GET    | `/`                    | Get all services       | 🔒 Admin |
-| GET    | `/:serviceId/bookings` | Get service bookings   | 🔒 Admin |
+| Method | Endpoint               | Description            | Auth      |
+| ------ | ---------------------- | ---------------------- | --------- |
+| GET    | `/available`           | Get available services | Nil       |
+| GET    | `/:serviceId`          | Get service details    | Nil       |
+| POST   | `/create`              | Create new service     | Admin     |
+| PATCH  | `/:serviceId/update`   | Update service         | Admin     |
+| GET    | `/`                    | Get all services       | Admin     |
+| GET    | `/:serviceId/bookings` | Get service bookings   | Admin     |
 
 #### Bookings (`/api/v1/bookings`)
 
-| Method | Endpoint                                       | Description          | Auth    |
-| ------ | ---------------------------------------------- | -------------------- | ------- |
-| POST   | `/services/:serviceId/book/reserve`            | Reserve booking      | 🔒 User |
-| POST   | `/services/:serviceId/book/:bookingId/confirm` | Confirm booking      | 🔒 User |
-| GET    | `/:bookingId`                                  | Get booking details  | 🔒 User |
-| GET    | `/`                                            | Get user bookings    | 🔒 User |
-| POST   | `/:bookingId/cancel`                           | Cancel booking       | 🔒 User |
-| GET    | `/:serviceId/checkAvailability`                | Check availability   | 🔒 User |
-| GET    | `/services/:serviceId/availability`            | Monthly availability | 🔒 User |
+| Method | Endpoint                                       | Description          | Auth      |
+| ------ | ---------------------------------------------- | -------------------- | --------- |
+| POST   | `/services/:serviceId/book/reserve`            | Reserve booking      | User      |
+| POST   | `/services/:serviceId/book/:bookingId/confirm` | Confirm booking      | User      |
+| GET    | `/:bookingId`                                  | Get booking details  | User      |
+| GET    | `/`                                            | Get user bookings    | User      |
+| POST   | `/:bookingId/cancel`                           | Cancel booking       | User      |
+| GET    | `/:serviceId/checkAvailability`                | Check availability   | User      |
+| GET    | `/services/:serviceId/availability`            | Monthly availability | User      |
 
 #### Categories (`/api/v1/categories`)
 
-| Method | Endpoint              | Description        | Auth     |
-| ------ | --------------------- | ------------------ | -------- |
-| POST   | `/create`             | Create category    | 🔒 Admin |
-| GET    | `/`                   | Get all categories | 🔒 Admin |
-| GET    | `/:categoryId`        | Get category       | 🔒 Admin |
-| PATCH  | `/:categoryId/update` | Update category    | 🔒 Admin |
-| DELETE | `/:categoryId/delete` | Delete category    | 🔒 Admin |
+| Method | Endpoint              | Description        | Auth      |
+| ------ | --------------------- | ------------------ | --------- |
+| POST   | `/create`             | Create category    | Admin     |
+| GET    | `/`                   | Get all categories | Admin     |
+| GET    | `/:categoryId`        | Get category       | Admin     |
+| PATCH  | `/:categoryId/update` | Update category    | Admin     |
+| DELETE | `/:categoryId/delete` | Delete category    | Admin     |
 
-**Legend:** ❌ Public | 🔒 Authenticated | 🔒 Admin = Admin role required | 🔒 User = User role required
+**Legend:** No = Public | Yes = Authenticated | Yes Admin = Admin role required | Yes User = User role required
 
 ---
 
