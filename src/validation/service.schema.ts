@@ -83,7 +83,8 @@ export const GetServicesQuerySchema = z.object({
   adminId: z.string().optional(),
   limit: z.coerce
   .number('Limit must be a number')
-  .int(),
+  .int()
+  .optional(),
   sort : z
   .string()
   .trim()

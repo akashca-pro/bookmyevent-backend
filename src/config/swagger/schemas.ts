@@ -303,4 +303,90 @@
  *         endDate:
  *           type: string
  *           format: date-time
+ *
+ *     Category:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         description:
+ *           type: string
+ *         isActive:
+ *           type: boolean
+ *         isArchived:
+ *           type: boolean
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     CategoryListResponse:
+ *        allOf:
+ *         - $ref: '#/components/schemas/SuccessResponse'
+ *         - type: object
+ *           properties:
+ *             data:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Category'
+ *
+ *     CategoryResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/SuccessResponse'
+ *         - type: object
+ *           properties:
+ *             data:
+ *               $ref: '#/components/schemas/Category'
+ *
+ *     CreateCategoryRequest:
+ *       type: object
+ *       required: [name, description, slug]
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: "Photography"
+ *         description:
+ *           type: string
+ *           example: "Professional photography services"
+ *         slug:
+ *           type: string
+ *           example: "photography"
+ *
+ *     UpdateCategoryRequest:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         slug:
+ *           type: string
+ *         isActive:
+ *           type: boolean
+ *         isArchived:
+ *           type: boolean
+ *
+ *     MonthlyAvailabilityResponse:
+ *       allOf:
+ *         - $ref: '#/components/schemas/SuccessResponse'
+ *         - type: object
+ *           properties:
+ *             data:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                   available:
+ *                     type: boolean
+ *                   reason:
+ *                     type: string
  */

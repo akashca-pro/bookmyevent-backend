@@ -56,6 +56,57 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+/**
+ * @openapi
+ * /api/v1/bookings/services/{serviceId}/book/reserve:
+ *   post:
+ *     summary: Reserve a booking for a service
+ *     tags: [Bookings]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: serviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateBookingRequest'
+ *     responses:
+ *       200:
+ *         description: Booking reserved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Booking'
+ *       400:
+ *         description: Validation error or Service unavailable
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 bookingRouter.post(
   '/services/:serviceId/book/reserve',
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),
@@ -63,6 +114,56 @@ bookingRouter.post(
   controller.reserveBooking
 );
 
+/**
+ * @openapi
+ * /api/v1/bookings/services/{serviceId}/book/{bookingId}/confirm:
+ *   post:
+ *     summary: Confirm a reserved booking
+ *     tags: [Bookings]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: serviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: bookingId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Booking confirmed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Booking'
+ *       400:
+ *         description: Validation error or Payment failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 bookingRouter.post(
   '/services/:serviceId/book/:bookingId/confirm',
   validateRequest(ReserveBookingParamSchema, APP_LABELS.PARAM),
@@ -257,6 +358,50 @@ bookingRouter.get(
   controller.checkAvailability
 );
 
+/**
+ * @openapi
+ * /api/v1/bookings/services/{serviceId}/availability:
+ *   get:
+ *     summary: Get monthly availability for a service
+ *     tags: [Bookings]
+ *     parameters:
+ *       - in: path
+ *         name: serviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: month
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 12
+ *       - in: query
+ *         name: year
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Monthly availability fetched
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MonthlyAvailabilityResponse'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Service not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 bookingRouter.get(
   '/services/:serviceId/availability',
   validateRequest(ServiceIdParamsSchema, APP_LABELS.PARAM),

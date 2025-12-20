@@ -109,6 +109,28 @@ authRouter.post(
     controller.adminLogin
 )
 
+/**
+ * @openapi
+ * /api/v1/auth/logout:
+ *   delete:
+ *     summary: User logout
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 authRouter.delete(
     '/logout',
     controller.logout

@@ -41,7 +41,15 @@ app.get("/openapi.json", (req, res) => {
     res.json(swaggerSpec);
 });
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // swagger api doc endpoint.
+app.use(
+  "/doc",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+      withCredentials: true
+    }
+  })
+);
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/services', serviceRouter);
