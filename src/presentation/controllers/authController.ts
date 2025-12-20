@@ -85,15 +85,23 @@ export const authController = {
             next(error);
         }
     },
-    logout : async (req : Request, res : Response, next : NextFunction) => {
-        try {
-            req.log.info('Logout request received');
-            const cookieOptions = getCookieOptions();
-            res.clearCookie(APP_LABELS.ACCESS_TOKEN, cookieOptions);
-            return ResponseHandler.success(res, AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESSFUL, HTTP_STATUS.OK)
-        } catch (error) {
-            req.log.error(error);
-            next(error);
-        }
+    logout: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        req.log.info("Logout request received");
+
+        res.cookie(APP_LABELS.ACCESS_TOKEN, "", {
+        ...getCookieOptions(),
+        maxAge: 0,
+        });
+
+        return ResponseHandler.success(
+        res,
+        AUTH_SUCCESS_MESSAGES.LOGOUT_SUCCESSFUL,
+        HTTP_STATUS.OK
+        );
+    } catch (error) {
+        req.log.error(error);
+        next(error);
+    }
     }
 }
