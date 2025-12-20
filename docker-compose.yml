@@ -1,0 +1,9 @@
+services:
+  api:
+    image: akashcapro/bookmyevent:0.0.2
+    container_name: bookmyevent-backend
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
