@@ -10,14 +10,11 @@ export const getCookieOptions = () => {
     const secure = isProduction;
     // sameSite: "none" requires secure: true. Use "lax" for HTTP/development
     const sameSite = secure ? ("none" as const) : ("lax" as const);
-    // Domain should be undefined for localhost/development, or set for production
-    const domain = isProduction ? (process.env.domain ?? undefined) : undefined;
     
     return {
         httpOnly: true,
         secure: secure,
         sameSite: sameSite,
-        domain: domain,
         path: "/",
     };
 };
