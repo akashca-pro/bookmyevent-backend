@@ -1,6 +1,6 @@
 services:
   api:
-    image: akashcapro/bookmyevent:0.0.2
+    image: akashcapro/bookmyevent:latest
     container_name: bookmyevent-backend
     restart: on-failure
     env_file:
