@@ -1,7 +1,7 @@
 import container from "@/config/inversify/container";
 import TYPES from "@/config/inversify/types";
 import { BOOKING_SUCCESS_MESSAGES } from "@/const/SuccessTypes.const";
-import { BookingMapper } from "@/dtos/booking/BookingMapper.dto";
+import { BookingMapper } from "@/dtos/mappers/BookingMapper.dto";
 import { IBookingService } from "@/services/interfaces/booking.service.interface";
 import HTTP_STATUS from "@/utils/httpStatusCodes";
 import ResponseHandler from "@/utils/responseHandler";

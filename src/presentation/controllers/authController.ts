@@ -9,7 +9,7 @@ import ResponseHandler from "@/utils/responseHandler";
 import { setCookie } from "@/utils/set-cookie";
 import ms from "ms";
 import { NextFunction, Request, Response } from "express";
-import { AuthMapper } from "@/dtos/auth/AuthMapper.dto";
+import { AuthMapper } from "@/dtos/mappers/AuthMapper.dto";
 import { USER_ROLE } from "@/const/userRoles.const";
 import { errorStatusCodeMapper } from "@/utils/statusCodeMapper";
 

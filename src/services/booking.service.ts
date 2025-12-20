@@ -16,7 +16,7 @@ import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { config } from "@/config";
 import { CheckAvailabilityRequestDTO } from "@/dtos/booking/checkAvailability.dto";
-import { BookingMapper } from "@/dtos/booking/BookingMapper.dto";
+import { BookingMapper } from "@/dtos/mappers/BookingMapper.dto";
 import { GetMonthlyAvailabilityDTO } from "@/dtos/booking/getMonthlyAvailability.dto";
 
 

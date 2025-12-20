@@ -1,7 +1,7 @@
 import container from "@/config/inversify/container";
 import TYPES from "@/config/inversify/types";
 import { SERVICE_SUCCESS_MESSAGES } from "@/const/SuccessTypes.const";
-import { ServiceMapper } from "@/dtos/service/ServiceMapper.dto";
+import { ServiceMapper } from "@/dtos/mappers/ServiceMapper.dto";
 import { IServiceService } from "@/services/interfaces/service.service.interface";
 import { uploadServiceImageBuffer } from "@/utils/cloudinary/uploadImageToCloudinary";
 import HTTP_STATUS from "@/utils/httpStatusCodes";

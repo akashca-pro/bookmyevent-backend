@@ -18,7 +18,7 @@ import { GetCategoriesRequestDTO, GetCategoriesResponseDTO } from "@/dtos/catego
 import { CATEGORY_SERVICE_ERRORS } from "@/const/ErrorTypes.const";
 import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { config } from "@/config";
-import { CategoryMapper } from "@/dtos/category/categoryMapper.dto";
+import { CategoryMapper } from "@/dtos/mappers/categoryMapper.dto";
 
 @injectable()
 export class CategoryService implements ICategoryService {

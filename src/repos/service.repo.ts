@@ -166,9 +166,9 @@ export class ServiceRepo extends BaseRepo<IService> implements IServiceRepo {
 
         try {
             logger.debug(`[REPO] Executing ${operation}`);
-
+            const adminId = filter.adminId;
             const query: any = { isArchived: false };
-
+            console.log(query);
             if (filter.category) query.category = filter.category;
             if (filter.municipality) query["location.municipality"] = filter.municipality;
             if (filter.district) query["location.district"] = filter.district;

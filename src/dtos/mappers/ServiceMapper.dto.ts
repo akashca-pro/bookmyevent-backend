@@ -1,10 +1,10 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
-import { ArchiveServiceRequestDTO } from "./archiveService.dto";
-import { CreateServiceRequestDTO } from "./createService.dto";
-import { GetAvailableServicesRequestDTO, GetAvailableServicesResponseDTO } from "./getAvailableServices.dto";
-import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "./getBookingsByServices.dto";
-import { GetServicesRequestDTO, GetServicesResponseDTO } from "./getServices.dto";
-import { UpdateServiceRequestDTO } from "./updateService.dto";
+import { ArchiveServiceRequestDTO } from "../service/archiveService.dto";
+import { CreateServiceRequestDTO } from "../service/createService.dto";
+import { GetAvailableServicesRequestDTO, GetAvailableServicesResponseDTO } from "../service/getAvailableServices.dto";
+import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "../service/getBookingsByServices.dto";
+import { GetServicesRequestDTO, GetServicesResponseDTO } from "../service/getServices.dto";
+import { UpdateServiceRequestDTO } from "../service/updateService.dto";
 import { IUser } from "@/db/interfaces/user.interface";
 import { IService } from "@/db/interfaces/service.interface";
 import { Types } from "mongoose";

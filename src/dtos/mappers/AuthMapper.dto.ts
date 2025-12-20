@@ -1,7 +1,8 @@
 import { APP_ERRORS } from "@/const/ErrorTypes.const";
 import { USER_ROLE, UserRole } from "@/const/userRoles.const";
-import { SignupRequestDTO } from "./signup.dto";
-import { LoginRequestDTO } from "./login.dto";
+import { SignupRequestDTO } from "../auth/signup.dto";
+import { LoginRequestDTO } from "../auth/login.dto";
+
 
 export class AuthMapper {
     static toSignupService(req : Record<string, any>, role : string = USER_ROLE.USER) : SignupRequestDTO {

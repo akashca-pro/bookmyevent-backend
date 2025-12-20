@@ -1,12 +1,11 @@
 import { IBooking } from "@/db/interfaces/booking.interface";
-import { CancelBookingRequestDTO } from "./cancelBooking.dto";
-import { CheckAvailabilityRequestDTO } from "./checkAvailability.dto";
-import { ReserveBookingRequestDTO, ReserveBookingResponseDTO } from "./reserveBooking.dto";
-import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "./getUserBookings.dto";
 import { IService } from "@/db/interfaces/service.interface";
-import { GetMonthlyAvailabilityDTO } from "./getMonthlyAvailability.dto";
 import { Types } from "mongoose";
-import { BOOKING_STATUS } from "@/const/bookingStatus.const";
+import { ReserveBookingRequestDTO, ReserveBookingResponseDTO } from "../booking/reserveBooking.dto";
+import { GetUserBookingRequestDTO, GetUserBookingResponseDTO } from "../booking/getUserBookings.dto";
+import { CancelBookingRequestDTO } from "../booking/cancelBooking.dto";
+import { CheckAvailabilityRequestDTO } from "../booking/checkAvailability.dto";
+import { GetMonthlyAvailabilityDTO } from "../booking/getMonthlyAvailability.dto";
 
 export class BookingMapper{
     static toReserveBookingRequestDTO(input : any, userId : string, serviceId : string) : ReserveBookingRequestDTO {

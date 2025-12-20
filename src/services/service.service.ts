@@ -17,7 +17,7 @@ import { REDIS_KEY_PREFIX } from "@/config/redis/keyPrefix";
 import { ICacheProvider } from "@/providers/interfaces/cacheProvider.interface";
 import { config } from "@/config";
 import { GetBookingByServiceRequestDTO, GetBookingsByServiceResponseDTO } from "@/dtos/service/getBookingsByServices.dto";
-import { ServiceMapper } from "@/dtos/service/ServiceMapper.dto";
+import { ServiceMapper } from "@/dtos/mappers/ServiceMapper.dto";
 import { ICategoryRepo } from "@/repos/interfaces/category.repo.interface";
 
 @injectable()

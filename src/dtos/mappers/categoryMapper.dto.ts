@@ -1,7 +1,7 @@
 import { ICategory } from "@/db/interfaces/category.interface";
-import { CreateCategoryRequestDTO } from "./createCategory.dto";
-import { UpdateCategoryRequestDTO } from "./updateCategory.dto";
-import { GetCategoriesRequestDTO, GetCategoriesResponseDTO } from "./getCategories.dto";
+import { CreateCategoryRequestDTO } from "../category/createCategory.dto";
+import { UpdateCategoryRequestDTO } from "../category/updateCategory.dto";
+import { GetCategoriesRequestDTO, GetCategoriesResponseDTO } from "../category/getCategories.dto";
 
 export class CategoryMapper {
     static toCreateCategoryRequestDTO (input : any) : CreateCategoryRequestDTO {

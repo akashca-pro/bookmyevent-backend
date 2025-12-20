@@ -1,7 +1,7 @@
 import container from "@/config/inversify/container";
 import TYPES from "@/config/inversify/types";
 import { CATEGORY_SUCCESS_MESSAGES } from "@/const/SuccessTypes.const";
-import { CategoryMapper } from "@/dtos/category/categoryMapper.dto";
+import { CategoryMapper } from "@/dtos/mappers/categoryMapper.dto";
 import { ICategoryService } from "@/services/interfaces/category.service.interface";
 import HTTP_STATUS from "@/utils/httpStatusCodes";
 import ResponseHandler from "@/utils/responseHandler";
