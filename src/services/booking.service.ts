@@ -44,10 +44,10 @@ export class BookingService implements IBookingService {
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { serviceId, startDate, endDate } = req;
 
-        const resourceId = `${REDIS_KEY_PREFIX.BOOKING_LOCK}:${serviceId}:${startDate.toISOString()}:${endDate.toISOString()}`;
-        const lockKey = `lock:${resourceId}`;
+        // Lock at service level to prevent ALL overlapping bookings, not just exact date matches
+        const lockKey = `${REDIS_KEY_PREFIX.BOOKING_LOCK}:${serviceId}`;
 
-        const lockToken = await this.#_cacheProvider.acquireLock(resourceId, config.BOOKING_CACHE_EXPIRY);
+        const lockToken = await this.#_cacheProvider.acquireLock(lockKey, config.BOOKING_CACHE_EXPIRY);
 
         if (!lockToken) {
             logger.error(`[BOOKING-SERVICE] ${method} failed to acquire lock`);
@@ -78,8 +78,8 @@ export class BookingService implements IBookingService {
             }
             const conflicting = await this.#_bookingRepo.getConflictingBookings(serviceId.toString(), startDate, endDate);
             const hasConflict = conflicting.some(b => b.status === BOOKING_STATUS.CONFIRMED || b.status === BOOKING_STATUS.PENDING);
-
-            if (hasConflict) {
+            console.log(hasConflict);
+            if (hasConflict) {  
                 logger.error(`[BOOKING-SERVICE] ${method} booking already exists`);
                 return { 
                     data: null, 
@@ -101,11 +101,11 @@ export class BookingService implements IBookingService {
             return { data: response, success: true };
         } catch (error) {
             logger.error(`[BOOKING-SERVICE] ${method} failed to reserve booking`);
-            await this.#_cacheProvider.releaseLock(lockKey, lockToken);
+            await this.#_cacheProvider.releaseLock(`lock:${lockKey}`, lockToken);
             throw error;
         } finally {
             logger.info(`[BOOKING-SERVICE] ${method} lock released`);
-            await this.#_cacheProvider.releaseLock(lockKey, lockToken);
+            await this.#_cacheProvider.releaseLock(`lock:${lockKey}`, lockToken);
         }
     }
 
@@ -114,6 +114,8 @@ export class BookingService implements IBookingService {
     ): Promise<ResponseDTO<null>> {
         const method = 'BookingService.confirmBooking'
         logger.info(`[BOOKING-SERVICE] ${method} started`);
+
+        // First, get booking to determine the serviceId for locking
         const booking = await this.#_bookingRepo.getBookingById(bookingId);
 
         if (!booking || booking.status !== BOOKING_STATUS.PENDING) {
@@ -125,37 +127,69 @@ export class BookingService implements IBookingService {
             };
         }
 
-        const conflicts = await this.#_bookingRepo.getConflictingBookings(
-            booking.serviceId.toString(),
-            booking.startDate,
-            booking.endDate
-        );
+        // Acquire service-level lock to prevent race conditions during confirmation
+        const lockKey = `${REDIS_KEY_PREFIX.BOOKING_LOCK}:${booking.serviceId.toString()}`;
+        const lockToken = await this.#_cacheProvider.acquireLock(lockKey, config.BOOKING_CACHE_EXPIRY);
 
-        const hasConfirmedConflict = conflicts.some(
-            b =>
-            b._id!.toString() !== bookingId &&
-            b.status === BOOKING_STATUS.CONFIRMED
-        );
-
-        if (hasConfirmedConflict) {
-            await this.#_bookingRepo.updateStatus(
-            bookingId,
-            BOOKING_STATUS.EXPIRED
-            );
-
+        if (!lockToken) {
+            logger.error(`[BOOKING-SERVICE] ${method} failed to acquire lock`);
             return {
                 data: null,
-                success: false,
-                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED,
+                errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKING,
+                success: false
             };
         }
 
-        await this.#_bookingRepo.updateStatus(bookingId, BOOKING_STATUS.CONFIRMED);
-        logger.info(`[BOOKING-SERVICE] ${method} booking confirmed`);
-        return {
-            data: null,
-            success: true
-        };
+        try {
+            // Re-check booking status after acquiring lock (it may have changed)
+            const freshBooking = await this.#_bookingRepo.getBookingById(bookingId);
+            if (!freshBooking || freshBooking.status !== BOOKING_STATUS.PENDING) {
+                logger.error(`[BOOKING-SERVICE] ${method} booking status changed while waiting for lock`);
+                return {
+                    data: null,
+                    errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_SESSION_EXPIRED,
+                    success: false
+                };
+            }
+
+            const conflicts = await this.#_bookingRepo.getConflictingBookings(
+                freshBooking.serviceId.toString(),
+                freshBooking.startDate,
+                freshBooking.endDate
+            );
+
+            const hasConfirmedConflict = conflicts.some(
+                b =>
+                b._id!.toString() !== bookingId &&
+                b.status === BOOKING_STATUS.CONFIRMED
+            );
+
+            if (hasConfirmedConflict) {
+                await this.#_bookingRepo.updateStatus(
+                bookingId,
+                BOOKING_STATUS.EXPIRED
+                );
+
+                return {
+                    data: null,
+                    success: false,
+                    errorMessage: BOOKING_SERVICE_ERRORS.SLOT_ALREADY_BOOKED,
+                };
+            }
+
+            await this.#_bookingRepo.updateStatus(bookingId, BOOKING_STATUS.CONFIRMED);
+            logger.info(`[BOOKING-SERVICE] ${method} booking confirmed`);
+            return {
+                data: null,
+                success: true
+            };
+        } catch (error) {
+            logger.error(`[BOOKING-SERVICE] ${method} failed to confirm booking`);
+            throw error;
+        } finally {
+            logger.info(`[BOOKING-SERVICE] ${method} releasing lock`);
+            await this.#_cacheProvider.releaseLock(`lock:${lockKey}`, lockToken);
+        }
     }
 
     async getBookingById(
