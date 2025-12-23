@@ -42,15 +42,38 @@ export const CheckAvailabilityQuerySchema = z.object({
     .refine((d) => !isNaN(d.getTime()), "End date must be a valid date"),
 })
 
-export const GetMonthlyAvailabilitySchema = z.object({
-    month : z.coerce
-    .number('Month must be a number')
-    .int()
-    .min(1, "Month must be at least 1")
-    .max(12, "Month must be at most 12"),
-    year : z.coerce
-    .number('Year must be a number')
-    .int()
-    .min(2025, "Year must be at least 2025")
-    .max(new Date().getFullYear(), "Year must be at most current year")
-})
+export const GetMonthlyAvailabilitySchema = z
+  .object({
+    month: z.coerce
+      .number()
+      .int()
+      .min(1, "Month must be between 1 and 12")
+      .max(12, "Month must be between 1 and 12"),
+
+    year: z.coerce
+      .number()
+      .int()
+      .min(new Date().getFullYear(), "Year cannot be in the past")
+      .max(
+        new Date().getFullYear() + 1,
+        "Bookings allowed only up to next year"
+      ),
+  })
+  .refine(
+    ({ month, year }) => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+
+      if (year === currentYear && month < currentMonth) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Month cannot be in the past for the selected year",
+      path: ["month"],
+    }
+  );
+
+

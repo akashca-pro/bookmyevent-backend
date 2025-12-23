@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsup src/index.ts src/scripts/generate-swagger.ts --format cjs",
+    "postbuild": "node dist/scripts/generate-swagger.js",
+    "swagger:generate": "node dist/scripts/generate-swagger.js",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts"
   },
