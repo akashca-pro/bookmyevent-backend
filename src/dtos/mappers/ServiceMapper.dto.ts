@@ -65,7 +65,7 @@ export class ServiceMapper {
                 search : input?.search
             },
             options : {
-                limit : input.limit ?? 10,
+                limit : input.limit ?? 6,
                 skip : input.skip ?? 0,
                 sort : input.sort ?? { createdAt : -1 }
             }
