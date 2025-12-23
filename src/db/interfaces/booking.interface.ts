@@ -9,8 +9,6 @@ export interface IBooking extends Document {
     endDate : Date;
     totalPrice : number;
     status : BookingStatus;
-    lockToken: string;
-    lockKey: string;
     createdAt : Date;
     updatedAt : Date;
 }

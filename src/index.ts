@@ -12,7 +12,6 @@ import { serviceRouter } from '@/presentation/routes/services';
 import { bookingRouter } from '@/presentation/routes/bookings';
 import { connectDB } from '@/config/db';
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger";
 import { categoryRouter } from './presentation/routes/category';
 import path from "path";
 

@@ -8,6 +8,52 @@ import { ListOptionsQuerySchema } from '@/validation/helpers.schema';
 
 export const categoryRouter = express.Router();
 
+
+/**
+ * @openapi
+ * /api/v1/categories:
+ *   get:
+ *     summary: Get all categories
+ *     tags: [Categories]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: List of categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CategoryListResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden - Admin access required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+categoryRouter.get(
+    '/',
+    validateRequest(ListOptionsQuerySchema, APP_LABELS.QUERY),
+    controller.getCategories
+)
+
 categoryRouter.use(authenticate);
 categoryRouter.use(authorizeRole(APP_LABELS.ADMIN));
 
@@ -55,51 +101,6 @@ categoryRouter.post(
     '/create',
     validateRequest(CreateCategorySchema),
     controller.createCategory
-)
-
-/**
- * @openapi
- * /api/v1/categories:
- *   get:
- *     summary: Get all categories
- *     tags: [Categories]
- *     security:
- *       - cookieAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           default: 10
- *     responses:
- *       200:
- *         description: List of categories
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CategoryListResponse'
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       403:
- *         description: Forbidden - Admin access required
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
-categoryRouter.get(
-    '/',
-    validateRequest(ListOptionsQuerySchema, APP_LABELS.QUERY),
-    controller.getCategories
 )
 
 /**

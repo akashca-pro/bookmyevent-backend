@@ -20,44 +20,6 @@ bookingRouter.use(authorizeRole(APP_LABELS.USER));
 
 /**
  * @openapi
- * /api/v1/bookings/{serviceId}/create:
- *   post:
- *     summary: Create booking for a service
- *     tags: [Bookings]
- *     parameters:
- *       - in: path
- *         name: serviceId
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CreateBookingRequest'
- *     responses:
- *       200:
- *         description: Booking created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/SuccessResponse'
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       403:
- *         description: Forbidden – user role required
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
-/**
- * @openapi
  * /api/v1/bookings/services/{serviceId}/book/reserve:
  *   post:
  *     summary: Reserve a booking for a service
