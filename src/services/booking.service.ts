@@ -44,7 +44,7 @@ export class BookingService implements IBookingService {
         logger.info(`[BOOKING-SERVICE] ${method} started`);
         const { serviceId, startDate, endDate } = req;
 
-        const resourceId = `${REDIS_KEY_PREFIX.BOOKING_LOCK}:${serviceId}:${startDate.toISOString()}`;
+        const resourceId = `${REDIS_KEY_PREFIX.BOOKING_LOCK}:${serviceId}:${startDate.toISOString()}:${endDate.toISOString()}`;
         const lockKey = `lock:${resourceId}`;
 
         const lockToken = await this.#_cacheProvider.acquireLock(resourceId, config.BOOKING_CACHE_EXPIRY);
@@ -95,8 +95,6 @@ export class BookingService implements IBookingService {
                 ...req,
                 totalPrice,
                 status: BOOKING_STATUS.PENDING,
-                lockKey,
-                lockToken
             });
             const response = BookingMapper.toReserveBookingResponseDTO(booking);
             logger.info(`[BOOKING-SERVICE] ${method} booking reserved`);
@@ -243,15 +241,6 @@ export class BookingService implements IBookingService {
                 data: null,
                 success: false,
                 errorMessage: BOOKING_SERVICE_ERRORS.BOOKING_FAILED
-            }
-        }
-
-        if (booking.status === BOOKING_STATUS.PENDING && booking.lockKey && booking.lockToken) {
-            logger.info(`[BOOKING-SERVICE] ${method} releasing lock`, { lockKey: booking.lockKey });
-            try {
-                await this.#_cacheProvider.releaseLock(booking.lockKey, booking.lockToken);
-            } catch (error) {
-                logger.warn(`[BOOKING-SERVICE] ${method} failed to release lock after cancellation`, { error, lockKey: booking.lockKey });
             }
         }
 
